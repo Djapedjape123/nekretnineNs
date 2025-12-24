@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { t } from '../i1n8'   // ⬅️ DODATO
 
 function NavBar() {
@@ -9,6 +9,11 @@ function NavBar() {
         localStorage.setItem('lang', lang)
         window.location.reload()
     }
+
+    const navClass = ({ isActive }) =>
+        isActive
+            ? 'text-yellow-400 font-bold'
+            : 'text-white hover:text-yellow-500 transition'
 
     return (
         <header className="top-0 left-0 w-full z-50 bg-black fixed" >
@@ -21,11 +26,11 @@ function NavBar() {
 
                 {/* Desktop menu */}
                 <nav className="hidden md:flex items-center gap-8">
-                    <Link to="/" className="text-white hover:text-yellow-500">{t('home')}</Link>
-                    <Link to="/prodaja" className="text-white hover:text-yellow-500">{t('sales')}</Link>
-                    <Link to="/izdavanje" className="text-white hover:text-yellow-500">{t('rent')}</Link>
-                    <Link to="/favorite" className="text-white hover:text-yellow-500">{t('favorite')}</Link>
-                    <Link to="/kontakt" className="text-white hover:text-yellow-500">{t('contact')}</Link>
+                    <NavLink to="/" end className={navClass}>{t('home')}</NavLink>
+                    <NavLink to="/prodaja" className={navClass}>{t('sales')}</NavLink>
+                    <NavLink to="/izdavanje" className={navClass}>{t('rent')}</NavLink>
+                    <NavLink to="/favorite" className={navClass}>{t('favorite')}</NavLink>
+                    <NavLink to="/kontakt" className={navClass}>{t('contact')}</NavLink>
                 </nav>
 
                 {/* ZASTAVICE + CTA */}
@@ -57,11 +62,11 @@ function NavBar() {
             {open && (
                 <div className="md:hidden bg-black/90 border-t border-yellow-500 text-white">
                     <nav className="flex flex-col p-4 gap-4">
-                        <Link onClick={() => setOpen(false)} to="/">{t('home')}</Link>
-                        <Link onClick={() => setOpen(false)} to="/prodaja">{t('sales')}</Link>
-                        <Link onClick={() => setOpen(false)} to="/izdavanje">{t('rent')}</Link>
-                        <Link onClick={() => setOpen(false)} to="/favorite">{t('favorite')}</Link>
-                        <Link onClick={() => setOpen(false)} to="/kontakt">{t('contact')}</Link>
+                        <NavLink onClick={() => setOpen(false)} to="/" end className={navClass}>{t('home')}</NavLink>
+                        <NavLink onClick={() => setOpen(false)} to="/prodaja" className={navClass}>{t('sales')}</NavLink>
+                        <NavLink onClick={() => setOpen(false)} to="/izdavanje" className={navClass}>{t('rent')}</NavLink>
+                        <NavLink onClick={() => setOpen(false)} to="/favorite" className={navClass}>{t('favorite')}</NavLink>
+                        <NavLink onClick={() => setOpen(false)} to="/kontakt" className={navClass}>{t('contact')}</NavLink>
 
                         {/* Mobile flags */}
                         <div className="flex gap-4 mt-2">

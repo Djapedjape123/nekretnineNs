@@ -3,9 +3,9 @@ import { MdLocationOn } from 'react-icons/md'
 import { FaBed, FaBath } from 'react-icons/fa'
 import { FiHeart } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
-import { t } from '../i1n8' // importuj t koji čita lang iz localStorage
+import { t } from '../i1n8'
 
-// Mock podaci, isto kao u Prodaja/IzdavanjePage
+// Mock podaci
 const MOCK_PROPERTIES = [
   {
     id: 1,
@@ -44,14 +44,12 @@ const MOCK_PROPERTIES = [
 
 export default function FavoritePage() {
   const [favorites, setFavorites] = useState(() => {
-    // inicijalno učitaj sa localStorage ako postoji
     const saved = localStorage.getItem('favorites')
     return saved ? JSON.parse(saved) : []
   })
 
   const navigate = useNavigate()
 
-  // helper koji proverava t() i vraća fallback ako prevod nije dostupan
   const tt = (key, fallback) => {
     try {
       const val = t(key)
@@ -64,19 +62,20 @@ export default function FavoritePage() {
   const toggleFavorite = (property) => {
     setFavorites((prev) => {
       const exists = prev.find((p) => p.id === property.id)
-      let updated
-      if (exists) {
-        updated = prev.filter((p) => p.id !== property.id)
-      } else {
-        updated = [...prev, property]
-      }
+      const updated = exists
+        ? prev.filter((p) => p.id !== property.id)
+        : [...prev, property]
+
       localStorage.setItem('favorites', JSON.stringify(updated))
       return updated
     })
   }
 
+  // === ANIMATION TRIGGER ===
+  const [visible, setVisible] = useState(false)
   useEffect(() => {
-    // placeholder: nema promena u logici
+    const id = setTimeout(() => setVisible(true), 50)
+    return () => clearTimeout(id)
   }, [])
 
   return (
@@ -87,13 +86,21 @@ export default function FavoritePage() {
         </h1>
 
         {favorites.length === 0 ? (
-          <p className="text-gray-300 text-lg">{tt('noFavorites', 'Još nema sačuvanih nekretnina.')}</p>
+          <p className="text-gray-300 text-lg">
+            {tt('noFavorites', 'Još nema sačuvanih nekretnina.')}
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {favorites.map((item) => (
+            {favorites.map((item, index) => (
               <article
                 key={item.id}
-                className="group bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transform transition hover:-translate-y-2"
+                style={{ transitionDelay: `${index * 80}ms` }}
+                className={
+                  `group bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transform transition-all duration-700 ` +
+                  (visible
+                    ? 'translate-x-0 opacity-100'
+                    : '-translate-x-10 opacity-0')
+                }
               >
                 <div className="relative h-56 overflow-hidden">
                   <img
@@ -112,25 +119,24 @@ export default function FavoritePage() {
                     <FiHeart className="w-5 h-5 text-red-400" />
                   </button>
                 </div>
+
                 <div className="p-5">
                   <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+
                   <div className="flex items-center gap-2 text-sm text-gray-300 mt-2">
                     <MdLocationOn className="w-4 h-4 text-yellow-400" />
                     <span>{item.location}</span>
                   </div>
+
                   <div className="mt-4 flex items-center justify-between text-sm text-gray-300">
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
                         <FaBed className="text-yellow-400 w-4 h-4" />
-                        <span>
-                          {item.rooms} {tt('rooms', 'sobe')}
-                        </span>
+                        <span>{item.rooms} {tt('rooms', 'sobe')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <FaBath className="text-yellow-400 w-4 h-4" />
-                        <span>
-                          {item.baths} {tt('baths', 'kupatila')}
-                        </span>
+                        <span>{item.baths} {tt('baths', 'kupatila')}</span>
                       </div>
                       <div className="px-2 py-1 bg-black/30 rounded text-xs border border-yellow-600/10">
                         {item.size} m²

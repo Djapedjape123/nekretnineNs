@@ -104,6 +104,9 @@ export default function ProdajaPage() {
 
   const [selectedCity, setSelectedCity] = useState('all')
 
+  // visible triggers enter animation
+  const [visible, setVisible] = useState(false)
+
   useEffect(() => {
     try {
       localStorage.setItem('favorites', JSON.stringify(favorites))
@@ -111,6 +114,12 @@ export default function ProdajaPage() {
       console.error('Ne mogu da sacuvam favorites', err)
     }
   }, [favorites])
+
+  useEffect(() => {
+    // delay slightly so CSS transitions run
+    const tId = setTimeout(() => setVisible(true), 50)
+    return () => clearTimeout(tId)
+  }, [])
 
   // Filtriraj po gradu
   const cities = Array.from(new Set(listings.map((l) => l.location.split(',')[0].trim())))
@@ -173,79 +182,88 @@ export default function ProdajaPage() {
         {/* Grid of cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredListings.length > 0 ? (
-            filteredListings.map((item) => (
-              <article
-                key={item.id}
-                className="group bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transform transition hover:-translate-y-2"
-              >
-                <div className="relative h-56 overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-
-                  <div className="absolute top-3 left-3 bg-yellow-400 text-black font-bold px-3 py-1 rounded-md shadow">
-                    {item.price}
-                  </div>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleFavorite(item)
-                    }}
-                    className="absolute top-3 right-3 bg-black/50 hover:bg-black/30 p-2 rounded-full transition"
-                    aria-label="favorite"
-                  >
-                    <FiHeart
-                      className={`w-5 h-5 transition-colors ${
-                        isFavorite(item.id) ? 'text-red-400' : 'text-yellow-400'
-                      }`}
+            filteredListings.map((item, index) => {
+              // determine initial translate direction based on index (alternate)
+              const initialClass = index % 2 === 0 ? 'translate-x-8 opacity-0' : '-translate-x-8 opacity-0'
+              const enterClass = 'translate-x-0 opacity-300'
+              return (
+                <article
+                  key={item.id}
+                  style={{ transitionDelay: `${index * 80}ms` }}
+                  className={
+                    `group bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-2 transform transition-all duration-700 ` +
+                    (visible ? enterClass : initialClass)
+                  }
+                >
+                  <div className="relative h-56 overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                  </button>
-                </div>
 
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-white">{item.title}</h3>
-                  <div className="flex items-center gap-2 text-sm text-gray-300 mt-2">
-                    <MdLocationOn className="w-4 h-4 text-yellow-400" />
-                    <span>{item.location}</span>
+                    <div className="absolute top-3 left-3 bg-yellow-400 text-black font-bold px-3 py-1 rounded-md shadow">
+                      {item.price}
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleFavorite(item)
+                      }}
+                      className="absolute top-3 right-3 bg-black/50 hover:bg-black/30 p-2 rounded-full transition"
+                      aria-label="favorite"
+                    >
+                      <FiHeart
+                        className={`w-5 h-5 transition-colors ${
+                          isFavorite(item.id) ? 'text-red-400' : 'text-yellow-400'
+                        }`}
+                      />
+                    </button>
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between text-sm text-gray-300">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <FaBed className="text-yellow-400 w-4 h-4" />
-                        <span>{item.rooms} {tt('rooms', 'sobe')}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <FaBath className="text-yellow-400 w-4 h-4" />
-                        <span>{item.baths} {tt('baths', 'kupatila')}</span>
-                      </div>
-                      <div className="px-2 py-1 bg-black/30 rounded text-xs border border-yellow-600/10">
-                        {item.size} m²
+                  <div className="p-5">
+                    <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-300 mt-2">
+                      <MdLocationOn className="w-4 h-4 text-yellow-400" />
+                      <span>{item.location}</span>
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between text-sm text-gray-300">
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <FaBed className="text-yellow-400 w-4 h-4" />
+                          <span>{item.rooms} {tt('rooms', 'sobe')}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <FaBath className="text-yellow-400 w-4 h-4" />
+                          <span>{item.baths} {tt('baths', 'kupatila')}</span>
+                        </div>
+                        <div className="px-2 py-1 bg-black/30 rounded text-xs border border-yellow-600/10">
+                          {item.size} m²
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mt-5 flex items-center gap-3">
-                    <button
-                      className="flex-1 bg-transparent border border-yellow-600/30 text-yellow-400 py-2 rounded-md hover:bg-yellow-600/10 transition"
-                      onClick={() => navigate(`/single/${item.id}`)}
-                    >
-                      {tt('details', 'Detalji')}
-                    </button>
+                    <div className="mt-5 flex items-center gap-3">
+                      <button
+                        className="flex-1 bg-transparent border border-yellow-600/30 text-yellow-400 py-2 rounded-md hover:bg-yellow-600/10 transition"
+                        onClick={() => navigate(`/single/${item.id}`)}
+                      >
+                        {tt('details', 'Detalji')}
+                      </button>
 
-                    <a
-                      href={`mailto:serbesnekretnine@gmail.com?subject=Zainteresovan za: ${encodeURIComponent(item.title)}`}
-                      className="px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow hover:from-yellow-500 hover:to-yellow-600 transition"
-                    >
-                      {tt('contactBtn', 'Kontakt')}
-                    </a>
+                      <a
+                        href={`mailto:serbesnekretnine@gmail.com?subject=Zainteresovan za: ${encodeURIComponent(item.title)}`}
+                        className="px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow hover:from-yellow-500 hover:to-yellow-600 transition"
+                      >
+                        {tt('contactBtn', 'Kontakt')}
+                      </a>
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))
+                </article>
+              )
+            })
           ) : (
             <div className="col-span-full text-center py-12">
               <p className="text-gray-400 text-lg">{tt('noResults', 'Nema pronađenih nekretnina sa zadatim kriterijumima.')}</p>

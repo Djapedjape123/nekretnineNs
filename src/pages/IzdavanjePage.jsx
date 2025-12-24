@@ -88,6 +88,13 @@ export default function IzdavanjePage() {
     }
   }
 
+  // animation trigger
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const id = setTimeout(() => setVisible(true), 50)
+    return () => clearTimeout(id)
+  }, [])
+
   return (
     <div className="min-h-screen bg-black text-white py-12 px-6">
       <div className="max-w-7xl mx-auto">
@@ -127,74 +134,82 @@ export default function IzdavanjePage() {
 
         {/* GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredRentals.map((item) => (
-            <article
-              key={item.id}
-              className="group bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl overflow-hidden shadow-xl hover:-translate-y-2 transition"
-            >
-              <div className="relative h-56">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-                />
-
-                <div className="absolute top-3 left-3 bg-yellow-400 text-black font-bold px-3 py-1 rounded">
-                  {item.price}
-                </div>
-
-                <button
-                  onClick={() => toggleFavorite(item)}
-                  className="absolute top-3 right-3 bg-black/60 p-2 rounded-full"
-                >
-                  <FiHeart
-                    className={`w-5 h-5 ${
-                      isFavorite(item.id) ? 'text-red-400' : 'text-yellow-400'
-                    }`}
+          {filteredRentals.map((item, index) => {
+            const initialClass = index % 2 === 0 ? 'translate-x-8 opacity-0' : '-translate-x-8 opacity-0'
+            const enterClass = 'translate-x-0 opacity-100'
+            return (
+              <article
+                key={item.id}
+                style={{ transitionDelay: `${index * 80}ms` }}
+                className={
+                  `group bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl overflow-hidden shadow-xl hover:-translate-y-2 transition-all duration-700 transform ` +
+                  (visible ? enterClass : initialClass)
+                }
+              >
+                <div className="relative h-56">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                   />
-                </button>
-              </div>
 
-              <div className="p-5">
-                <h3 className="font-semibold text-lg">{item.title}</h3>
+                  <div className="absolute top-3 left-3 bg-yellow-400 text-black font-bold px-3 py-1 rounded">
+                    {item.price}
+                  </div>
 
-                <div className="flex items-center gap-2 text-gray-300 text-sm mt-2">
-                  <MdLocationOn className="text-yellow-400" />
-                  {item.location}
-                </div>
-
-                <div className="flex gap-4 text-sm text-gray-300 mt-4">
-                  <span className="flex items-center gap-1">
-                    <FaBed className="text-yellow-400" /> {item.rooms}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <FaBath className="text-yellow-400" /> {item.baths}
-                  </span>
-                  <span className="text-xs border border-yellow-600/20 px-2 py-1 rounded">
-                    {item.size} m²
-                  </span>
-                </div>
-
-                <div className="mt-5 flex gap-3">
                   <button
-                    className="flex-1 border border-yellow-600/30 text-yellow-400 py-2 rounded hover:bg-yellow-600/10"
-                    onClick={() => navigate(`/single/${item.id}`)} // ← OVDE: navigacija ka single stranici
+                    onClick={() => toggleFavorite(item)}
+                    className="absolute top-3 right-3 bg-black/60 p-2 rounded-full"
                   >
-                    {t('details', 'Detalji')}
+                    <FiHeart
+                      className={`w-5 h-5 ${
+                        isFavorite(item.id) ? 'text-red-400' : 'text-yellow-400'
+                      }`}
+                    />
                   </button>
-
-                  <a
-                    href={`mailto:serbesnekretnine@gmail.com?subject=Zainteresovan za: ${encodeURIComponent(
-                      item.title
-                    )}`}
-                    className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-4 py-2 rounded font-semibold"
-                  >
-                    {t('contactBtn', 'Kontakt')}
-                  </a>
                 </div>
-              </div>
-            </article>
-          ))}
+
+                <div className="p-5">
+                  <h3 className="font-semibold text-lg">{item.title}</h3>
+
+                  <div className="flex items-center gap-2 text-gray-300 text-sm mt-2">
+                    <MdLocationOn className="text-yellow-400" />
+                    {item.location}
+                  </div>
+
+                  <div className="flex gap-4 text-sm text-gray-300 mt-4">
+                    <span className="flex items-center gap-1">
+                      <FaBed className="text-yellow-400" /> {item.rooms}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <FaBath className="text-yellow-400" /> {item.baths}
+                    </span>
+                    <span className="text-xs border border-yellow-600/20 px-2 py-1 rounded">
+                      {item.size} m²
+                    </span>
+                  </div>
+
+                  <div className="mt-5 flex gap-3">
+                    <button
+                      className="flex-1 border border-yellow-600/30 text-yellow-400 py-2 rounded hover:bg-yellow-600/10"
+                      onClick={() => navigate(`/single/${item.id}`)} // ← OVDE: navigacija ka single stranici
+                    >
+                      {t('details', 'Detalji')}
+                    </button>
+
+                    <a
+                      href={`mailto:serbesnekretnine@gmail.com?subject=Zainteresovan za: ${encodeURIComponent(
+                        item.title
+                      )}`}
+                      className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-4 py-2 rounded font-semibold"
+                    >
+                      {t('contactBtn', 'Kontakt')}
+                    </a>
+                  </div>
+                </div>
+              </article>
+            )
+          })}
         </div>
       </div>
     </div>

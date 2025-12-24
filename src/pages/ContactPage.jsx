@@ -50,7 +50,7 @@ export default function ContactPage() {
     }
 
     return (
-        <div className="w-screen min-h-screen bg-black text-white py-12 px-6">
+        <div className="w-full min-h-screen bg-black text-white py-12 px-6">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
 
                 {/* LEVI BLOK - info */}

@@ -102,6 +102,7 @@ export const translations = {
 
     search: 'Pretraži',
     loading: 'Učitavanje...',
+    infoLinks: 'Koriste Informacije',
   },
 
   ru: {
@@ -207,6 +208,7 @@ export const translations = {
 
     search: 'Поиск',
     loading: 'Загрузка...',
+    infoLinks: 'Полезная информация',
   },
 
   en: {
@@ -312,6 +314,7 @@ export const translations = {
 
     search: 'Search',
     loading: 'Loading...',
+    infoLinks: 'Useful Information',
   },
 }
 
