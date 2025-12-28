@@ -79,7 +79,7 @@ export default function FavoritePage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-black text-white py-12 px-6">
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 text-white py-12 px-6">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl mt-10 md:text-4xl font-extrabold tracking-tight text-yellow-400 mb-6">
           {tt('favoritesTitle', 'Omiljene nekretnine')}
@@ -147,7 +147,7 @@ export default function FavoritePage() {
                   <div className="mt-5 flex items-center gap-3">
                     <button
                       className="flex-1 bg-transparent border border-yellow-600/30 text-yellow-400 py-2 rounded-md hover:bg-yellow-600/10 transition"
-                      onClick={() => alert(`Otvaram detalje oglasa: ${item.title}`)}
+                      onClick={() =>  navigate(`/single/${item.id}`)}
                     >
                       {tt('details', 'Detalji')}
                     </button>

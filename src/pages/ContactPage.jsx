@@ -50,7 +50,7 @@ export default function ContactPage() {
     }
 
     return (
-        <div className="w-full min-h-screen bg-black text-white py-12 px-6">
+        <div className="w-full min-h-screen bg-gradient-to-b from-black via-gray-900 text-white py-12 px-6">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
 
                 {/* LEVI BLOK - info */}
@@ -59,7 +59,7 @@ export default function ContactPage() {
                         animateLeft ? 'translate-x-0 opacity-100' : '-translate-x-60 opacity-0'
                     }`}
                 >
-                    <div className="rounded-xl p-8 bg-gradient-to-br from-black/60 to-white/2 backdrop-blur-sm border border-yellow-600/20 shadow-xl">
+                    <div className="rounded-xl p-8 bg-gradient-to-br from-black/100 to-white/2 backdrop-blur-lg  border border-yellow-600/20 shadow-black shadow-xl">
                         <h1 className="text-4xl font-extrabold text-yellow-400 mb-4">{tt('contactTitle', 'Kontakt')}</h1>
                         <p className="text-gray-300 leading-relaxed">
                             {tt(
@@ -71,7 +71,7 @@ export default function ContactPage() {
                         <div className="mt-6 grid grid-cols-1 gap-3">
                             {/* Email */}
                             <div className="flex items-start gap-4">
-                                <MdEmail color='purple' className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+                                <MdEmail  className="w-6 h-6 text-yellow-400 flex-shrink-0" />
                                 <div>
                                     <div className="text-sm text-gray-400">{tt('emailLabel', 'Email')}</div>
                                     <a href="mailto:serbesnekretnine@gmail.com" className="text-yellow-400 font-medium">
@@ -82,7 +82,7 @@ export default function ContactPage() {
 
                             {/* Telefon */}
                             <div className="flex items-start gap-4">
-                                <MdPhone color='blue' className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+                                <MdPhone  className="w-6 h-6 text-yellow-400 flex-shrink-0" />
                                 <div>
                                     <div className="text-sm text-gray-400">{tt('phoneLabel', 'Telefon')}</div>
                                     <a href="tel:+38163238564" className="text-yellow-400 font-medium">063 238 564</a>
@@ -178,7 +178,7 @@ export default function ContactPage() {
                                 </button>
 
                                 <a
-                                    href="mailto:serbesnekretnine@gmail.com"
+                                    href="tell:+38163238564"
                                     className="inline-flex items-center gap-2 px-4 py-3 border border-yellow-600 rounded-md text-yellow-400 hover:bg-yellow-600/10 transition"
                                 >
                                     {tt('writeDirect', 'Pišite direktno')}

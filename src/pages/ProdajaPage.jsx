@@ -15,6 +15,7 @@ const MOCK_LISTINGS = [
     size: 115,
     rooms: 3,
     baths: 2,
+    type: 'apartment',
     image:
       'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=bdc77b8b6f3b0c1b5f3e2a9a4b3f6c9a',
   },
@@ -26,6 +27,7 @@ const MOCK_LISTINGS = [
     size: 180,
     rooms: 4,
     baths: 3,
+    type: 'apartment',
     image:
       'https://images.unsplash.com/photo-1572120360610-d971b9b1a6d6?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=5bf4a8b1f2f7f124e2d7b6d1f4e3a2c1',
   },
@@ -37,6 +39,7 @@ const MOCK_LISTINGS = [
     size: 220,
     rooms: 5,
     baths: 2,
+    type: 'house',
     image:
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=f1a9f4e9c3a6f3c7b8d9f2a1c4e6b7d8',
   },
@@ -48,6 +51,7 @@ const MOCK_LISTINGS = [
     size: 62,
     rooms: 2,
     baths: 1,
+    type: 'apartment',
     image:
       'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=9b1a2a3c4d5e6f7a8b9c0d1e2f3a4b5c',
   },
@@ -59,6 +63,7 @@ const MOCK_LISTINGS = [
     size: 160,
     rooms: 4,
     baths: 2,
+    type: 'house',
     image:
       'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d',
   },
@@ -70,14 +75,90 @@ const MOCK_LISTINGS = [
     size: 54,
     rooms: 1,
     baths: 1,
+    type: 'apartment',
     image:
       'https://images.unsplash.com/photo-1560448204-5a3f3d5b1b9f?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=c4e5d6f7a8b9c0d1e2f3a4b5c6d7e8f9',
+  },
+
+  // dodatne nekretnine za paginaciju
+  {
+    id: 7,
+    title: 'Vila sa pogledom na jezero',
+    price: '1.200.000 €',
+    location: 'Vrnjačka Banja',
+    size: 420,
+    rooms: 6,
+    baths: 5,
+    type: 'villa',
+    image:
+      'https://images.unsplash.com/photo-1600585154341-6a3b6e6b9f6b?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcde1234567890',
+  },
+  {
+    id: 8,
+    title: 'Plac idealan za gradnju',
+    price: '45.000 €',
+    location: 'Novi Sad, Petrovaradin',
+    size: 800,
+    rooms: 0,
+    baths: 0,
+    type: 'land',
+    image:
+      'https://images.unsplash.com/photo-1505842465776-3a6f8b6b2a5a?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=plac1',
+  },
+  {
+    id: 9,
+    title: 'Poslovni prostor u poslovnoj zoni',
+    price: '320.000 €',
+    location: 'Beograd, Novi Beograd',
+    size: 350,
+    rooms: 0,
+    baths: 2,
+    type: 'office',
+    image:
+      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=office1',
+  },
+  {
+    id: 10,
+    title: 'Manji lokal za izdavanje',
+    price: '42.000 €',
+    location: 'Novi Sad, Detelinara',
+    size: 45,
+    rooms: 0,
+    baths: 1,
+    type: 'office',
+    image:
+      'https://images.unsplash.com/photo-1542318424-380f9a1f9b1a?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=local1',
+  },
+  {
+    id: 11,
+    title: 'Vikendica pored reke',
+    price: '68.000 €',
+    location: 'Sremska Mitrovica',
+    size: 85,
+    rooms: 2,
+    baths: 1,
+    type: 'house',
+    image:
+      'https://images.unsplash.com/photo-1505691723518-36a7be3e4a07?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=vikendica1',
+  },
+  {
+    id: 12,
+    title: 'Plac - poljoprivredno zemljište',
+    price: '12.500 €',
+    location: 'Niš, okolna mesta',
+    size: 1500,
+    rooms: 0,
+    baths: 0,
+    type: 'land',
+    image:
+      'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=place2',
   },
 ]
 
 export default function ProdajaPage() {
   const navigate = useNavigate()
-  const { state } = useLocation()
+  const location = useLocation()
+  const { state } = location // state iz navigate/link
 
   // helper: ako t(key) vrati sam kljuc (npr. 'showCity'), vrati fallback tekst na srpskom
   const tt = (key, fallback) => {
@@ -102,10 +183,12 @@ export default function ProdajaPage() {
     }
   })
 
-  const [selectedCity, setSelectedCity] = useState('all')
-
-  // visible triggers enter animation
+  // visible za animacije ulaska
   const [visible, setVisible] = useState(false)
+
+  // PAGINACIJA
+  const [currentPage, setCurrentPage] = useState(1)
+  const PAGE_SIZE = 6
 
   useEffect(() => {
     try {
@@ -116,18 +199,31 @@ export default function ProdajaPage() {
   }, [favorites])
 
   useEffect(() => {
-    // delay slightly so CSS transitions run
+    // mala delay pre prikaza za animacije
     const tId = setTimeout(() => setVisible(true), 50)
     return () => clearTimeout(tId)
   }, [])
 
-  // Filtriraj po gradu
-  const cities = Array.from(new Set(listings.map((l) => l.location.split(',')[0].trim())))
+  // --- čitanje filtera tipa iz state ili query param ---
+  const typeFromState = state?.filters?.type
+  const queryParams = new URLSearchParams(location.search)
+  const typeFromQuery = queryParams.get('type')
+  const typeFilter = typeFromState || typeFromQuery || null
 
-  const filteredListings =
-    selectedCity === 'all'
-      ? listings
-      : listings.filter((l) => l.location.toLowerCase().includes(selectedCity.toLowerCase()))
+  // filtriranje po tipu ako je filter prosleđen
+  const filteredListings = typeFilter
+    ? listings.filter((l) => String(l.type).toLowerCase() === String(typeFilter).toLowerCase())
+    : listings
+
+  const totalPages = Math.max(1, Math.ceil(filteredListings.length / PAGE_SIZE))
+
+  // Ensure currentPage in range
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages)
+    if (currentPage < 1) setCurrentPage(1)
+  }, [currentPage, totalPages])
+
+  const paginatedListings = filteredListings.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
   const isFavorite = (id) => favorites.some((f) => f.id === id)
 
@@ -139,36 +235,24 @@ export default function ProdajaPage() {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-black text-white py-12 px-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Top row */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <div className="flex items-center gap-3">
-            <div className="bg-black/60 border border-yellow-600/20 rounded-md p-3">
-              <label className="text-xs text-gray-300 block mb-1 mt-5">{tt('showCity', 'Prikaži grad')}</label>
-              <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                className="bg-black text-white p-2 rounded-md focus:outline-none"
-              >
-                <option value="all">{tt('allCities', 'Svi gradovi')}</option>
-                {cities.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+  const goToPage = (n) => {
+    const page = Math.min(Math.max(1, n), totalPages)
+    setCurrentPage(page)
+    window.scrollTo({ top: 150, behavior: 'smooth' })
+  }
 
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-white text-white py-12 px-6">
+      <div className="max-w-7xl mx-auto lg:mt-5">
+        {/* Top row (bez filtera grada) */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div className="flex-1">
-            <h1 className="text-3xl mt-2 md:mt-0 md:text-4xl font-extrabold tracking-tight text-yellow-400">
-              {state?.filters ? tt('searchResults', 'Rezultati pretrage') : tt('saleTitle', 'Nekretnine na prodaju')}
+            <h1 className="text-4xl mt-6 font-extrabold text-yellow-400">
+              {typeFilter ? `${tt(typeFilter, typeFilter)} — ${tt('rentTitle', 'Izdavanje')}` : tt('rentTitle', 'Nekretnine za izdavanje')}
             </h1>
             <p className="text-gray-300 mt-1">
-              {state?.filters
-                ? `${tt('searchFor', 'Pretraga za:')} ${state.filters.q || tt('allProperties', 'sve nekretnine')}`
+              {typeFilter
+                ? `${tt('searchFor', 'Pretraga za:')} ${typeFilter}`
                 : tt('latestListings', 'Pregled najnovijih oglasa — crno & zlatna estetika')}
             </p>
           </div>
@@ -181,11 +265,11 @@ export default function ProdajaPage() {
 
         {/* Grid of cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredListings.length > 0 ? (
-            filteredListings.map((item, index) => {
+          {paginatedListings.length > 0 ? (
+            paginatedListings.map((item, index) => {
               // determine initial translate direction based on index (alternate)
               const initialClass = index % 2 === 0 ? 'translate-x-8 opacity-0' : '-translate-x-8 opacity-0'
-              const enterClass = 'translate-x-0 opacity-300'
+              const enterClass = 'translate-x-0 opacity-100'
               return (
                 <article
                   key={item.id}
@@ -204,6 +288,10 @@ export default function ProdajaPage() {
 
                     <div className="absolute top-3 left-3 bg-yellow-400 text-black font-bold px-3 py-1 rounded-md shadow">
                       {item.price}
+                    </div>
+
+                    <div className="absolute top-12 left-3 bg-black/60 text-yellow-300 px-2 py-1 rounded-md text-xs font-medium border border-yellow-600/10">
+                      {tt(item.type, item.type)} {/* koristi t(key) gde je moguće */}
                     </div>
 
                     <button
@@ -277,13 +365,39 @@ export default function ProdajaPage() {
           )}
         </div>
 
-        {/* Pagination stub */}
-        <div className="mt-10 flex items-center justify-center">
-          <div className="inline-flex items-center gap-3 bg-black/50 border border-yellow-600/10 rounded-md p-2 px-3 text-gray-300">
-            <button className="px-3 py-1 hover:text-white">Prev</button>
-            <div className="px-3 py-1 bg-black/30 rounded text-yellow-400">1</div>
-            <button className="px-3 py-1 hover:text-white">Next</button>
+        {/* Pagination */}
+        <div className="mt-8 flex items-center justify-center gap-3">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-2 rounded-md ${currentPage === 1 ? 'bg-gray-800 text-gray-500' : 'bg-black/50 text-white hover:bg-black'}`}
+          >
+            {tt('prev', 'Prethodna')}
+          </button>
+
+          {/* page numbers */}
+          <div className="inline-flex items-center gap-2">
+            {Array.from({ length: totalPages }).map((_, i) => {
+              const page = i + 1
+              return (
+                <button
+                  key={page}
+                  onClick={() => goToPage(page)}
+                  className={`px-3 py-2 rounded-md ${currentPage === page ? 'bg-yellow-400 text-black font-semibold' : 'bg-black/30 text-gray-300 hover:bg-black/60'}`}
+                >
+                  {page}
+                </button>
+              )
+            })}
           </div>
+
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-2 rounded-md ${currentPage === totalPages ? 'bg-gray-800 text-gray-500' : 'bg-black/50 text-white hover:bg-black'}`}
+          >
+            {tt('next', 'Sledeća')}
+          </button>
         </div>
       </div>
     </div>

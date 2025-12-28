@@ -6,6 +6,10 @@ export const translations = {
     favorite: 'Favoriti',
     contact: 'Kontakt',
     cta: 'Besplatne konsultacije',
+    stanovi: 'Stanovi',
+    kuce: 'Kuće',
+    zemljiste: 'Zemljišta',
+    poslovniProstor: 'Poslovni prostori',
 
     heroTitle: 'Pronađite savršenu nekretninu',
     heroSubtitle: 'Prodaja i izdavanje nekretnina u Srbiji',
@@ -49,6 +53,10 @@ export const translations = {
 
     officeLabel: 'Kancelarija',
     officeAddress: 'Ćirpanova 37, 21000, Novi Sad (Južna Bačka)',
+    ugovor: 'Ugovor o posredovanju zakupa',
+    ugovor1: 'Ugovor o posredovanju za prodaju',
+    ugovor2: 'Rešenje ministarstva',
+    ugovor3: 'Opšti uslovi poslovanja',
 
     sendInquiryTitle: 'Pošaljite upit',
     nameLabel: 'Ime',
@@ -58,7 +66,7 @@ export const translations = {
     messagePlaceholder: 'Vaša poruka...',
     sendButton: 'Pošalji poruku',
 
-    writeDirect: 'Pišite direktno',
+    writeDirect: 'Pozovite nas',
     replyNote:
       'Odgovorićemo u najkraćem roku. Ako želite, možete nas kontaktirati i preko telefona.',
 
@@ -76,7 +84,6 @@ export const translations = {
 
     naslov: 'Pretrazite nekretninu',
 
-    
     location: 'Lokacija',
     searchLocation: 'Grad, kvart ili adresa',
 
@@ -85,36 +92,94 @@ export const translations = {
 
     type: 'Tip',
     propertyType: 'Vrsta',
+    cene: 'Cena',
 
     sale: 'Prodaja',
     rentOption: 'Izdavanje',
-
+    povrsina: 'Površina',
+    svePovrsine: 'Sve površine',
     apartment: 'Stan',
     house: 'Kuća',
     land: 'Zemljište',
     office: 'Poslovni prostor',
     villa: 'Vila',
-
+    parcele: 'Parcele',
+    vile: 'Vile',
     any: 'Bilo koji',
+    obejakatOdmor: 'Objekat za odmor',
+    garaza: 'Garaža',
+    sobe: 'Sobe',
 
     minPrice: 'Min cena (€)',
     maxPrice: 'Max cena (€)',
+    sveCene: 'Sve cene',
 
     search: 'Pretraži',
     loading: 'Učitavanje...',
     infoLinks: 'Koriste Informacije',
+    topPonude: 'Top ponude',
+
+
+    // DODATO: prevodi za UslugePage
+    services: {
+      heading: 'Naše ključne vrednosti',
+      items: [
+        {
+          title: 'Maksimizacija profita',
+          desc:
+            'Želimo da pružimo najbolju uslugu i da se pobrinemo da klijenti dobiju najveću vrednost od svojih nekretnina.',
+        },
+        {
+          title: 'Štedimo vaše vreme',
+          desc:
+            'Znamo da su naši klijenti zauzeti i da nemaju vremena za upravljanje nekretninama. Mi smo tu da preuzmemo sve obaveze kako biste vi mogli da se posvetite drugim aspektima svog života.',
+        },
+        {
+          title: 'Znanje i iskustvo',
+          desc:
+            'Kada se radi o nekretninama, klijenti žele sigurnost i pouzdanost. Mi smo tu da vam to obezbedimo svojim stručnim znanjem i iskustvom.',
+        },
+        {
+          title: 'Transparentnost',
+          desc:
+            'Dostupni smo za sva vaša pitanja i nedoumice. Redovno šaljemo izveštaje o transakcijama kako biste uvek bili u toku sa dešavanjima. Nema skrivenih troškova niti neprijatnih iznenađenja.',
+        },
+      ],
+    },
+    offers: {
+      heading: 'Usluge koje nudimo',
+      longTermTitle: 'Dugoročno izdavanje',
+      p1: 'Dugoročno izdavanje predstavlja iznajmljivanje nekretnine na period od više meseci ili godina. Prihod od ovakvog iznajmljivanja bi trebalo da je stabilan i sa manje problema, ali da li je uvek tako?',
+      p2: 'Često je potrebno mnogo obilazaka i sastanaka sa potencijalnim stanarima pre sklapanja dogovora. Ima slučajeva da se pojave problemi sa naplatom kirije, nagomilavanjem neplaćenih računa, uništavanjem inventara i još mnogo čime.',
+      p3: 'Mi kao agencija, pružamo uslugu traženja pouzdanih stanara, potpisivanja ugovora i rukovođenja administrativnim poslovima vezanih za dugoročno iznajmljivanje. Sa nama, stanodavac može da se fokusira na svoje poslove i ima miran san. Ukoliko ste zainteresovani za dugoročno iznajmljivanje vaše nekretnine, obratite nam se za više informacija.',
+      imageAlt: 'Zgrade'
+    }
+
   },
 
   ru: {
+    obejakatOdmor: 'Объект для отдыха',
+    svePovrsine: 'Все площади',
     home: 'Главная',
     sales: 'Продажа',
     rent: 'Аренда',
     favorite: 'Избранное',
     contact: 'Контакт',
     cta: 'Бесплатная консультация',
-
+    stanovi: "Квартиры",
+    kuce: "Дома",
+    zemljiste: "Земельные участки",
+    poslovniProstor: "Коммерческая недвижимость",
+    parcele: "Участки",
+    vile: "Виллы",
+    sobe: "Комнаты",
     heroTitle: 'Найдите идеальную недвижимость',
     heroSubtitle: 'Продажа и аренда недвижимости в Сербии',
+    ugovor: 'Договор посредничества по аренде',
+    ugovor1: 'Договор посредничества по продаже',
+    ugovor2: 'Решение министерства',
+    ugovor3: 'Общие условия бизнеса',
+    povrsina: 'Площадь',
 
     showCity: 'Выбор города',
     allCities: 'Все города',
@@ -134,6 +199,7 @@ export const translations = {
 
     details: 'Подробнее',
     contactBtn: 'Контакт',
+    povrsina: 'Площадь',
 
     noResults: 'Недвижимость по заданным критериям не найдена.',
     backToSearch: 'Вернуться к поиску',
@@ -141,13 +207,15 @@ export const translations = {
     prev: 'Назад',
     next: 'Вперёд',
 
+    garaza: 'Гараж',
+
     favoritesTitle: 'Избранная недвижимость',
     noFavorites: 'Ещё нет сохранённых объявлений.',
 
     contactTitle: 'Контакт',
     contactDescription:
       'На нашем сайте представлено большое количество недвижимости разных типов (жилые объекты, коммерческая недвижимость, земельные участки...). Мы готовы помочь вам в любом виде сотрудничества.',
-
+    cene: 'Цена',
     emailLabel: 'Email',
     emailPlaceholder: 'ваш@email.com',
     phoneLabel: 'Телефон (опционально)',
@@ -164,7 +232,7 @@ export const translations = {
     messagePlaceholder: 'Ваше сообщение...',
     sendButton: 'Отправить сообщение',
 
-    writeDirect: 'Пишите напрямую',
+    writeDirect: 'Связаться напрямую',
     replyNote:
       'Мы ответим в кратчайшие сроки.',
 
@@ -185,7 +253,7 @@ export const translations = {
     /* ===== SEARCH FORM ===== */
     location: 'Локация',
     searchLocation: 'Город, район или адрес',
-
+    sveCene: 'Все цены',
     idCode: 'ID код',
     searchId: 'Введите ID объекта',
 
@@ -209,21 +277,72 @@ export const translations = {
     search: 'Поиск',
     loading: 'Загрузка...',
     infoLinks: 'Полезная информация',
+    topPonude: 'Лучшие предложения',
+
+    // DODATO: prevodi za UslugePage
+    services: {
+      heading: 'Наши ключевые ценности',
+      items: [
+        {
+          title: 'Максимизация прибыли',
+          desc:
+            'Мы стремимся предоставлять лучший сервис и обеспечивать клиентам максимальную ценность их недвижимости.',
+        },
+        {
+          title: 'Мы экономим ваше время',
+          desc:
+            'Мы знаем, что наши клиенты заняты и не имеют времени управлять недвижимостью. Мы берем на себя обязанности, чтобы вы могли сосредоточиться на других аспектах жизни.',
+        },
+        {
+          title: 'Знания и опыт',
+          desc:
+            'Когда речь идет о недвижимости, клиенты хотят безопасности и надежности. Мы обеспечиваем это своим профессиональным знанием и опытом.',
+        },
+        {
+          title: 'Прозрачность',
+          desc:
+            'Мы доступны для всех ваших вопросов и сомнений. Мы регулярно отправляем отчеты о транзакциях, чтобы вы всегда были в курсе. Никаких скрытых платежей или неприятных сюрпризов.',
+        },
+      ],
+    },
+    offers: {
+      heading: 'Услуги, которые мы предлагаем',
+      longTermTitle: 'Долгосрочная аренда',
+      p1: 'Долгосрочная аренда — это сдача недвижимости на срок от нескольких месяцев до лет. Доход от такой аренды должен быть стабильным и сопровождаться меньшим количеством проблем, но так ли это всегда?',
+      p2: 'Часто требуется много просмотров и встреч с потенциальными арендаторами перед заключением сделки. Бывают случаи проблем с оплатой аренды, накоплением неоплаченных счетов, уничтожением имущества и многое другое.',
+      p3: 'Мы как агентство предоставляем услугу поиска надежных арендаторов, оформления договоров и ведения административных вопросов, связанных с долгосрочной арендой. С нами арендодатель может сосредоточиться на своих делах и спать спокойно. Если вы заинтересованы в долгосрочной аренде вашей недвижимости, свяжитесь с нами для получения дополнительной информации.',
+      imageAlt: 'Здания'
+    }
+
   },
 
   en: {
+    obejakatOdmor: 'Vacation property',
+    topPonude: 'Top offers',
+    svePovrsine: 'All areas',
     home: 'Home',
     sales: 'Sales',
     rent: 'Rent',
     favorite: 'Favorites',
     contact: 'Contact',
     cta: 'Free consultation',
+    stanovi: 'Apartments',
+    kuce: 'Houses',
+    zemljiste: 'Lands',
+    poslovniProstor: 'Commercial properties',
+    ugovor: 'Lease brokerage agreement',
+    ugovor1: 'Sales brokerage agreement',
+    ugovor2: 'Ministry decision',
+    ugovor3: 'General terms of business',
 
     heroTitle: 'Find your perfect property',
     heroSubtitle: 'Sales and rentals of properties in Serbia',
-
+    povrsina: 'Area',
     showCity: 'Show city',
     allCities: 'All cities',
+
+    garaza: 'Garage',
+    sobe: 'Rooms',
 
     saleTitle: 'Properties for sale',
     rentTitle: 'Properties for rent',
@@ -231,6 +350,8 @@ export const translations = {
     searchResults: 'Search results',
     searchFor: 'Search for:',
     allProperties: 'all properties',
+    cene: 'Price',
+    sveCene: 'All prices',
 
     latestListings: 'Browse latest listings ',
     found: 'Found',
@@ -270,7 +391,7 @@ export const translations = {
     messagePlaceholder: 'Your message...',
     sendButton: 'Send message',
 
-    writeDirect: 'Write directly',
+    writeDirect: 'Call us directly',
     replyNote:
       'We will reply as soon as possible.',
 
@@ -285,10 +406,11 @@ export const translations = {
     footerNavigation: 'Navigation',
     footerFollow: 'Follow us',
     footerRights: 'All rights reserved.',
+    parecle: 'Parcels',
+    vile: 'Villas',
 
     naslov: 'Search for your property',
 
-   
     location: 'Location',
     searchLocation: 'City, area or address',
 
@@ -315,10 +437,61 @@ export const translations = {
     search: 'Search',
     loading: 'Loading...',
     infoLinks: 'Useful Information',
+
+    // DODATO: prevodi za UslugePage
+    services: {
+      heading: 'Our core values',
+      items: [
+        {
+          title: 'Profit maximization',
+          desc: 'We aim to provide the best service and ensure our clients get the highest value from their properties.',
+        },
+        {
+          title: 'We save your time',
+          desc: "We know our clients are busy and don't have time to manage properties. We're here to take over responsibilities so you can focus on other parts of your life.",
+        },
+        {
+          title: 'Knowledge & experience',
+          desc: 'When it comes to real estate, clients want security and reliability. We provide that through our professional knowledge and experience.',
+        },
+        {
+          title: 'Transparency',
+          desc: 'We are available for all your questions and concerns. We regularly send transaction reports so you are always informed. No hidden fees or unpleasant surprises.',
+        },
+      ],
+    },
   },
+  offers: {
+    heading: 'Services we offer',
+    longTermTitle: 'Long-term renting',
+    p1: 'Long-term renting means leasing a property for several months or years. Income from such renting should be stable and come with fewer issues — but is that always the case?',
+    p2: 'Often many viewings and meetings with potential tenants are required before a deal is closed. There can be problems with rent collection, unpaid bills, damage to inventory and more.',
+    p3: 'As an agency we provide tenant screening, contract signing and handling administrative tasks related to long-term renting. With us the landlord can focus on other work and sleep peacefully. If you are interested in long-term renting your property, contact us for more information.',
+    imageAlt: 'Buildings'
+  }
+
 }
 
 export function t(key) {
   const lang = localStorage.getItem('lang') || 'sr'
-  return translations[lang]?.[key] || translations.sr[key] || key
+
+  // helper za dohvat nested svojstava (npr. 'services.items.0.title')
+  const getNested = (obj, path) => {
+    return path.split('.').reduce((acc, part) => {
+      if (acc && Object.prototype.hasOwnProperty.call(acc, part)) {
+        return acc[part]
+      }
+      return undefined
+    }, obj)
+  }
+
+  const val = getNested(translations[lang] || {}, key)
+  if (val !== undefined) return val
+
+  // fallback na srpski
+  const fallback = getNested(translations.sr || {}, key)
+  if (fallback !== undefined) return fallback
+
+  // ako nema prevoda vrati originalni key
+  return key
 }
