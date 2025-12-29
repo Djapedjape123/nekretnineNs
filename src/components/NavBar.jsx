@@ -165,12 +165,14 @@ function NavBar() {
                             onClick={() => setProdajaOpen(!prodajaOpen)}
                             className="flex justify-between items-center text-white hover:text-yellow-400"
                         >
-                            {t('sales')}
+                           <NavLink to="/prodaja" onClick={closeAll} className={navClass}>{t('sales')}</NavLink>
                             <span>{prodajaOpen ? '−' : '+'}</span>
                         </button>
 
                         {prodajaOpen && (
+                            
                             <div className="pl-4 flex flex-col gap-2">
+                                
                                 <Link to="/prodaja" state={{ filters: { type: 'apartment' } }} onClick={closeAll} className={dropdownItemClass}>{t('stanovi')}</Link>
                                 <Link to="/prodaja" state={{ filters: { type: 'house' } }} onClick={closeAll} className={dropdownItemClass}>{t('kuce')}</Link>
                                 <Link to="/prodaja" state={{ filters: { type: 'land' } }} onClick={closeAll} className={dropdownItemClass}>{t('parcele') || 'Parcele'}</Link>
@@ -184,7 +186,7 @@ function NavBar() {
                             onClick={() => setIzdavanjeOpen(!izdavanjeOpen)}
                             className="flex justify-between items-center text-white hover:text-yellow-400"
                         >
-                            {t('rent')}
+                            <NavLink to="/izdavanje"  onClick={closeAll} className={navClass}>{t('rent')}</NavLink>
                             <span>{izdavanjeOpen ? '−' : '+'}</span>
                         </button>
 

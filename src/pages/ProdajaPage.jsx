@@ -248,7 +248,7 @@ export default function ProdajaPage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div className="flex-1">
             <h1 className="text-4xl mt-6 font-extrabold text-yellow-400">
-              {typeFilter ? `${tt(typeFilter, typeFilter)} — ${tt('rentTitle', 'Izdavanje')}` : tt('rentTitle', 'Nekretnine za izdavanje')}
+              {typeFilter ? `${tt(typeFilter, typeFilter)} — ${tt('saleTitle', 'Prodaja')}` : tt('saleTitle', 'Nekretnine na prodaju')}
             </h1>
             <p className="text-gray-300 mt-1">
               {typeFilter

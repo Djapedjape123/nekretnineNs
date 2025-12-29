@@ -47,7 +47,7 @@ function HomePage() {
         <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
 
         {/* HERO CONTENT */}
-        <div className="relative z-10 flex-1 flex flex-col text-white px-4 pt-6">
+        <div className="relative z-10 flex-1 flex flex-col mt-14 text-white px-4 pt-6">
           <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
               {t('heroTitle')}
