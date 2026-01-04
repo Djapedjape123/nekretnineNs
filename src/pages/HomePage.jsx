@@ -61,116 +61,171 @@ function HomePage() {
           {/* SEARCH FORM CARD (pri dnu hero sekcije) */}
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-6xl mx-auto mt-auto mb-0 p-4 md:p-6 rounded-xl bg-black/50 backdrop-blur-md border border-yellow-500 shadow-lg"
+            className="w-full max-w-7xl mx-auto mt-auto mb-0 p-4 md:p-6 rounded-xl bg-black/50 backdrop-blur-md border border-yellow-500 shadow-lg"
           >
-            <div className="grid gap-3 grid-cols-1 md:grid-cols-5 items-end">
-              <div>
-                <label className="">{t('propertyType')}</label>
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-12 items-end">
+
+              {/* 1. Transaction (Širina: 2/12) */}
+              <div className="lg:col-span-2">
+                <label className="block mb-1 text-sm font-medium text-gray-200">
+                  {t("propertyType")}
+                </label>
                 <div className="relative">
                   <select
                     name="transaction"
                     value={form.transaction}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
-                    aria-label="Vrsta nekretnine"
+                    className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
-                    <option className="bg-black text-white" value="prodaja">{t('sale')}</option>
-                    <option className="bg-black text-white" value="izdavanje">{t('rentOption')}</option>
+                    <option className="bg-black text-white" value="prodaja">
+                      {t("sale")}
+                    </option>
+                    <option className="bg-black text-white" value="izdavanje">
+                      {t("rentOption")}
+                    </option>
                   </select>
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">▾</span>
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
+                    ▾
+                  </span>
                 </div>
               </div>
 
-              <div className="md:col-span-2">
-                <label className="">{t('propertyType')}</label>
+              {/* 2. Type (Širina: 2/12) */}
+              <div className="lg:col-span-2">
+                <label className="block mb-1 text-sm font-medium text-gray-200">
+                  {t("propertyType")}
+                </label>
                 <div className="relative">
                   <select
                     name="type"
                     value={form.type}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
-                    aria-label="Tip nekretnine"
+                    className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
-                    <option className="bg-black text-white" value="stan">{t('apartment')}</option>
-                    <option className="bg-black text-white" value="kuca">{t('house')}</option>
-                    <option className="bg-black text-white" value="poslovni">{t('office')}</option>
-                    <option className="bg-black text-white" value="parcela">{t('parcele')}</option>
-                    <option className="bg-black text-white" value="objekat-odmor">{t('obejakatOdmor')}</option>
-                    <option className="bg-black text-white" value="garaza">{t('garaza')}</option>
-                    <option className="bg-black text-white" value="soba">{t('sobe')}</option>
+                    <option className="bg-black text-white" value="stan">
+                      {t("apartment")}
+                    </option>
+                    <option className="bg-black text-white" value="kuca">
+                      {t("house")}
+                    </option>
+                    <option className="bg-black text-white" value="poslovni">
+                      {t("office")}
+                    </option>
+                    <option className="bg-black text-white" value="parcela">
+                      {t("parcele")}
+                    </option>
+                    <option className="bg-black text-white" value="objekat-odmor">
+                      {t("obejakatOdmor")}
+                    </option>
+                    <option className="bg-black text-white" value="garaza">
+                      {t("garaza")}
+                    </option>
+                    <option className="bg-black text-white" value="soba">
+                      {t("sobe")}
+                    </option>
                   </select>
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">▾</span>
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
+                    ▾
+                  </span>
                 </div>
               </div>
 
-              <div>
-                <label className="">{t('cene')}</label>
-                <div className="relative">
-                  <select
-                    name="price"
-                    value={form.price}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 rounded-md bg-black text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
-                    aria-label="Cena"
-                  >
-                    <option className="bg-black text-white" value="all">{t('sveCene')}</option>
-                    <option className="bg-black text-white" value="0-50000">Do 50.000$</option>
-                    <option className="bg-black text-white" value="50000-100000">50.000$ - 100.000$</option>
-                    <option className="bg-black text-white" value="100000-200000">100.000$ - 200.000$</option>
-                    <option className="bg-black text-white" value="200000-300000">200.000$ - 300.000$</option>
-                    <option className="bg-black text-white" value="300000+">Preko 300.000$</option>
-                  </select>
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">▾</span>
-                </div>
-              </div>
-
-              <div>
-                <label className="">{t('povrsina')}</label>
+              {/* 3. Area / Površina (Širina: 2/12) */}
+              <div className="lg:col-span-2">
+                <label className="block mb-1 text-sm font-medium text-gray-200">
+                  {t("povrsina")}
+                </label>
                 <div className="relative">
                   <select
                     name="area"
                     value={form.area}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
-                    aria-label="Površina"
+                    className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
-                    <option className="bg-black text-white" value="all">{t('svePovrsine')}</option>
-                    <option className="bg-black text-white" value="<=70">Do 70 m²</option>
-                    <option className="bg-black text-white" value="<=100">Do 100 m²</option>
-                    <option className="bg-black text-white" value="100-200">100 - 200 m²</option>
-                    <option className="bg-black text-white" value=">200">Preko 200 m²</option>
+                    <option className="bg-black text-white" value="all">
+                      {t("svePovrsine")}
+                    </option>
+                    <option className="bg-black text-white" value="garsonjera">
+                      Garsonjera
+                    </option>
+                    <option className="bg-black text-white" value="jednosoban">
+                      Jednosoban
+                    </option>
+                    <option className="bg-black text-white" value="dvosoban">
+                      Dvosoban
+                    </option>
+                    <option className="bg-black text-white" value="trosoban">
+                      Trosoban
+                    </option>
                   </select>
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">▾</span>
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
+                    ▾
+                  </span>
                 </div>
               </div>
 
-              <div className="md:col-span-3">
-                <label className="sr-only">Lokacija</label>
+              {/* 4. Price From (Širina: 2/12) */}
+              <div className="lg:col-span-2">
+                <label className="block mb-1 text-sm font-medium text-gray-200">
+                  {t("cenaOd")}
+                </label>
                 <input
-                  name="location"
-                  value={form.location}
+                  type="number"
+                  name="priceFrom"
+                  placeholder="€ min"
+                  value={form.priceFrom}
                   onChange={handleChange}
-                  type="text"
-                  placeholder="Unesi lokaciju (grad, kvart...)"
-                  className="w-full px-3 py-2 rounded-md bg-transparent border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  aria-label="Lokacija"
+                  className="w-full px-4 py-3 rounded-md bg-black text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-sm md:text-base"
+                  min={0}
+                  step={1000}
                 />
               </div>
 
-              <div className="md:col-span-2">
+              {/* 5. Price To (Širina: 2/12) */}
+              <div className="lg:col-span-2">
+                <label className="block mb-1 text-sm font-medium text-gray-200">
+                  {t("cenaDo")}
+                </label>
+                <input
+                  type="number"
+                  name="priceTo"
+                  placeholder="€ max"
+                  value={form.priceTo}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-md bg-black text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-sm md:text-base"
+                  min={0}
+                  step={1000}
+                />
+              </div>
+
+              {/* 6. Submit Button (Širina: 2/12) */}
+              <div className="md:col-span-2 lg:col-span-2">
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-yellow-500 text-black font-semibold hover:bg-yellow-400 transition"
-                  aria-label="Pretrazi nekretnine"
+                  className="w-full h-[46px] flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition shadow-[0_0_15px_rgba(234,179,8,0.4)]"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"
+                    />
                   </svg>
-                  Pretraga
+                  {t("pretraga") || "Pretraga"}
                 </button>
               </div>
             </div>
           </form>
+
+
+
         </div>
       </section>
 
@@ -184,7 +239,7 @@ function HomePage() {
       <div className="relative z-10">
         <PonudeNudimo />
       </div>
-       <div className="relative z-10">
+      <div className="relative z-10">
         <ONama />
       </div>
     </div>

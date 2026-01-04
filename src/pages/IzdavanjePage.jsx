@@ -206,7 +206,7 @@ export default function IzdavanjePage() {
   }, [currentPage, typeFilter])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white py-12 px-6">
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-white text-white py-12 px-6">
       <div className="max-w-7xl mx-auto">
 
         {/* HEADER */}
