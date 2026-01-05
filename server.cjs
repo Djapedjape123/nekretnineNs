@@ -14,6 +14,7 @@ app.get("/oglasi", (req, res) => {
   });
 });
 
+//probno dizanje servera
 app.listen(3001, () => {
   console.log("Server radi na http://localhost:3001");
 });
