@@ -5,42 +5,7 @@ import { FiHeart } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import { t } from '../i1n8'
 
-// Mock podaci
-const MOCK_PROPERTIES = [
-  {
-    id: 1,
-    title: 'Moderan stan u centru, Beograd',
-    price: '450 €/mesec',
-    location: 'Beograd, Vračar',
-    size: 75,
-    rooms: 2,
-    baths: 1,
-    image:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=5bf4a8b1f2f7f124e2d7b6d1f4e3a2c1',
-  },
-  {
-    id: 2,
-    title: 'Jednosoban stan blizu fakulteta',
-    price: '320 €/mesec',
-    location: 'Novi Sad, Centar',
-    size: 48,
-    rooms: 1,
-    baths: 1,
-    image:
-      'https://images.unsplash.com/photo-1560448204-5a3f3d5b1b9f?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=c4e5d6f7a8b9c0d1e2f3a4b5c6d7e8f9',
-  },
-  {
-    id: 3,
-    title: 'Kuća sa dvorištem za izdavanje',
-    price: '700 €/mesec',
-    location: 'Novi Sad, Petrovaradin',
-    size: 120,
-    rooms: 3,
-    baths: 2,
-    image:
-      'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d',
-  },
-]
+// Ako želiš, možeš obrisati MOCK_PROPERTIES — ne koristi se za favorite listu.
 
 export default function FavoritePage() {
   const [favorites, setFavorites] = useState(() => {
