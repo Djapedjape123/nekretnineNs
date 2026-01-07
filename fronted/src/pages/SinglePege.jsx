@@ -40,47 +40,80 @@ export default function SinglePage() {
     }
   }
 
+  // --- YouTube helper: vrati embed URL ili prazan string (podržava /shorts/, youtu.be, watch?v=, /embed/) ---
   const getYoutubeEmbedUrl = (rawUrl) => {
     if (!rawUrl) return ''
     let url = String(rawUrl).trim()
+    if (!url) return ''
+
+    // normalize protocol-less
     if (url.startsWith('//')) url = `${window.location.protocol}${url}`
     if (!/^https?:\/\//i.test(url)) url = `https://${url}`
 
     try {
       const parsed = new URL(url)
-      if (parsed.hostname.includes('youtu.be')) {
+      const host = (parsed.hostname || '').toLowerCase()
+
+      // youtu.be short url
+      if (host.includes('youtu.be')) {
         const id = parsed.pathname.replace(/^\/+/, '').split('/')[0]
         if (id) return `https://www.youtube.com/embed/${id}`
       }
-      if (parsed.hostname.includes('youtube.com')) {
-        const v = parsed.searchParams.get('v')
-        if (v) return `https://www.youtube.com/embed/${v}`
-        const embedMatch = parsed.pathname.match(/\/embed\/([A-Za-z0-9_-]{6,})/)
-        if (embedMatch) return `https://www.youtube.com/embed/${embedMatch[1]}`
-      }
-      const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/
-      const m = url.match(regex)
-      if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
+
+      // /shorts/ID
+      const shortsMatch = parsed.pathname.match(/\/shorts\/([A-Za-z0-9_-]{6,})/)
+      if (shortsMatch && shortsMatch[1]) return `https://www.youtube.com/embed/${shortsMatch[1]}`
+
+      // watch?v=ID
+      const v = parsed.searchParams.get('v')
+      if (v) return `https://www.youtube.com/embed/${v}`
+
+      // /embed/ID
+      const embedMatch = parsed.pathname.match(/\/embed\/([A-Za-z0-9_-]{6,})/)
+      if (embedMatch && embedMatch[1]) return `https://www.youtube.com/embed/${embedMatch[1]}`
+
+      // fallback: regex for common patterns (covers some edge cases)
+      const fallback = url.match(/(?:v=|\/embed\/|youtu\.be\/|\/shorts\/)([A-Za-z0-9_-]{6,})/)
+      if (fallback && fallback[1]) return `https://www.youtube.com/embed/${fallback[1]}`
+
       return ''
     } catch (e) {
-      const regex = /(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{6,})/
-      const m = url.match(regex)
+      // final fallback: regex extraction
+      const regex = /(?:v=|\/embed\/|youtu\.be\/|\/shorts\/)([A-Za-z0-9_-]{6,})/
+      const m = String(rawUrl).match(regex)
       if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
       return ''
     }
   }
 
   useEffect(() => {
+    // Normalize helper used both for prefetch and fetched data
     const normalize = (raw, fallbackId) => {
       const base = raw || {}
+
+      // images: različiti oblici (slike.slika[], images[], image)
       const imgs =
         Array.isArray(base.slike?.slika) && base.slike.slika.length > 0
           ? base.slike.slika.map(s => s.url).filter(Boolean)
           : base.images || (base.image ? [base.image] : [])
 
-      let videoField = base.video_url ?? base.videotour ?? base.video ?? ''
-      if (Array.isArray(videoField)) videoField = videoField[0] ?? ''
-      if (typeof videoField === 'object' && videoField?.url) videoField = videoField.url
+      // VIDEO: mogući oblici polja: string, array, object {url}, fields: video_url, videotour, video
+      const collectVideoField = (field) => {
+        const v = base[field]
+        if (!v && v !== '') return []
+        if (Array.isArray(v)) return v.flat().filter(Boolean).map(x => (typeof x === 'object' ? (x.url ?? '') : String(x)))
+        if (typeof v === 'object') return [(v.url ?? '')].filter(Boolean)
+        return v ? [String(v)] : []
+      }
+
+      let videos = []
+      videos = videos.concat(collectVideoField('video_url'))
+      videos = videos.concat(collectVideoField('videotour'))
+      videos = videos.concat(collectVideoField('video'))
+
+      // trim, filter empty and dedupe
+      videos = videos.map(s => s.trim()).filter(Boolean)
+      videos = [...new Set(videos)]
 
       return {
         id: base.id ?? base.code ?? fallbackId,
@@ -94,10 +127,11 @@ export default function SinglePage() {
         baths: base.brojkupatila ?? base.baths ?? 0,
         size: base.kvadratura_int ?? base.size ?? 0,
         contactphone: base.contactphone ?? '',
-        video_url: videoField ? String(videoField).trim() : ''
+        video_urls: videos
       }
     }
 
+    // If navigate passed the item in state, show immediately (prefetch)
     const pre = location.state?.item
     if (pre) {
       const normalized = normalize(pre, id)
@@ -187,12 +221,6 @@ export default function SinglePage() {
     }
   }, [lightboxOpen, images])
 
-  // keep main preview in sync with lightbox when closed (optional UX)
-  useEffect(() => {
-    if (!lightboxOpen) return
-    // when lightbox opens, optionally sync main preview index
-  }, [lightboxOpen])
-
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -218,7 +246,8 @@ export default function SinglePage() {
 
   if (!property) return null
 
-  const embedUrl = getYoutubeEmbedUrl(property.video_url)
+  // pripremi embed URL-e za sve video zapise (ako ih ima)
+  const videoEmbeds = (property.video_urls || []).map(getYoutubeEmbedUrl).filter(Boolean)
 
   return (
     <div className="min-h-screen bg-black text-white py-12 px-6 mt-10">
@@ -280,7 +309,7 @@ export default function SinglePage() {
 
         {/* Content */}
         <div className="mt-8 bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl p-6">
-          <div className="flex flex-col md:flex-row md:items:center md:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <h1 className="text-3xl font-extrabold text-yellow-400">{property.naslov}</h1>
             <div className="text-2xl font-bold text-white">{formatPrice(property.cena)}</div>
           </div>
@@ -326,18 +355,23 @@ export default function SinglePage() {
           </div>
         </div>
 
-        {/* Video: prikazujemo SAMO ako imamo validan embed URL */}
-        {embedUrl && (
+        {/* Video: prikazujemo SAMO ako imamo bar jedan validan embed URL */}
+        {videoEmbeds.length > 0 && (
           <div className="mt-8">
             <h3 className="text-lg font-bold text-yellow-400 mb-3">{t('videoTour', 'Video tura')}</h3>
-            <div className="aspect-video w-full rounded overflow-hidden border border-white/5">
-              <iframe
-                title="video-tour"
-                src={embedUrl}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {videoEmbeds.map((src, i) => (
+                <div key={i} className="aspect-video w-full rounded overflow-hidden border border-white/5">
+                  <iframe
+                    title={`video-tour-${i}`}
+                    src={src}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              ))}
             </div>
           </div>
         )}
