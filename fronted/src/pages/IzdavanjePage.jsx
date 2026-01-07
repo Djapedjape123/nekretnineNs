@@ -131,7 +131,7 @@ export default function IzdavanjePage() {
                   </div>
                   <div className="grid grid-cols-5 gap-2 mt-6">
                     <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-white/10 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
-                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black">📞</a>
+                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center  justify-center rounded-xl text-black font-bold">{t('contactTitle')}</a>
                   </div>
                 </div>
               </article>

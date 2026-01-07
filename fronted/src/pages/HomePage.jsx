@@ -234,7 +234,7 @@ function HomePage() {
               </div>
 
               {/* 6. Submit Button (Širina: 2/12) */}
-              <div className="md:col-span-2 lg:col-span-2">
+              <div className="md:col-span-2 lg:col-span-2 ">
                 <button
                   type="submit"
                   className="w-full h-[46px] flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition shadow-[0_0_15px_rgba(234,179,8,0.4)]"
