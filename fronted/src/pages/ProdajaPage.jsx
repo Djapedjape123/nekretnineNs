@@ -8,7 +8,7 @@ import { t } from '../i1n8'
 export default function ProdajaPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  
+
   const typeFilter = location.state?.type || ""
 
   const [listings, setListings] = useState([])
@@ -80,13 +80,22 @@ export default function ProdajaPage() {
       return updated
     })
   }
+ 
+  function formatPrice(price) {
+    if (price === null || price === undefined || price === '') return '';
+    // pokušaj parsiranja (podržava stringove i brojeve)
+    const num = Number(String(price).replace(/[^0-9.-]+/g, ''));
+    if (Number.isNaN(num)) return String(price);
+    return new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 }).format(Math.round(num)) + ' €';
+  }
+
 
   if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-bold text-2xl animate-pulse">Učitavanje...</div>
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-white text-white py-24 px-6">
       <div className="max-w-7xl mx-auto">
-        
+
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <h1 className="text-4xl md:text-6xl font-black text-yellow-400 uppercase tracking-tighter">
@@ -103,47 +112,48 @@ export default function ProdajaPage() {
             {currentItems.map(item => {
               const stableId = String(item.id ?? item.code ?? Date.now())
               return (
-              <article key={stableId} className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
-                <div className="relative h-64">
-                  <img src={item.slike?.slika?.[0]?.url || '/placeholder.jpg'} alt="" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                  <div className="absolute top-4 right-4 flex flex-col gap-2">
-                    <button onClick={() => toggleFavorite(item)} className="p-3 bg-black/50 backdrop-blur-md rounded-full">
-                      <FiHeart className={isFavorite(item.id ?? item.code) ? "text-red-500 fill-red-500" : "text-white"} />
-                    </button>
+                <article key={stableId} className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
+                  <div className="relative h-64">
+                    <img src={item.slike?.slika?.[0]?.url || '/placeholder.jpg'} alt="" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                    <div className="absolute top-4 right-4 flex flex-col gap-2">
+                      <button onClick={() => toggleFavorite(item)} className="p-3 bg-black/50 backdrop-blur-md rounded-full">
+                        <FiHeart className={isFavorite(item.id ?? item.code) ? "text-red-500 fill-red-500" : "text-white"} />
+                      </button>
+                    </div>
+                    <div className="absolute bottom-4 left-4 bg-yellow-400 text-black px-4 py-1 rounded-lg font-black text-xl">
+                      {formatPrice(item.cena)}
+                    </div>
                   </div>
-                  <div className="absolute bottom-4 left-4 bg-yellow-400 text-black px-4 py-1 rounded-lg font-black text-xl">
-                    {item.cena} €
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold line-clamp-1">{item.naslov}</h3>
+                    <div className="flex items-center gap-2 text-gray-400 mt-2 text-sm">
+                      <MdLocationOn className="text-yellow-400" /> {item.mesto}, {item.naselje}
+                    </div>
+                    <div className="flex gap-4 mt-4 border-t border-white/5 pt-4">
+                      <div className="flex items-center gap-1"><FaBed className="text-yellow-400" /> {item.brojsoba}</div>
+                      <div className="flex items-center gap-1"><FaBath className="text-yellow-400" /> {item.brojkupatila}</div>
+                      <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int} m²</div>
+                    </div>
+                    <div className="grid grid-cols-5 gap-2 mt-6">
+                      <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-white/10 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
+                      <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">{t('contactTitle')}</a>
+                    </div>
                   </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold line-clamp-1">{item.naslov}</h3>
-                  <div className="flex items-center gap-2 text-gray-400 mt-2 text-sm">
-                    <MdLocationOn className="text-yellow-400" /> {item.mesto}, {item.naselje}
-                  </div>
-                  <div className="flex gap-4 mt-4 border-t border-white/5 pt-4">
-                    <div className="flex items-center gap-1"><FaBed className="text-yellow-400"/> {item.brojsoba}</div>
-                    <div className="flex items-center gap-1"><FaBath className="text-yellow-400"/> {item.brojkupatila}</div>
-                    <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int} m²</div>
-                  </div>
-                  <div className="grid grid-cols-5 gap-2 mt-6">
-                    <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-white/10 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
-                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">{t('contactTitle')}</a>
-                  </div>
-                </div>
-              </article>
-            )})}
+                </article>
+              )
+            })}
           </div>
         )}
 
         {totalPages > 1 && (
           <div className="flex justify-center mt-12 gap-3">
-            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0,0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronLeft/></button>
+            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0, 0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronLeft /></button>
             {[...Array(totalPages)].map((_, i) => (
-              <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0,0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-white'}`}>
+              <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0, 0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-white'}`}>
                 {i + 1}
               </button>
             ))}
-            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0,0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronRight/></button>
+            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0, 0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronRight /></button>
           </div>
         )}
       </div>

@@ -74,7 +74,6 @@ function NavBar() {
                     </div>
 
                     {/* Izdavanje Dropdown */}
-                    {/* Izdavanje Dropdown - ISPRAVLJENO */}
                     <div className="relative group">
                         <NavLink to="/izdavanje" className={navClass} onClick={() => closeAll()}>{t('rent')}</NavLink>
                         <div className="absolute left-0 mt-2 w-48 bg-black/90 backdrop-blur-sm border border-yellow-500 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
@@ -91,11 +90,35 @@ function NavBar() {
                 </nav>
 
                 {/* ZASTAVICE + CTA */}
-                <div className="hidden md:flex items-center gap-2">
-                    <button onClick={() => changeLang('sr')} title="Srpski">🇷🇸</button>
-                    <button onClick={() => changeLang('ru')} title="Русский">🇷🇺</button>
-                    <button onClick={() => changeLang('en')} title="English">🇬🇧</button>
+                <div className="hidden md:flex items-center gap-1">
+                    <div className="flex gap-2 p-1 bg-black rounded-xl">
+                        {/* SRPSKI */}
+                        <button
+                            onClick={() => changeLang('sr')}
+                            className="group flex items-center gap-1 px-2 py-1 bg-zinc-900 border border-amber-500 rounded-lg hover:bg-amber-500 transition-all duration-300"
+                        >
+                            
+                            <img src="https://flagcdn.com/w40/rs.png" alt="Srbija" className="w-6 h-auto grayscale-[0.5] group-hover:grayscale-0 transition-all shadow-sm" />
+                        </button>
 
+                        {/* RUSKI */}
+                        <button
+                            onClick={() => changeLang('ru')}
+                            className="group flex items-center gap-1 px-2 py-1 bg-zinc-900 border border-amber-500 rounded-lg hover:bg-amber-500 transition-all duration-300"
+                        >
+                            
+                            <img src="https://flagcdn.com/w40/ru.png" alt="Rusija" className="w-6 h-auto grayscale-[0.5] group-hover:grayscale-0 transition-all shadow-sm" />
+                        </button>
+
+                        {/* ENGLESKI */}
+                        <button
+                            onClick={() => changeLang('en')}
+                            className="group flex items-center gap-1 px-2 py-1 bg-zinc-900 border border-amber-500 rounded-lg hover:bg-amber-500 transition-all duration-300"
+                        >
+                            
+                            <img src="https://flagcdn.com/w40/gb.png" alt="UK" className="w-6 h-auto grayscale-[0.5] group-hover:grayscale-0 transition-all shadow-sm" />
+                        </button>
+                    </div>
                     <a
                         href="tel:+38163238564"
                         className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400 transition font-bold"
