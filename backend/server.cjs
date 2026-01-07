@@ -62,7 +62,7 @@ app.get("/oglasi/izdavanje", (req, res) => {
   });
 });
 
-// ================== TOP PONUDE (bilo koje N oglasa, default 3) ==================
+
 // ================== TOP PONUDE (N najskupljih, default 3) ==================
 app.get("/oglasi/topponude", (req, res) => {
   const count = Math.max(1, parseInt(req.query.count, 10) || 3);
