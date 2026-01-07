@@ -69,7 +69,7 @@ function NavBar() {
                             <Link to="/prodaja" state={{ type: 'kuca' }} onClick={closeAll} className={dropdownItemClass}> {t('kuce')} </Link>
                             <Link to="/prodaja" state={{ type: 'plac' }} onClick={closeAll} className={dropdownItemClass}> {t('parcele') || 'Parcele'} </Link>
                             <Link to="/prodaja" state={{ type: 'poslovni' }} onClick={closeAll} className={dropdownItemClass}> {t('poslovniProstor')}</Link>
-                            <Link to="/prodaja" state={{ type: 'vila' }} onClick={closeAll} className={dropdownItemClass}> {t('vile')}</Link>
+
                         </div>
                     </div>
 
@@ -82,7 +82,7 @@ function NavBar() {
                             <Link to="/izdavanje" state={{ type: 'stan' }} onClick={closeAll} className={dropdownItemClass}>{t('stanovi')}</Link>
                             <Link to="/izdavanje" state={{ type: 'kuca' }} onClick={closeAll} className={dropdownItemClass}>{t('kuce')}</Link>
                             <Link to="/izdavanje" state={{ type: 'poslovni' }} onClick={closeAll} className={dropdownItemClass}>{t('poslovniProstor')}</Link>
-                            <Link to="/izdavanje" state={{ type: 'vila' }} onClick={closeAll} className={dropdownItemClass}>{t('vile')}</Link>
+
                         </div>
                     </div>
 
@@ -116,56 +116,108 @@ function NavBar() {
 
             {/* Mobile menu */}
             {open && (
-                <div className="md:hidden bg-black/95 border-t border-yellow-500 text-white min-h-screen">
-                    <nav className="flex flex-col p-4 gap-4">
-                        <NavLink onClick={closeAll} to="/" className={navClass}>
+                <div className="md:hidden fixed inset-x-0 top-20 bg-black/95 backdrop-blur-xl border-t border-yellow-500/50 text-white min-h-screen z-[60] animate-in fade-in slide-in-from-top duration-300">
+                    <nav className="flex flex-col p-3 gap-1">
+
+                        {/* Početna */}
+                        <NavLink
+                            to="/"
+                            onClick={closeAll}
+                            className={({ isActive }) =>
+                                `flex items-center py-3 px-4 rounded-xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm border border-transparent hover:border-yellow-500/20 ${isActive ? 'text-yellow-400 font-bold' : 'text-white'
+                                }`
+                            }
+                        >
                             {t('home')}
                         </NavLink>
 
                         {/* Mobile Prodaja */}
-                        <div className="flex flex-col">
-                            <div className="flex justify-between items-center" onClick={() => setProdajaOpen(!prodajaOpen)}>
-                                <NavLink to="/prodaja" onClick={closeAll} className={navClass}>{t('sales')}</NavLink>
-                                <span className="text-xl px-4">{prodajaOpen ? '−' : '+'}</span>
+                        <div className="flex flex-col bg-white/5 rounded-2xl overflow-hidden border border-white/5 mt-2">
+                            <div
+                                className="flex justify-between items-center p-4 cursor-pointer hover:bg-yellow-500/10 transition-colors"
+                                onClick={() => { setProdajaOpen(!prodajaOpen); setIzdavanjeOpen(false); }}
+                            >
+                                <span className="font-bold uppercase tracking-wider text-yellow-400">{t('sales')}</span>
+                                <span className={`text-xl transition-transform duration-300 ${prodajaOpen ? 'rotate-180 text-yellow-400' : 'text-gray-500'}`}>
+                                    {prodajaOpen ? '−' : '+'}
+                                </span>
                             </div>
+
                             {prodajaOpen && (
-                                <div className="pl-4 flex flex-col gap-2 mt-2 border-l border-yellow-500/30">
-                                    <Link to="/prodaja" state={{ type: 'stan' }} onClick={closeAll} className={dropdownItemClass}>{t('stanovi')}</Link>
-                                    <Link to="/prodaja" state={{ type: 'kuca' }} onClick={closeAll} className={dropdownItemClass}>{t('kuce')}</Link>
-                                    <Link to="/prodaja" state={{ type: 'plac' }} onClick={closeAll} className={dropdownItemClass}>{t('parcele')}</Link>
+                                <div className="flex flex-col gap-1 pb-4 px-4 animate-in slide-in-from-top-2 duration-200">
+                                    <Link to="/prodaja" state={{ type: 'stan' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}> {t('stanovi')} </Link>
+                                    <Link to="/prodaja" state={{ type: 'kuca' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}> {t('kuce')} </Link>
+                                    <Link to="/prodaja" state={{ type: 'plac' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}> {t('parcele') || 'Parcele'} </Link>
+                                    <Link to="/prodaja" state={{ type: 'poslovni' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}> {t('poslovniProstor')}</Link>
                                 </div>
                             )}
-                            <div className="flex flex-col">
-                                <div className="flex justify-between items-center" onClick={() => setIzdavanjeOpen(!izdavanjeOpen)}>
-                                    <NavLink to="/izdavanje" onClick={closeAll} className={navClass}>{t('rent')}</NavLink>
-                                    <span className="text-xl px-4 text-white">{izdavanjeOpen ? '−' : '+'}</span>
-                                </div>
-                                {izdavanjeOpen && (
-                                    <div className="pl-4 flex flex-col gap-2 mt-2 border-l border-yellow-500/30">
-                                        <Link to="/izdavanje" state={{ filters: { type: 'stan' } }} onClick={closeAll} className={dropdownItemClass}>{t('stanovi')}</Link>
-                                        <Link to="/izdavanje" state={{ filters: { type: 'kuca' } }} onClick={closeAll} className={dropdownItemClass}>{t('kuce')}</Link>
-                                        <Link to="/izdavanje" state={{ filters: { type: 'poslovni' } }} onClick={closeAll} className={dropdownItemClass}>{t('poslovniProstor')}</Link>
-                                    </div>
-                                )}
-                            </div>
                         </div>
 
-                        <NavLink onClick={closeAll} to="/favorite" className={navClass}>
-                            {t('favorite')}
-                        </NavLink>
+                        {/* Mobile Izdavanje */}
+                        <div className="flex flex-col bg-white/5 rounded-2xl overflow-hidden border border-white/5 mt-2">
+                            <div
+                                className="flex justify-between items-center p-4 cursor-pointer hover:bg-yellow-500/10 transition-colors"
+                                onClick={() => { setIzdavanjeOpen(!izdavanjeOpen); setProdajaOpen(false); }}
+                            >
+                                <span className="font-bold uppercase tracking-wider text-yellow-400">{t('rent')}</span>
+                                <span className={`text-xl transition-transform duration-300 ${izdavanjeOpen ? 'rotate-180 text-yellow-400' : 'text-gray-500'}`}>
+                                    {izdavanjeOpen ? '−' : '+'}
+                                </span>
+                            </div>
 
-                        <NavLink onClick={closeAll} to="/kontakt" className={navClass}>
-                            {t('contact')}
-                        </NavLink>
+                            {izdavanjeOpen && (
+                                <div className="flex flex-col gap-1 pb-4 px-4 animate-in slide-in-from-top-2 duration-200">
+                                    <Link to="/izdavanje" state={{ type: 'stan' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}>{t('stanovi')}</Link>
+                                    <Link to="/izdavanje" state={{ type: 'kuca' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}>{t('kuce')}</Link>
+                                    <Link to="/izdavanje" state={{ type: 'poslovni' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}>{t('poslovniProstor')}</Link>
+                                </div>
+                            )}
+                        </div>
 
-                        <div className="flex gap-4 pt-4 border-t border-white/10">
-                            <button onClick={() => changeLang('sr')}>🇷🇸</button>
-                            <button onClick={() => changeLang('ru')}>🇷🇺</button>
-                            <button onClick={() => changeLang('en')}>🇺🇸</button>
+                        {/* Ostali Linkovi */}
+                        <div className="flex flex-col gap-2 mt-4">
+                            <NavLink
+                                to="/favorite"
+                                onClick={closeAll}
+                                className={({ isActive }) =>
+                                    `flex items-center py-3 px-4 rounded-xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm ${isActive ? 'text-yellow-400 font-bold' : 'text-white'
+                                    }`
+                                }
+                            >
+                                {t('favorite')}
+                            </NavLink>
+
+                            <NavLink
+                                to="/kontakt"
+                                onClick={closeAll}
+                                className={({ isActive }) =>
+                                    `flex items-center py-3 px-4 rounded-xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm ${isActive ? 'text-yellow-400 font-bold' : 'text-white'
+                                    }`
+                                }
+                            >
+                                {t('contact')}
+                            </NavLink>
+                        </div>
+
+                        {/* Donji deo: Jezici i CTA */}
+                        <div className="mt-auto pt-8 flex flex-col gap-6">
+                            <div className="flex justify-center gap-6 items-center bg-white/5 py-4 rounded-2xl border border-white/5">
+                                <button onClick={() => changeLang('sr')} className="text-2xl hover:scale-125 transition-transform">🇷🇸</button>
+                                <button onClick={() => changeLang('ru')} className="text-2xl hover:scale-125 transition-transform">🇷🇺</button>
+                                <button onClick={() => changeLang('en')} className="text-2xl hover:scale-125 transition-transform">🇺🇸</button>
+                            </div>
+
+                            <a
+                                href="tel:+38163238564"
+                                className="w-full bg-gradient-to-r from-yellow-600 to-yellow-400 text-black py-4 rounded-2xl text-center font-black uppercase tracking-widest shadow-lg shadow-yellow-500/20 active:scale-95 transition-all"
+                            >
+                                {t('cta')}
+                            </a>
                         </div>
                     </nav>
                 </div>
             )}
+
         </header>
     )
 }
