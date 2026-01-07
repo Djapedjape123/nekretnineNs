@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { MdLocationOn } from 'react-icons/md'
-import { FaBed, FaBath, FaArrowLeft } from 'react-icons/fa'
+import { FaBed, FaBath, FaArrowLeft, FaExpand, FaTimes } from 'react-icons/fa'
 import { t } from '../i1n8'
 
 export default function SinglePage() {
@@ -15,6 +15,10 @@ export default function SinglePage() {
   const [currentImage, setCurrentImage] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  // lightbox state
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
 
   const formatPrice = (val) => {
     if (val === undefined || val === null || val === '') return ''
@@ -36,14 +40,47 @@ export default function SinglePage() {
     }
   }
 
+  const getYoutubeEmbedUrl = (rawUrl) => {
+    if (!rawUrl) return ''
+    let url = String(rawUrl).trim()
+    if (url.startsWith('//')) url = `${window.location.protocol}${url}`
+    if (!/^https?:\/\//i.test(url)) url = `https://${url}`
+
+    try {
+      const parsed = new URL(url)
+      if (parsed.hostname.includes('youtu.be')) {
+        const id = parsed.pathname.replace(/^\/+/, '').split('/')[0]
+        if (id) return `https://www.youtube.com/embed/${id}`
+      }
+      if (parsed.hostname.includes('youtube.com')) {
+        const v = parsed.searchParams.get('v')
+        if (v) return `https://www.youtube.com/embed/${v}`
+        const embedMatch = parsed.pathname.match(/\/embed\/([A-Za-z0-9_-]{6,})/)
+        if (embedMatch) return `https://www.youtube.com/embed/${embedMatch[1]}`
+      }
+      const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/
+      const m = url.match(regex)
+      if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
+      return ''
+    } catch (e) {
+      const regex = /(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{6,})/
+      const m = url.match(regex)
+      if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
+      return ''
+    }
+  }
+
   useEffect(() => {
-    // Normalize helper used both for prefetch and fetched data
     const normalize = (raw, fallbackId) => {
       const base = raw || {}
       const imgs =
         Array.isArray(base.slike?.slika) && base.slike.slika.length > 0
           ? base.slike.slika.map(s => s.url).filter(Boolean)
           : base.images || (base.image ? [base.image] : [])
+
+      let videoField = base.video_url ?? base.videotour ?? base.video ?? ''
+      if (Array.isArray(videoField)) videoField = videoField[0] ?? ''
+      if (typeof videoField === 'object' && videoField?.url) videoField = videoField.url
 
       return {
         id: base.id ?? base.code ?? fallbackId,
@@ -57,11 +94,10 @@ export default function SinglePage() {
         baths: base.brojkupatila ?? base.baths ?? 0,
         size: base.kvadratura_int ?? base.size ?? 0,
         contactphone: base.contactphone ?? '',
-        video_url: base.video_url ?? base.videotour ?? ''
+        video_url: videoField ? String(videoField).trim() : ''
       }
     }
 
-    // If navigate passed the item in state, show immediately (prefetch)
     const pre = location.state?.item
     if (pre) {
       const normalized = normalize(pre, id)
@@ -113,6 +149,50 @@ export default function SinglePage() {
     setCurrentImage(i => (i === images.length - 1 ? 0 : i + 1))
   }
 
+  // Lightbox controls (re-use prev/next logic)
+  const openLightbox = (index = 0) => {
+    setLightboxIndex(index)
+    setLightboxOpen(true)
+  }
+  const closeLightbox = () => {
+    setLightboxOpen(false)
+  }
+  const lbPrev = () => {
+    if (!images || images.length === 0) return
+    setLightboxIndex(i => (i === 0 ? images.length - 1 : i - 1))
+  }
+  const lbNext = () => {
+    if (!images || images.length === 0) return
+    setLightboxIndex(i => (i === images.length - 1 ? 0 : i + 1))
+  }
+
+  // keyboard navigation for lightbox + prevent page scroll while open
+  useEffect(() => {
+    if (lightboxOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    const onKey = (e) => {
+      if (!lightboxOpen) return
+      if (e.key === 'Escape') closeLightbox()
+      if (e.key === 'ArrowLeft') lbPrev()
+      if (e.key === 'ArrowRight') lbNext()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [lightboxOpen, images])
+
+  // keep main preview in sync with lightbox when closed (optional UX)
+  useEffect(() => {
+    if (!lightboxOpen) return
+    // when lightbox opens, optionally sync main preview index
+  }, [lightboxOpen])
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -138,6 +218,8 @@ export default function SinglePage() {
 
   if (!property) return null
 
+  const embedUrl = getYoutubeEmbedUrl(property.video_url)
+
   return (
     <div className="min-h-screen bg-black text-white py-12 px-6 mt-10">
       <div className="max-w-5xl mx-auto">
@@ -145,13 +227,24 @@ export default function SinglePage() {
           <FaArrowLeft /> {t('backToSearch', 'Nazad')}
         </button>
 
-        {/* IMAGE SLIDER */}
+        {/* IMAGE SLIDER with expand button */}
         <div className="relative rounded-xl overflow-hidden border border-yellow-600/20 shadow-xl">
           <img
             src={images[currentImage] || property.image}
             alt={property.naslov}
-            className="w-full h-[420px] object-cover transition-all duration-500"
+            className="w-full h-[420px] object-cover transition-all duration-500 cursor-pointer"
+            onClick={() => openLightbox(currentImage)}
           />
+
+          {/* expand button top-right */}
+          <button
+            onClick={() => openLightbox(currentImage)}
+            className="absolute top-4 right-4 z-20 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black/70 transition"
+            aria-label="Proširi sliku"
+            title="Pogledaj slajder"
+          >
+            <FaExpand />
+          </button>
 
           {images.length > 1 && (
             <>
@@ -187,7 +280,7 @@ export default function SinglePage() {
 
         {/* Content */}
         <div className="mt-8 bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl p-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items:center md:justify-between gap-4">
             <h1 className="text-3xl font-extrabold text-yellow-400">{property.naslov}</h1>
             <div className="text-2xl font-bold text-white">{formatPrice(property.cena)}</div>
           </div>
@@ -233,14 +326,104 @@ export default function SinglePage() {
           </div>
         </div>
 
-        {property.video_url && (
+        {/* Video: prikazujemo SAMO ako imamo validan embed URL */}
+        {embedUrl && (
           <div className="mt-8">
             <h3 className="text-lg font-bold text-yellow-400 mb-3">{t('videoTour', 'Video tura')}</h3>
             <div className="aspect-video w-full rounded overflow-hidden border border-white/5">
-              <iframe title="video-tour" src={property.video_url} className="w-full h-full" allowFullScreen />
+              <iframe
+                title="video-tour"
+                src={embedUrl}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             </div>
           </div>
         )}
+
+        {/* LIGHTBOX / FULLSCREEN MODAL */}
+        {lightboxOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 sm:p-6"
+            role="dialog"
+            aria-modal="true"
+            onClick={(e) => {
+              // klik na pozadinu zatvara (ali ne klik na sadržaj)
+              if (e.target === e.currentTarget) closeLightbox()
+            }}
+          >
+            <div className="relative w-full h-full max-w-[1200px] max-h-[96vh] bg-transparent flex flex-col lg:flex-row items-stretch">
+              {/* Close button */}
+              <button
+                onClick={closeLightbox}
+                className="absolute top-4 right-4 z-40 bg-black/40 p-3 rounded-full text-white hover:bg-black/60"
+                aria-label="Zatvori"
+              >
+                <FaTimes />
+              </button>
+
+              {/* Prev */}
+              <button
+                onClick={lbPrev}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/40 p-3 rounded-full text-white hover:bg-black/60"
+                aria-label="Prethodna"
+              >
+                ‹
+              </button>
+
+              {/* Next */}
+              <button
+                onClick={lbNext}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/40 p-3 rounded-full text-white hover:bg-black/60"
+                aria-label="Sledeća"
+              >
+                ›
+              </button>
+
+              {/* Main image area */}
+              <div className="flex-1 flex items-center justify-center p-4 lg:p-6">
+                <img
+                  src={images[lightboxIndex] || property.image}
+                  alt={`${property.naslov} - ${lightboxIndex + 1}`}
+                  className="max-h-[85vh] w-full object-contain"
+                />
+              </div>
+
+              {/* Thumbnails: horizontally on small, vertically on large */}
+              <div className="w-full lg:w-36 lg:ml-4 flex lg:flex-col gap-2 items-center lg:items-stretch overflow-auto px-4 pb-4">
+                {/* On small screens show horizontal strip */}
+                <div className="flex lg:hidden gap-2 w-full overflow-x-auto">
+                  {images.map((src, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setLightboxIndex(i)}
+                      className={`flex-shrink-0 w-24 h-16 rounded overflow-hidden border ${i === lightboxIndex ? 'border-yellow-400' : 'border-white/20'}`}
+                      aria-label={`Prikaži sliku ${i + 1}`}
+                    >
+                      <img src={src} className="w-full h-full object-cover" alt={`thumb-${i}`} />
+                    </button>
+                  ))}
+                </div>
+
+                {/* On large screens show vertical thumbnails */}
+                <div className="hidden lg:flex flex-col gap-2 w-full">
+                  {images.map((src, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setLightboxIndex(i)}
+                      className={`w-full h-20 rounded overflow-hidden border ${i === lightboxIndex ? 'border-yellow-400' : 'border-white/20'}`}
+                      aria-label={`Prikaži sliku ${i + 1}`}
+                    >
+                      <img src={src} className="w-full h-full object-cover" alt={`thumb-${i}`} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   )

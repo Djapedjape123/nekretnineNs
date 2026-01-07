@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaFacebookF, FaInstagram, FaWhatsapp, FaViber } from 'react-icons/fa'
+import { FaYoutube } from "react-icons/fa";
 import { MdEmail, MdPhone, MdLocationOn } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import { t } from '../i1n8' // importuj t funkciju
@@ -211,6 +212,14 @@ export default function Footer() {
                   title="Viber"
                 >
                   <FaViber size={18} />
+                </a>
+                <a
+                  href="https://www.youtube.com/@draganacobanov7551"
+                  className="w-11 h-11 flex items-center justify-center rounded-full border border-yellow-600/30 text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
+                  aria-label="Viber"
+                  title="Viber"
+                >
+                  <FaYoutube size={18} />
                 </a>
               </div>
 

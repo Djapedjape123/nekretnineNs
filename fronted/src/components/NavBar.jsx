@@ -91,7 +91,7 @@ function NavBar() {
 
                 {/* ZASTAVICE + CTA */}
                 <div className="hidden md:flex items-center gap-1">
-                    <div className="flex gap-2 p-1 bg-black rounded-xl">
+                    <div className="flex gap-2 p-1 rounded-xl">
                         {/* SRPSKI */}
                         <button
                             onClick={() => changeLang('sr')}
