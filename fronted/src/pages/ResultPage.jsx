@@ -1,0 +1,175 @@
+import React, { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { MdLocationOn } from 'react-icons/md'
+import { FaBed, FaBath, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import { FiHeart } from 'react-icons/fi'
+import { t } from '../i1n8'
+
+export default function ResultsPage() {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  // Čitanje query parametara iz URL
+  const query = new URLSearchParams(location.search)
+  const transaction = query.get('transaction') || ''
+  const type = query.get('type') || ''
+  const brojsoba = query.get('brojsoba') || ''
+  const kvart = query.get('kvart') || ''
+  const priceFrom = query.get('priceFrom') || ''
+  const priceTo = query.get('priceTo') || ''
+
+  const [listings, setListings] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [favorites, setFavorites] = useState(() => {
+    const raw = localStorage.getItem('favorites')
+    return raw ? JSON.parse(raw) : []
+  })
+
+  const itemsPerPage = 9
+
+  // Fetch filtered oglasi sa servera
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+      try {
+        const params = new URLSearchParams({
+          transaction,
+          type,
+          brojsoba,
+          kvart,
+          priceFrom,
+          priceTo
+        })
+        const res = await fetch(`http://localhost:3001/oglasi/search?${params.toString()}`)
+        const data = await res.json()
+        setListings(data)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [transaction, type, brojsoba, loc, priceFrom, priceTo])
+
+  // Reset paginacije na novu pretragu
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [transaction, type, brojsoba, loc, priceFrom, priceTo])
+
+  const tt = (key, fallback) => {
+    const val = t(key)
+    return val === key ? fallback : val
+  }
+
+  // Paginacija
+  const totalPages = Math.ceil(listings.length / itemsPerPage)
+  const currentItems = listings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+  // Favorite sistem
+  const makeFavObject = (item) => ({
+    id: item.id?.toString() || String(item.code || Date.now()),
+    title: item.naslov || item.title || '',
+    price: item.cena ? `${item.cena} €` : (item.price || ''),
+    location: [item.mesto, item.naselje].filter(Boolean).join(', ') || (item.location || ''),
+    size: item.kvadratura_int || item.size || 0,
+    rooms: item.brojsoba || item.rooms || 0,
+    baths: item.brojkupatila || item.baths || 0,
+    image: item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg',
+    contactphone: item.contactphone || ''
+  })
+
+  const isFavorite = (id) => {
+    if (id === undefined || id === null) return false
+    const sid = id.toString()
+    return favorites.some(f => f.id === sid)
+  }
+
+  const toggleFavorite = (item) => {
+    const favObj = makeFavObject(item)
+    setFavorites(prev => {
+      const exists = prev.some(p => p.id === favObj.id)
+      const updated = exists ? prev.filter(p => p.id !== favObj.id) : [...prev, favObj]
+      localStorage.setItem('favorites', JSON.stringify(updated))
+      return updated
+    })
+  }
+
+  if (loading) return (
+    <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-bold text-2xl animate-pulse">
+      Učitavanje...
+    </div>
+  )
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-white text-white py-24 px-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <div>
+            <h1 className="text-4xl md:text-6xl font-black text-yellow-400 uppercase tracking-tighter">
+              {tt('searchResults', 'Rezultati pretrage')}
+            </h1>
+            <p className="text-gray-400 mt-2">Pronađeno {listings.length} oglasa</p>
+          </div>
+        </div>
+
+        {listings.length === 0 ? (
+          <div className="text-center py-20 text-gray-500 text-xl border border-dashed border-white/10 rounded-3xl">
+            Nema rezultata za kriterijume pretrage
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {currentItems.map(item => (
+              <article key={item.id} className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
+                <div className="relative h-64">
+                  <img 
+                    src={item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg'} 
+                    alt="" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
+                  />
+                  <div className="absolute top-4 right-4">
+                    <button onClick={() => toggleFavorite(item)} className="p-3 bg-black/50 backdrop-blur-md rounded-full">
+                      <FiHeart className={isFavorite(item.id) ? "text-red-500 fill-red-500" : "text-white"} />
+                    </button>
+                  </div>
+                  <div className="absolute bottom-4 left-4 bg-yellow-400 text-black px-4 py-1 rounded-lg font-black text-xl">
+                    {item.cena || item.price} €
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  <h3 className="text-xl font-bold line-clamp-1">{item.naslov || item.title}</h3>
+                  <div className="flex items-center gap-2 text-gray-400 mt-2 text-sm">
+                    <MdLocationOn className="text-yellow-400" /> {item.mesto || item.location}
+                  </div>
+                  <div className="flex gap-4 mt-4 border-t border-white/5 pt-4">
+                    <div className="flex items-center gap-1"><FaBed className="text-yellow-400"/> {item.brojsoba || 0}</div>
+                    <div className="flex items-center gap-1"><FaBath className="text-yellow-400"/> {item.brojkupatila || 0}</div>
+                    <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int || item.size} m²</div>
+                  </div>
+                  <div className="grid grid-cols-5 gap-2 mt-6">
+                    <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-white/10 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
+                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black">📞</a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-12 gap-3">
+            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0,0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronLeft/></button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0,0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-white'}`}>
+                {i + 1}
+              </button>
+            ))}
+            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0,0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronRight/></button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

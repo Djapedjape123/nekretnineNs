@@ -14,9 +14,9 @@ function HomePage() {
     transaction: 'prodaja',
     type: 'stan',
     price: 'all',
-    area: 'all',
+    brojsoba: 'all',
     kvart: 'all',
-    location: '',
+    location: 'all',
   })
 
   const handleChange = (e) => {
@@ -134,29 +134,41 @@ function HomePage() {
               {/* 3. Area / Površina (Širina: 2/12) */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
-                  {t("povrsina")}
+                  {t("Broj soba")}
                 </label>
                 <div className="relative">
                   <select
-                    name="area"
-                    value={form.area}
+                    name="brojsoba"
+                    value={form.brojsoba}
                     onChange={handleChange}
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
                     <option className="bg-black text-white" value="all">
-                      {t("svePovrsine")}
+                      {t("Sve")}
                     </option>
-                    <option className="bg-black text-white" value="garsonjera">
+                    <option className="bg-black text-white" value="0.5">
                       Garsonjera
                     </option>
-                    <option className="bg-black text-white" value="jednosoban">
+                    <option className="bg-black text-white" value="1">
                       Jednosoban
                     </option>
-                    <option className="bg-black text-white" value="dvosoban">
+                    <option className="bg-black text-white" value="1.5">
+                      Jednoiposoban
+                    </option>
+                    <option className="bg-black text-white" value="2">
                       Dvosoban
                     </option>
-                    <option className="bg-black text-white" value="trosoban">
+                    <option className="bg-black text-white" value="2.5">
+                      Dvoiposoban
+                    </option>
+                    <option className="bg-black text-white" value="3">
                       Trosoban
+                    </option>
+                    <option className="bg-black text-white" value="3.5">
+                      Troiposoban
+                    </option>
+                    <option className="bg-black text-white" value="4">
+                      Četvorosoban
                     </option>
                   </select>
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
@@ -166,7 +178,7 @@ function HomePage() {
               </div>
               {/* ... tvoj kod za Površinu ostaje isti ... */}
 
-              {/* Sekcija za Kvart - ISPRAVLJENO */}
+              {/*4. Sekcija za Kvart - ISPRAVLJENO */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
                   Kvart
@@ -179,7 +191,7 @@ function HomePage() {
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
                     <option className="bg-black text-white" value="all">
-                      Svi kvartovi
+                      Svi
                     </option>
                     <option className="bg-black text-white" value="grbavica">
                       Grbavica
@@ -187,14 +199,32 @@ function HomePage() {
                     <option className="bg-black text-white" value="sajmiste">
                       Sajmiste
                     </option>
-                    <option className="bg-black text-white" value="liman">
-                      Liman
-                    </option>
                     <option className="bg-black text-white" value="adice">
                       Adice
                     </option>
                     <option className="bg-black text-white" value="telep">
                       Telep
+                    </option>
+                    <option className="bg-black text-white" value="novo-naselje">
+                      Novo Naselje
+                    </option>
+                    <option className="bg-black text-white" value="liman1">
+                      Liman 1
+                    </option>
+                    <option className="bg-black text-white" value="liman2">
+                      Liman 2
+                    </option>
+                    <option className="bg-black text-white" value="liman3">
+                      Liman 3
+                    </option>
+                    <option className="bg-black text-white" value="liman4">
+                      Liman 4
+                    </option>
+                    <option className="bg-black text-white" value="detelinara">
+                      Detelinara
+                    </option>
+                    <option className="bg-black text-white" value="nova-etelinara">
+                      Nova detelinara
                     </option>
                   </select>
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
@@ -203,7 +233,7 @@ function HomePage() {
                 </div>
               </div>
 
-              {/* 4. Price From (Širina: 2/12) */}
+              {/* 5. Price From (Širina: 2/12) */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
                   {t("cenaOd")}
@@ -220,7 +250,7 @@ function HomePage() {
                 />
               </div>
 
-              {/* 5. Price To (Širina: 2/12) */}
+              {/* 6. Price To (Širina: 2/12) */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
                   {t("cenaDo")}
@@ -237,7 +267,7 @@ function HomePage() {
                 />
               </div>
 
-              {/* 6. Submit Button (Širina: 2/12) */}
+              {/* 7. Submit Button (Širina: 2/12) */}
               <div className="md:col-span-2 lg:col-span-2 ">
                 <button
                   type="submit"
