@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
+const xml2js = require("xml2js");
 
 const app = express();
 app.use(cors());
@@ -123,6 +124,55 @@ app.get('/oglasi/:id', (req, res) => {
     res.json(nekretnina);
   });
 });
+
+// ================== UČITAVANJE IZ XML-a ==================
+async function loadXML() {
+  const xml = fs.readFileSync("./oglasi.xml", "utf8");
+  return new Promise((resolve, reject) => {
+    xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
+      if (err) reject(err);
+      else resolve(result.oglasi.oglas || []);
+    });
+  });
+}
+
+// ================== FILTER ==================
+app.get("/oglasi/filter", (req, res) => {
+  const {
+    transaction,
+    type,
+    area,
+    location,
+    priceFrom,
+    priceTo
+  } = req.query;
+
+  const results = oglasi.filter(o => {
+    const lokacija = (o.lokacija || "").toLowerCase();
+    const vrsta = (o.vrstanekretnine || "").toLowerCase();
+    const trans = (o.vrstaponude || "").toLowerCase();
+    const sobe = (o.sobnost || "").toLowerCase();
+    const cena = Number(o.cena || 0);
+
+    if (transaction && trans !== transaction.toLowerCase()) return false;
+
+    if (type && vrsta !== type.toLowerCase()) return false;
+
+    if (area && area !== "all" && sobe !== area.toLowerCase()) return false;
+
+    if (location && !lokacija.includes(location.toLowerCase())) return false;
+
+    if (priceFrom && cena < Number(priceFrom)) return false;
+
+    if (priceTo && cena > Number(priceTo)) return false;
+
+    return true;
+  });
+
+  res.json(results);
+});
+
+
 
 
 

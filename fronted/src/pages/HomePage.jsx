@@ -15,6 +15,7 @@ function HomePage() {
     type: 'stan',
     price: 'all',
     area: 'all',
+    kvart: 'all',
     location: '',
   })
 
@@ -163,14 +164,17 @@ function HomePage() {
                   </span>
                 </div>
               </div>
+              {/* ... tvoj kod za Površinu ostaje isti ... */}
+
+              {/* Sekcija za Kvart - ISPRAVLJENO */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
                   Kvart
                 </label>
                 <div className="relative">
                   <select
-                    name="area"
-                    value={form.area}
+                    name="kvart"  // <-- PROMENJENO (bilo je "area")
+                    value={form.kvart} // <-- PROMENJENO (bilo je form.area)
                     onChange={handleChange}
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
