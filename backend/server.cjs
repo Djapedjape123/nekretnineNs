@@ -1,7 +1,16 @@
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs");
 const xml2js = require("xml2js");
+const fs = require("fs");
+
+const parser = new xml2js.Parser();
+
+fs.readFile("oglasi.xml", (err, data) => {
+  parser.parseString(data, (err, result) => {
+    oglasi = result.OGLASI.oglas;
+    console.log("JEDAN OGLAS:", JSON.stringify(oglasi[0], null, 2));
+  });
+});
 
 const app = express();
 app.use(cors());
@@ -137,30 +146,36 @@ async function loadXML() {
 }
 
 // ================== FILTER ==================
-app.get("/oglasi/filter", (req, res) => {
+app.get("/oglasi/search", (req, res) => {
+  console.log("QUERY:", req.query);
   const {
-    transaction,
-    type,
-    area,
-    location,
+    transaction,  // vrstaponude
+    type,         // vrstanekretnine
+    brojsoba,     // broj soba
+    kvart,        // naselje
     priceFrom,
     priceTo
   } = req.query;
 
   const results = oglasi.filter(o => {
-    const lokacija = (o.lokacija || "").toLowerCase();
-    const vrsta = (o.vrstanekretnine || "").toLowerCase();
-    const trans = (o.vrstaponude || "").toLowerCase();
-    const sobe = (o.sobnost || "").toLowerCase();
-    const cena = Number(o.cena || 0);
+    // UVEK UZIMAMO PRVI ELEMENT IZ NIZA
+    const vrstePonude = (o.vrstaponude?.[0] || "").toLowerCase();
+    const vrsteNekretnine = (o.vrstanekretnine?.[0] || "").toLowerCase();
+    const brojSoba = String(o.brojsoba?.[0] || "").toLowerCase();
+    const naselje = (o.naselje?.[0] || "").toLowerCase();
+    const cena = Number(o.cena?.[0] || 0);
 
-    if (transaction && trans !== transaction.toLowerCase()) return false;
+    if (transaction && transaction !== "" &&
+        vrstePonude !== transaction.toLowerCase()) return false;
 
-    if (type && vrsta !== type.toLowerCase()) return false;
+    if (type && type !== "" &&
+        vrsteNekretnine !== type.toLowerCase()) return false;
 
-    if (area && area !== "all" && sobe !== area.toLowerCase()) return false;
+    if (brojsoba && brojsoba !== "all" &&
+        brojSoba !== brojsoba.toLowerCase()) return false;
 
-    if (location && !lokacija.includes(location.toLowerCase())) return false;
+    if (kvart && kvart !== "" &&
+        !naselje.includes(kvart.toLowerCase())) return false;
 
     if (priceFrom && cena < Number(priceFrom)) return false;
 
@@ -174,9 +189,8 @@ app.get("/oglasi/filter", (req, res) => {
 
 
 
-
-
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server pokrenut na http://localhost:${PORT}`);
 });
+
