@@ -9,6 +9,7 @@ import ProdajaPage from './pages/ProdajaPage.jsx'
 import IzdavanjePage from './pages/IzdavanjePage.jsx'
 import FavoritePage from './pages/FavoritePage.jsx'
 import SinglePege from './pages/SinglePege.jsx'
+import SearchMore from './pages/SearchMore.jsx'
 
 
 const router = createBrowserRouter([
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: '/single/:id',
         element: <SinglePege />
+      },
+      {
+        path: '/searchmore',
+        element: <SearchMore />
       },
 
       

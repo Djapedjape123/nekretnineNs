@@ -143,7 +143,7 @@ export default function Footer() {
                 </a>
 
                 <a
-                  href="https://www.halooglasi.com/nekretnine/prodaja-stanova/novi-sad"
+                  href="https://www.halooglasi.com/nekretnine/prodaja-stanova/lux-namesten-penthaus-230m2-sa-bazenom-bul-ev/5425646119082?kid=1"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded hover:opacity-95 transition text-sm"

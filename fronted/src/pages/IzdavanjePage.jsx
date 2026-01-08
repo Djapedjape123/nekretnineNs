@@ -4,6 +4,7 @@ import { MdLocationOn } from 'react-icons/md'
 import { FaBed, FaBath, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { FiHeart } from 'react-icons/fi'
 import { t } from '../i1n8'
+import { API_BASE } from '../config'
 
 export default function IzdavanjePage() {
   const navigate = useNavigate()
@@ -25,7 +26,7 @@ export default function IzdavanjePage() {
     const fetchData = async () => {
       try {
         setLoading(true)
-        const response = await fetch('http://localhost:3001/oglasi/izdavanje')
+        const response = await fetch(`${API_BASE}/oglasi/izdavanje`)
         const data = await response.json()
         setListings(data)
       } catch (err) { console.error(err) }

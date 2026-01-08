@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { t } from '../i1n8'
 import { useNavigate } from 'react-router-dom'
+import { API_BASE } from '../config'
 
 
 function TopPonudePage() {
@@ -13,7 +14,7 @@ function TopPonudePage() {
 
   // FETCH TOP 3
   useEffect(() => {
-    fetch('http://localhost:3001/oglasi/topponude?count=3')
+    fetch(`${API_BASE}/oglasi/topponude?count=3`)
       .then(res => res.json())
       .then(data => setItems(data || []))
       .catch(() => setItems([]))

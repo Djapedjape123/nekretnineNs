@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import backgroundImage from '../assets/pozadina.jpg'
 import { t } from '../i1n8'
 import TopPonudePage from './TopPonudePage'
@@ -131,7 +131,7 @@ function HomePage() {
                 </div>
               </div>
 
-              {/* 3. Area / Površina (Širina: 2/12) */}
+              {/* 3. Broj soba (Širina: 2/12) */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
                   {t("Broj soba")}
@@ -176,17 +176,16 @@ function HomePage() {
                   </span>
                 </div>
               </div>
-              {/* ... tvoj kod za Površinu ostaje isti ... */}
 
-              {/*4. Sekcija za Kvart - ISPRAVLJENO */}
+              {/* 4. Kvart (Širina: 2/12) */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
                   Kvart
                 </label>
                 <div className="relative">
                   <select
-                    name="kvart"  // <-- PROMENJENO (bilo je "area")
-                    value={form.kvart} // <-- PROMENJENO (bilo je form.area)
+                    name="kvart"
+                    value={form.kvart}
                     onChange={handleChange}
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
@@ -267,8 +266,20 @@ function HomePage() {
                 />
               </div>
 
+              {/* --- NOVO DUGME: Detaljnija pretraga --- */}
+              {/* Postavljamo ga na početak novog reda ili pored Search dugmeta ako ima mesta */}
+              <div className="md:col-span-2 lg:col-span-2 lg:col-start-9">
+                {/* Napomena: Ako koristiš react-router-dom, koristi Link. Ako ne, promeni u <a href...> */}
+                <Link
+                  to="/searchmore"
+                  className="w-full h-[46px] flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-yellow-500 border border-gray-600 hover:bg-gray-700 hover:border-yellow-500 transition font-medium"
+                >
+                  Detaljnija pretraga
+                </Link>
+              </div>
+
               {/* 7. Submit Button (Širina: 2/12) */}
-              <div className="md:col-span-2 lg:col-span-2 ">
+              <div className="md:col-span-2 lg:col-span-2">
                 <button
                   type="submit"
                   className="w-full h-[46px] flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition shadow-[0_0_15px_rgba(234,179,8,0.4)]"
@@ -290,6 +301,7 @@ function HomePage() {
                   {t("pretraga") || "Pretraga"}
                 </button>
               </div>
+
             </div>
           </form>
 

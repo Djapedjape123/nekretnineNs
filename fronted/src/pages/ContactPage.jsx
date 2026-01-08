@@ -55,9 +55,8 @@ export default function ContactPage() {
 
                 {/* LEVI BLOK - info */}
                 <div
-                    className={`flex flex-col justify-center gap-6 transform transition duration-6000 ease-out ${
-                        animateLeft ? 'translate-x-0 opacity-100' : '-translate-x-60 opacity-0'
-                    }`}
+                    className={`flex flex-col justify-center gap-6 transform transition duration-6000 ease-out ${animateLeft ? 'translate-x-0 opacity-100' : '-translate-x-60 opacity-0'
+                        }`}
                 >
                     <div className="rounded-xl p-8 bg-gradient-to-br from-black/100 to-white/2 backdrop-blur-lg  border border-yellow-600/20 shadow-black shadow-xl">
                         <h1 className="text-4xl font-extrabold text-yellow-400 mb-4">{tt('contactTitle', 'Kontakt')}</h1>
@@ -71,7 +70,7 @@ export default function ContactPage() {
                         <div className="mt-6 grid grid-cols-1 gap-3">
                             {/* Email */}
                             <div className="flex items-start gap-4">
-                                <MdEmail  className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+                                <MdEmail className="w-6 h-6 text-yellow-400 flex-shrink-0" />
                                 <div>
                                     <div className="text-sm text-gray-400">{tt('emailLabel', 'Email')}</div>
                                     <a href="mailto:serbesnekretnine@gmail.com" className="text-yellow-400 font-medium">
@@ -82,10 +81,13 @@ export default function ContactPage() {
 
                             {/* Telefon */}
                             <div className="flex items-start gap-4">
-                                <MdPhone  className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+                                <MdPhone className="w-6 h-6 text-yellow-400 flex-shrink-0" />
                                 <div>
                                     <div className="text-sm text-gray-400">{tt('phoneLabel', 'Telefon')}</div>
-                                    <a href="tel:+38163238564" className="text-yellow-400 font-medium">063 238 564</a>
+                                    <div className="flex flex-col space-y-1">
+                                        <a href="tel:+38163238564" className="text-yellow-400 font-medium">063 238 564</a>
+                                        <a href="tel:+381628150586" className="text-yellow-400 font-medium">062 815 0586</a>
+                                    </div>
                                 </div>
                             </div>
 
@@ -112,9 +114,8 @@ export default function ContactPage() {
 
                 {/* DESNI BLOK - form */}
                 <div
-                    className={`flex items-center mt-5 transform transition duration-1000 ${
-                        animateRight ? 'translate-x-0 opacity-100' : 'translate-x-60 opacity-0'
-                    }`}
+                    className={`flex items-center mt-5 transform transition duration-1000 ${animateRight ? 'translate-x-0 opacity-100' : 'translate-x-60 opacity-0'
+                        }`}
                 >
                     <div className="w-full bg-gradient-to-br from-[#0b0b0b]/80 to-[#111111]/60 rounded-xl p-6 shadow-2xl border border-yellow-600/20">
                         <h2 className="text-2xl font-bold text-yellow-400 mb-4">{tt('sendInquiryTitle', 'Pošaljite upit')}</h2>
