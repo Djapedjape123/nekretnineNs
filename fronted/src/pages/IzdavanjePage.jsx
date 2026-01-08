@@ -79,6 +79,12 @@ export default function IzdavanjePage() {
       return updated
     })
   }
+   function formatPrice(price) {
+    if (price === null || price === undefined || price === '') return '';
+    const num = Number(String(price).replace(/[^0-9.-]+/g, ''));
+    if (Number.isNaN(num)) return String(price);
+    return new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 }).format(Math.round(num)) + ' €';
+  }
 
   if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-bold text-2xl animate-pulse">Učitavanje...</div>
 
@@ -115,7 +121,7 @@ export default function IzdavanjePage() {
                     </button>
                   </div>
                   <div className="absolute bottom-4 left-4 bg-yellow-400 text-black px-4 py-1 rounded-lg font-black text-xl">
-                    {item.cena || item.price} €
+                    {formatPrice(item.cena)}
                   </div>
                 </div>
 
@@ -131,7 +137,7 @@ export default function IzdavanjePage() {
                   </div>
                   <div className="grid grid-cols-5 gap-2 mt-6">
                     <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-white/10 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
-                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black">📞</a>
+                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center  justify-center rounded-xl text-black font-bold">{t('contactTitle')}</a>
                   </div>
                 </div>
               </article>

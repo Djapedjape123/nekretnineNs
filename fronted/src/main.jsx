@@ -5,7 +5,6 @@ import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
-import ResultsPage from './pages/ResultsPage.jsx'
 import ProdajaPage from './pages/ProdajaPage.jsx'
 import IzdavanjePage from './pages/IzdavanjePage.jsx'
 import FavoritePage from './pages/FavoritePage.jsx'
@@ -24,10 +23,6 @@ const router = createBrowserRouter([
       {
         path: '/kontakt',
         element: <ContactPage />
-      },
-      {
-        path: '/results',
-        element: <ResultsPage />
       },
       {
         path: '/prodaja',

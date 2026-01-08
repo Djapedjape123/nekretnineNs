@@ -163,6 +163,41 @@ function HomePage() {
                   </span>
                 </div>
               </div>
+              <div className="lg:col-span-2">
+                <label className="block mb-1 text-sm font-medium text-gray-200">
+                  Kvart
+                </label>
+                <div className="relative">
+                  <select
+                    name="area"
+                    value={form.area}
+                    onChange={handleChange}
+                    className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
+                  >
+                    <option className="bg-black text-white" value="all">
+                      Svi kvartovi
+                    </option>
+                    <option className="bg-black text-white" value="grbavica">
+                      Grbavica
+                    </option>
+                    <option className="bg-black text-white" value="sajmiste">
+                      Sajmiste
+                    </option>
+                    <option className="bg-black text-white" value="liman">
+                      Liman
+                    </option>
+                    <option className="bg-black text-white" value="adice">
+                      Adice
+                    </option>
+                    <option className="bg-black text-white" value="telep">
+                      Telep
+                    </option>
+                  </select>
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
+                    ▾
+                  </span>
+                </div>
+              </div>
 
               {/* 4. Price From (Širina: 2/12) */}
               <div className="lg:col-span-2">
@@ -199,7 +234,7 @@ function HomePage() {
               </div>
 
               {/* 6. Submit Button (Širina: 2/12) */}
-              <div className="md:col-span-2 lg:col-span-2">
+              <div className="md:col-span-2 lg:col-span-2 ">
                 <button
                   type="submit"
                   className="w-full h-[46px] flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition shadow-[0_0_15px_rgba(234,179,8,0.4)]"
