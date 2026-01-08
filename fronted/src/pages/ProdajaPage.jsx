@@ -89,11 +89,11 @@ export default function ProdajaPage() {
     return new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 }).format(Math.round(num)) + ' €';
   }
 
-
+  //bg-gradient-to-b from-black via-gray-900
   if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-bold text-2xl animate-pulse">Učitavanje...</div>
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-white text-white py-24 px-6">
+    <div className="min-h-screen bg-white text-white py-24 px-6">
       <div className="max-w-7xl mx-auto">
 
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
@@ -112,7 +112,7 @@ export default function ProdajaPage() {
             {currentItems.map(item => {
               const stableId = String(item.id ?? item.code ?? Date.now())
               return (
-                <article key={stableId} className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
+                <article key={stableId} className="bg-black border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
                   <div className="relative h-64">
                     <img src={item.slike?.slika?.[0]?.url || '/placeholder.jpg'} alt="" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                     <div className="absolute top-4 right-4 flex flex-col gap-2">
@@ -135,7 +135,7 @@ export default function ProdajaPage() {
                       <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int} m²</div>
                     </div>
                     <div className="grid grid-cols-5 gap-2 mt-6">
-                      <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-white/10 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
+                      <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4  bg-transparent border border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
                       <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">{t('contactTitle')}</a>
                     </div>
                   </div>
