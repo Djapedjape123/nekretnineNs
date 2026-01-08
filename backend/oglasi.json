@@ -1030,6 +1030,7 @@
       ]
     }
   },
+
   {
     "code": "211001720",
     "id": "1720",
@@ -1224,6 +1225,187 @@
       ]
     }
   },
+
+  {
+    "code": "211001559",
+    "id": "1559",
+    "naslov": "Lux namešten penthaus 230m2 sa bazenom Bul.Evrope ID#1559",
+    "keywords": "",
+    "ulica": "",
+    "kvadratura": "230.00",
+    "kvadratura_int": "230",
+    "kvadratura_a": "0",
+    "cena": "711000",
+    "brojsoba": "3.0",
+    "brojkupatila": "1",
+    "brojtelin": "1",
+    "daystart": "2024-08-08",
+    "lastupdate": "2025-12-17T11:58:31",
+    "agentid": "211001",
+    "namestenost": "prazan",
+    "ptt": "21000",
+    "drzava": "Srbija",
+    "grad": "NOVI SAD",
+    "vrstagradnje": "novogradnja",
+    "objectstate": "Lux",
+    "mesto": "Novi Sad",
+    "naselje": "Bulevar Evrope",
+    "contactphone": "0628150586",
+    "slike": {
+      "slika": [
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_3_20210630205536.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_1_20210630205440.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_3_20210630205513.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_4_20210630205642.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_5_20210630205705.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_6_20210630205729.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_7_20210630205747.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_8_20210630205759.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_9_20210630205812.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_10_20210707145832.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_11_20210630210003.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_12_20210630210030.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_13_20210630210110.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_14_20210630210215.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_15_20210630210236.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_16_20210630210301.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_17_20210630210402.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_18_20210630210457.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_19_20210630210545.jpg",
+          "title": ""
+        },
+        {
+          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_20_20210630210609.jpg",
+          "title": ""
+        }
+      ]
+    },
+    "vrstanekretnine": "Stan",
+    "ambijent": "u zgradi",
+    "vrstaponude": "Prodaja",
+    "vrstagrejanja": "CG",
+    "sprat": "11",
+    "spratova": "12",
+    "opis": "Prodajem lux penthaus 230m2 sa bazenom na Bulevaru Evrope. Komplet opremljen visoko kvalitetnim nameštajem i belom tehnikom. Jedinstven pogled 270* na grad sa najuzvišenije tačke u gradu. Velika terasa od cca 30m2. Bazen 7m x 2m, jacuzzi 1,8 x 4m, dubin.a 1,6m, ugrađen mehanizam za otpor u plivanju. Aluminijumska spoljna stolarija sa velikim staklenim portalima koji se celom širinom mogu otvoriti kod bazena ,tako da se dobija osećaj kao da je bazen na otvorenom. Master spavaća soba sa tri strane ima staklene spoljašnje zidove. Uz master spavaću sobu komforno kupatilo sa tuš kabinom, kadom od belog mermera i saunom. Spoljašnji zid kupatila stakleni sa pogledom na Bulevar. Komforna dnevna soba od 80m2 sa prednjim staklenim zidom. U sklopu dnevne sobe moderna visoko kvalitetna kuhinja opremljena tehnikom Miele. Visina plafona 3m. Led rasveta.Klimatizovano. Sigurnosna ulazna vrata sa biometrijskom bravom ( na otisak prsta i šifru). Keramika i sanitarije prvoklasno. U donjem delu još jedno komforno kupatilo uz spavaću sobu. Iz predsoblja kod ulaznih vrata toalet sa veš mašinom i mašinom za sušenje veša Miele. Super komforan stan po svetskim standardima.",
+    "video_url": "https://youtube.com/embed/dUjeujOwaxM",
+    "videotour": "https://youtube.com/embed/dUjeujOwaxM",
+    "attribs": {
+      "attrib": [
+        {
+          "name": "Autobus",
+          "value": "da"
+        },
+        {
+          "name": "Lift",
+          "value": "da"
+        },
+        {
+          "name": "Teretni lift",
+          "value": "da"
+        },
+        {
+          "name": "Sauna",
+          "value": "da"
+        },
+        {
+          "name": "Terasa",
+          "value": "da"
+        },
+        {
+          "name": "Alu stolarija",
+          "value": "da"
+        },
+        {
+          "name": "PVC stolarija",
+          "value": "da"
+        },
+        {
+          "name": "Sigurnosna vrata",
+          "value": "da"
+        },
+        {
+          "name": "Interfon",
+          "value": "da"
+        },
+        {
+          "name": "Klima",
+          "value": "da"
+        },
+        {
+          "name": "Lux",
+          "value": "da"
+        },
+        {
+          "name": "Penthaus",
+          "value": "da"
+        },
+        {
+          "name": "Renovirano",
+          "value": "da"
+        },
+        {
+          "name": "Uknjižen",
+          "value": "da"
+        }
+      ]
+    }
+  },
+  
   {
     "code": "211001716",
     "id": "1716",
@@ -7634,185 +7816,6 @@
         },
         {
           "name": "Snižena cena",
-          "value": "da"
-        },
-        {
-          "name": "Uknjižen",
-          "value": "da"
-        }
-      ]
-    }
-  },
-  {
-    "code": "211001559",
-    "id": "1559",
-    "naslov": "Lux namešten penthaus 230m2 sa bazenom Bul.Evrope ID#1559",
-    "keywords": "",
-    "ulica": "",
-    "kvadratura": "230.00",
-    "kvadratura_int": "230",
-    "kvadratura_a": "0",
-    "cena": "711000",
-    "brojsoba": "3.0",
-    "brojkupatila": "1",
-    "brojtelin": "1",
-    "daystart": "2024-08-08",
-    "lastupdate": "2025-12-17T11:58:31",
-    "agentid": "211001",
-    "namestenost": "prazan",
-    "ptt": "21000",
-    "drzava": "Srbija",
-    "grad": "NOVI SAD",
-    "vrstagradnje": "novogradnja",
-    "objectstate": "Lux",
-    "mesto": "Novi Sad",
-    "naselje": "Bulevar Evrope",
-    "contactphone": "0628150586",
-    "slike": {
-      "slika": [
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_3_20210630205536.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_1_20210630205440.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_3_20210630205513.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_4_20210630205642.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_5_20210630205705.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_6_20210630205729.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_7_20210630205747.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_8_20210630205759.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_9_20210630205812.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_10_20210707145832.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_11_20210630210003.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_12_20210630210030.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_13_20210630210110.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_14_20210630210215.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_15_20210630210236.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_16_20210630210301.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_17_20210630210402.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_18_20210630210457.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_19_20210630210545.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001170_20_20210630210609.jpg",
-          "title": ""
-        }
-      ]
-    },
-    "vrstanekretnine": "Stan",
-    "ambijent": "u zgradi",
-    "vrstaponude": "Prodaja",
-    "vrstagrejanja": "CG",
-    "sprat": "11",
-    "spratova": "12",
-    "opis": "Prodajem lux penthaus 230m2 sa bazenom na Bulevaru Evrope. Komplet opremljen visoko kvalitetnim nameštajem i belom tehnikom. Jedinstven pogled 270* na grad sa najuzvišenije tačke u gradu. Velika terasa od cca 30m2. Bazen 7m x 2m, jacuzzi 1,8 x 4m, dubin.a 1,6m, ugrađen mehanizam za otpor u plivanju. Aluminijumska spoljna stolarija sa velikim staklenim portalima koji se celom širinom mogu otvoriti kod bazena ,tako da se dobija osećaj kao da je bazen na otvorenom. Master spavaća soba sa tri strane ima staklene spoljašnje zidove. Uz master spavaću sobu komforno kupatilo sa tuš kabinom, kadom od belog mermera i saunom. Spoljašnji zid kupatila stakleni sa pogledom na Bulevar. Komforna dnevna soba od 80m2 sa prednjim staklenim zidom. U sklopu dnevne sobe moderna visoko kvalitetna kuhinja opremljena tehnikom Miele. Visina plafona 3m. Led rasveta.Klimatizovano. Sigurnosna ulazna vrata sa biometrijskom bravom ( na otisak prsta i šifru). Keramika i sanitarije prvoklasno. U donjem delu još jedno komforno kupatilo uz spavaću sobu. Iz predsoblja kod ulaznih vrata toalet sa veš mašinom i mašinom za sušenje veša Miele. Super komforan stan po svetskim standardima.",
-    "video_url": "https://youtube.com/embed/dUjeujOwaxM",
-    "videotour": "https://youtube.com/embed/dUjeujOwaxM",
-    "attribs": {
-      "attrib": [
-        {
-          "name": "Autobus",
-          "value": "da"
-        },
-        {
-          "name": "Lift",
-          "value": "da"
-        },
-        {
-          "name": "Teretni lift",
-          "value": "da"
-        },
-        {
-          "name": "Sauna",
-          "value": "da"
-        },
-        {
-          "name": "Terasa",
-          "value": "da"
-        },
-        {
-          "name": "Alu stolarija",
-          "value": "da"
-        },
-        {
-          "name": "PVC stolarija",
-          "value": "da"
-        },
-        {
-          "name": "Sigurnosna vrata",
-          "value": "da"
-        },
-        {
-          "name": "Interfon",
-          "value": "da"
-        },
-        {
-          "name": "Klima",
-          "value": "da"
-        },
-        {
-          "name": "Lux",
-          "value": "da"
-        },
-        {
-          "name": "Penthaus",
-          "value": "da"
-        },
-        {
-          "name": "Renovirano",
           "value": "da"
         },
         {
