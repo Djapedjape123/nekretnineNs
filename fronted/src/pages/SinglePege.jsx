@@ -1,5 +1,4 @@
-// SinglePage.jsx
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { MdLocationOn } from 'react-icons/md'
 import { FaBed, FaBath, FaArrowLeft, FaExpand, FaTimes } from 'react-icons/fa'
@@ -9,6 +8,7 @@ export default function SinglePage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
+  const topRef = useRef(null) // <--- dodato
 
   const [property, setProperty] = useState(null)
   const [images, setImages] = useState([])
@@ -265,6 +265,33 @@ export default function SinglePage() {
     return () => { cancelled = true }
   }, [id, location.state, getYoutubeEmbedUrl])
 
+  // ensure page is at top when we mount/navigate here
+  useEffect(() => {
+    const prev = (typeof window !== 'undefined' && window.history && window.history.scrollRestoration) ? window.history.scrollRestoration : null
+    try {
+      if (typeof window !== 'undefined' && window.history && 'scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual'
+      }
+    } catch(e) {
+      // ignore (some environments deny access)
+    }
+
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: 'auto', block: 'start' })
+    } else if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    }
+
+    return () => {
+      try {
+        if (typeof window !== 'undefined' && window.history && prev !== null) {
+          window.history.scrollRestoration = prev
+        }
+      } catch(e) { /* ignore */ }
+    }
+  // location.key se menja pri svakom ulasku u rutu, pa osigurava izvršavanje pri navigaciji
+  }, [location.key])
+
   // Slider controls
   const prevImage = () => {
     setCurrentImage(i => {
@@ -353,7 +380,7 @@ export default function SinglePage() {
 
   return (
     <div className="min-h-screen bg-black text-white py-12 px-6 mt-10">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto" ref={topRef}>
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-yellow-400 mb-6 hover:text-yellow-300">
           <FaArrowLeft /> {t('backToSearch', 'Nazad')}
         </button>

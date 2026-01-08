@@ -38,12 +38,12 @@ function NavBar() {
         setOpen(false)
         setProdajaOpen(false)
         setIzdavanjeOpen(false)
+        window.scrollTo(0, 0)
     }
 
     return (
         <header
-            className={`top-0 left-0 w-full z-50 fixed transition-colors duration-300 ${isScrolled ? 'bg-black/40 backdrop-blur-sm' : 'bg-black'
-                }`}
+            className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 ${isScrolled ? 'bg-black/40 backdrop-blur-sm' : 'bg-black'}`}
         >
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 
@@ -62,26 +62,22 @@ function NavBar() {
 
                     {/* Prodaja Dropdown */}
                     <div className="relative group">
-                        <NavLink to="/prodaja" className={navClass} onClick={() => closeAll()}>{t('sales')}</NavLink>
+                        <NavLink to="/prodaja" className={navClass} onClick={closeAll}>{t('sales')}</NavLink>
                         <div className="absolute left-0 mt-2 w-48 bg-black/90 backdrop-blur-sm border border-yellow-500 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
-                            {/* Ključna izmena: Koristimo proste stringove za tipove koji se lako filtriraju u ProdajaPage */}
                             <Link to="/prodaja" state={{ type: 'stan' }} onClick={closeAll} className={dropdownItemClass}> {t('stanovi')} </Link>
                             <Link to="/prodaja" state={{ type: 'kuca' }} onClick={closeAll} className={dropdownItemClass}> {t('kuce')} </Link>
                             <Link to="/prodaja" state={{ type: 'plac' }} onClick={closeAll} className={dropdownItemClass}> {t('parcele') || 'Parcele'} </Link>
                             <Link to="/prodaja" state={{ type: 'poslovni' }} onClick={closeAll} className={dropdownItemClass}> {t('poslovniProstor')}</Link>
-
                         </div>
                     </div>
 
                     {/* Izdavanje Dropdown */}
                     <div className="relative group">
-                        <NavLink to="/izdavanje" className={navClass} onClick={() => closeAll()}>{t('rent')}</NavLink>
+                        <NavLink to="/izdavanje" className={navClass} onClick={closeAll}>{t('rent')}</NavLink>
                         <div className="absolute left-0 mt-2 w-48 bg-black/90 backdrop-blur-sm border border-yellow-500 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
-                            {/* Šaljemo direktno type: 'stan', isto kao u prodaji */}
                             <Link to="/izdavanje" state={{ type: 'stan' }} onClick={closeAll} className={dropdownItemClass}>{t('stanovi')}</Link>
                             <Link to="/izdavanje" state={{ type: 'kuca' }} onClick={closeAll} className={dropdownItemClass}>{t('kuce')}</Link>
                             <Link to="/izdavanje" state={{ type: 'poslovni' }} onClick={closeAll} className={dropdownItemClass}>{t('poslovniProstor')}</Link>
-
                         </div>
                     </div>
 
@@ -92,47 +88,23 @@ function NavBar() {
                 {/* ZASTAVICE + CTA */}
                 <div className="hidden md:flex items-center gap-1">
                     <div className="flex gap-2 p-1 rounded-xl">
-                        {/* SRPSKI */}
-                        <button
-                            onClick={() => changeLang('sr')}
-                            className="group flex items-center gap-1 px-2 py-1 bg-zinc-900 border border-amber-500 rounded-lg hover:bg-amber-500 transition-all duration-300"
-                        >
-                            
+                        <button onClick={() => changeLang('sr')} className="group flex items-center gap-1 px-2 py-1 bg-zinc-900 border border-amber-500 rounded-lg hover:bg-amber-500 transition-all duration-300">
                             <img src="https://flagcdn.com/w40/rs.png" alt="Srbija" className="w-6 h-auto grayscale-[0.5] group-hover:grayscale-0 transition-all shadow-sm" />
                         </button>
-
-                        {/* RUSKI */}
-                        <button
-                            onClick={() => changeLang('ru')}
-                            className="group flex items-center gap-1 px-2 py-1 bg-zinc-900 border border-amber-500 rounded-lg hover:bg-amber-500 transition-all duration-300"
-                        >
-                            
+                        <button onClick={() => changeLang('ru')} className="group flex items-center gap-1 px-2 py-1 bg-zinc-900 border border-amber-500 rounded-lg hover:bg-amber-500 transition-all duration-300">
                             <img src="https://flagcdn.com/w40/ru.png" alt="Rusija" className="w-6 h-auto grayscale-[0.5] group-hover:grayscale-0 transition-all shadow-sm" />
                         </button>
-
-                        {/* ENGLESKI */}
-                        <button
-                            onClick={() => changeLang('en')}
-                            className="group flex items-center gap-1 px-2 py-1 bg-zinc-900 border border-amber-500 rounded-lg hover:bg-amber-500 transition-all duration-300"
-                        >
-                            
+                        <button onClick={() => changeLang('en')} className="group flex items-center gap-1 px-2 py-1 bg-zinc-900 border border-amber-500 rounded-lg hover:bg-amber-500 transition-all duration-300">
                             <img src="https://flagcdn.com/w40/gb.png" alt="UK" className="w-6 h-auto grayscale-[0.5] group-hover:grayscale-0 transition-all shadow-sm" />
                         </button>
                     </div>
-                    <a
-                        href="tel:+38163238564"
-                        className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400 transition font-bold"
-                    >
+                    <a href="tel:+38163238564" className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400 transition font-bold">
                         {t('cta')}
                     </a>
                 </div>
 
                 {/* Mobile button */}
-                <button
-                    onClick={() => setOpen(!open)}
-                    className="md:hidden text-white text-2xl"
-                    aria-label="toggle menu"
-                >
+                <button onClick={() => setOpen(!open)} className="md:hidden text-white text-2xl" aria-label="toggle menu">
                     ☰
                 </button>
             </div>
@@ -142,14 +114,10 @@ function NavBar() {
                 <div className="md:hidden fixed inset-x-0 top-20 bg-black/95 backdrop-blur-xl border-t border-yellow-500/50 text-white min-h-screen z-[60] animate-in fade-in slide-in-from-top duration-300">
                     <nav className="flex flex-col p-3 gap-1">
 
-                        {/* Početna */}
                         <NavLink
                             to="/"
                             onClick={closeAll}
-                            className={({ isActive }) =>
-                                `flex items-center py-3 px-4 rounded-xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm border border-transparent hover:border-yellow-500/20 ${isActive ? 'text-yellow-400 font-bold' : 'text-white'
-                                }`
-                            }
+                            className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm border border-transparent hover:border-yellow-500/20 ${isActive ? 'text-yellow-400 font-bold' : 'text-white'}`}
                         >
                             {t('home')}
                         </NavLink>
@@ -160,7 +128,7 @@ function NavBar() {
                                 className="flex justify-between items-center p-4 cursor-pointer hover:bg-yellow-500/10 transition-colors"
                                 onClick={() => { setProdajaOpen(!prodajaOpen); setIzdavanjeOpen(false); }}
                             >
-                                <span className="font-bold uppercase tracking-wider text-yellow-400">{t('sales')}</span>
+                                <span className={navClass}>{t('sales')}</span>
                                 <span className={`text-xl transition-transform duration-300 ${prodajaOpen ? 'rotate-180 text-yellow-400' : 'text-gray-500'}`}>
                                     {prodajaOpen ? '−' : '+'}
                                 </span>
@@ -182,7 +150,7 @@ function NavBar() {
                                 className="flex justify-between items-center p-4 cursor-pointer hover:bg-yellow-500/10 transition-colors"
                                 onClick={() => { setIzdavanjeOpen(!izdavanjeOpen); setProdajaOpen(false); }}
                             >
-                                <span className="font-bold uppercase tracking-wider text-yellow-400">{t('rent')}</span>
+                                <span className={navClass}>{t('rent')}</span>
                                 <span className={`text-xl transition-transform duration-300 ${izdavanjeOpen ? 'rotate-180 text-yellow-400' : 'text-gray-500'}`}>
                                     {izdavanjeOpen ? '−' : '+'}
                                 </span>
@@ -197,50 +165,28 @@ function NavBar() {
                             )}
                         </div>
 
-                        {/* Ostali Linkovi */}
                         <div className="flex flex-col gap-2 mt-4">
-                            <NavLink
-                                to="/favorite"
-                                onClick={closeAll}
-                                className={({ isActive }) =>
-                                    `flex items-center py-3 px-4 rounded-xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm ${isActive ? 'text-yellow-400 font-bold' : 'text-white'
-                                    }`
-                                }
-                            >
+                            <NavLink to="/favorite" onClick={closeAll} className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm ${isActive ? 'text-yellow-400 font-bold' : 'text-white'}`}>
                                 {t('favorite')}
                             </NavLink>
-
-                            <NavLink
-                                to="/kontakt"
-                                onClick={closeAll}
-                                className={({ isActive }) =>
-                                    `flex items-center py-3 px-4 rounded-xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm ${isActive ? 'text-yellow-400 font-bold' : 'text-white'
-                                    }`
-                                }
-                            >
+                            <NavLink to="/kontakt" onClick={closeAll} className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm ${isActive ? 'text-yellow-400 font-bold' : 'text-white'}`}>
                                 {t('contact')}
                             </NavLink>
                         </div>
 
-                        {/* Donji deo: Jezici i CTA */}
                         <div className="mt-auto pt-8 flex flex-col gap-6">
                             <div className="flex justify-center gap-6 items-center bg-white/5 py-4 rounded-2xl border border-white/5">
                                 <button onClick={() => changeLang('sr')} className="text-2xl hover:scale-125 transition-transform">🇷🇸</button>
                                 <button onClick={() => changeLang('ru')} className="text-2xl hover:scale-125 transition-transform">🇷🇺</button>
                                 <button onClick={() => changeLang('en')} className="text-2xl hover:scale-125 transition-transform">🇺🇸</button>
                             </div>
-
-                            <a
-                                href="tel:+38163238564"
-                                className="w-full bg-gradient-to-r from-yellow-600 to-yellow-400 text-black py-4 rounded-2xl text-center font-black uppercase tracking-widest shadow-lg shadow-yellow-500/20 active:scale-95 transition-all"
-                            >
+                            <a href="tel:+38163238564" className="w-full bg-gradient-to-r from-yellow-600 to-yellow-400 text-black py-4 rounded-2xl text-center font-black uppercase tracking-widest shadow-lg shadow-yellow-500/20 active:scale-95 transition-all">
                                 {t('cta')}
                             </a>
                         </div>
                     </nav>
                 </div>
             )}
-
         </header>
     )
 }

@@ -72,10 +72,9 @@ app.get("/oglasi/izdavanje", (req, res) => {
   });
 });
 
-
-// ================== TOP PONUDE (N najskupljih, default 3) ==================
-app.get("/oglasi/topponude", (req, res) => {
-  const count = Math.max(1, parseInt(req.query.count, 10) || 3);
+ app.get("/oglasi/topponude", (req, res) => {
+  const requested = Math.max(1, parseInt(req.query.count, 10) || 5);
+  const count = Math.min(requested, 5); // limit 5
 
   getOglasi((err, oglasi) => {
     if (err) {
@@ -89,7 +88,7 @@ app.get("/oglasi/topponude", (req, res) => {
     // Parsiraj numerički deo cene (uklanja tačke, zareze, razmake, € itd.)
     const parsePrice = (o) => {
       const raw = (o.cena ?? o.price ?? "").toString();
-      const digitsOnly = raw.replace(/[^0-9]/g, ""); // npr. "1.200.000" -> "1200000"
+      const digitsOnly = raw.replace(/[^0-9]/g, "");
       return digitsOnly === "" ? 0 : parseInt(digitsOnly, 10);
     };
 
@@ -101,8 +100,16 @@ app.get("/oglasi/topponude", (req, res) => {
       }
     };
 
-    // Dodaj privremeno _priceNum, sortiraj opadajuće i uzmi prvih N
-    const top = oglasi
+    // Filtriraj oglase čiji naslov počinje sa "Lux" (naslov ili title), case-insensitive
+    const filtered = oglasi.filter(o => {
+      const title = (o.naslov ?? o.title ?? '').toString();
+      return /^Lux/i.test(title);
+    });
+
+    if (!filtered.length) return res.json([]);
+
+    // Sortiraj po ceni (opadajuće) i uzmi do 'count' elemenata
+    const top = filtered
       .map(o => ({ ...o, _priceNum: parsePrice(o) }))
       .sort((a, b) => b._priceNum - a._priceNum)
       .slice(0, count)

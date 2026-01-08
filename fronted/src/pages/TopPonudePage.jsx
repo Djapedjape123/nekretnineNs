@@ -9,16 +9,35 @@ function TopPonudePage() {
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const timerRef = useRef(null)
-
   const navigate = useNavigate()
 
-  // FETCH TOP 3
+  // FETCH TOP 5 (backend vratice do 5 oglasa koji pocinju sa "Lux")
   useEffect(() => {
-    fetch(`${API_BASE}/oglasi/topponude?count=3`)
+    fetch(`${API_BASE}/oglasi/topponude?count=5`)
       .then(res => res.json())
       .then(data => setItems(data || []))
       .catch(() => setItems([]))
   }, [])
+
+  // helper: učitaj puni detalj nekretnine pa navigiraj
+  const viewDetails = async (item) => {
+    const rawId = item.id ?? item.code ?? ''
+    const id = encodeURIComponent(rawId)
+
+    try {
+      const res = await fetch(`${API_BASE}/oglasi/${id}`)
+      if (!res.ok) {
+        // fallback: ako fetch ne uspe, ipak pokušaj sa item koji imaš (bar naslov/price)
+        return navigate(`/single/${id}`, { state: { item } })
+      }
+      const full = await res.json()
+      // send full object in state so SinglePage može da koristi sve podatke
+      navigate(`/single/${id}`, { state: { item: full } })
+    } catch (e) {
+      // fallback kao iznad
+      navigate(`/single/${id}`, { state: { item } })
+    }
+  }
 
   // AUTO SLIDE
   useEffect(() => {
@@ -74,10 +93,10 @@ function TopPonudePage() {
                   </p>
 
                   <button
-                    onClick={() => navigate(`/single/${item.id}`, { state: { item } })}
+                    onClick={() => viewDetails(item)}
                     className="mt-5 px-6 py-2 bg-yellow-500 text-black font-bold rounded-md hover:bg-yellow-400 transition"
                   >
-                    {t('pogledajDetalje', 'Pogledaj detalje')}
+                    {t('details')}
                   </button>
 
                 </div>

@@ -28,6 +28,11 @@ export default function ProdajaPage() {
         setLoading(true)
         const response = await fetch(`${API_BASE}/oglasi/prodaja`)
         const data = await response.json()
+        
+        // DEBUG: Otvori konzolu (F12) da vidis sta ti tacno stize iz baze kao "vrstanekretnine"
+        // Ovo ce ti pomoci da vidis da li pise "Lokal" ili "Poslovni"
+        console.log("Učitani tipovi nekretnina:", data.map(i => i.vrstanekretnine));
+        
         setListings(data)
       } catch (err) { console.error(err) }
       finally { setLoading(false) }
@@ -39,32 +44,67 @@ export default function ProdajaPage() {
     setCurrentPage(1)
   }, [typeFilter])
 
-  const tt = (key, fallback) => {
-    const val = t(key)
-    return val === key ? fallback : val
+  // --- UNAPREĐEN NORMALIZATOR ---
+  // Sada briše i razmake, crtice i sve što nije slovo.
+  // Primer: "Poslovni prostor" -> "poslovniprostor"
+  const normalizeText = (text) => {
+    if (!text) return "";
+    return text.toString().toLowerCase()
+      .replace(/ć|č/g, 'c')
+      .replace(/š/g, 's')
+      .replace(/đ/g, 'dj')
+      .replace(/ž/g, 'z')
+      .replace(/[^a-z0-9]/g, ''); // Briše razmake, tacke, crtice (ostavlja samo slova i brojeve)
   }
 
+  // --- GLAVNA LOGIKA FILTRIRANJA ---
   const filteredListings = typeFilter
-    ? listings.filter(l => (l.naslov || '').toLowerCase().includes(typeFilter.toLowerCase()))
+    ? listings.filter(l => {
+        const dbType = normalizeText(l.vrstanekretnine); // npr. "lokal" ili "poslovniprostor"
+        const filterType = normalizeText(typeFilter);    // npr. "poslovni"
+
+        // 1. Osnovna provera (da li sadrzi rec)
+        if (dbType.includes(filterType)) return true;
+
+        // 2. DODATNA PROVERA ZA POSLOVNI PROSTOR
+        // Ako je filter "poslovni", prihvati i ako u bazi pise "lokal", "magacin", "hala", "kancelarija"
+        if (filterType.includes('poslovni')) {
+            if (dbType.includes('lokal')) return true;
+            if (dbType.includes('magacin')) return true;
+            if (dbType.includes('hala')) return true;
+            if (dbType.includes('kancelarija')) return true;
+        }
+
+        return false;
+      })
     : listings
 
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage)
   const currentItems = filteredListings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
-  // Helper: normalizacija objekta koji cuvamo kao favorite
-  const makeFavObject = (item) => {
-    return {
-      id: String(item.id ?? item.code ?? Date.now()),
-      title: item.naslov || item.title || '',
-      price: item.cena ? `${item.cena} €` : (item.price || ''),
-      location: [item.mesto, item.naselje].filter(Boolean).join(', ') || (item.location || ''),
-      size: item.kvadratura_int || item.size || 0,
-      rooms: item.brojsoba || item.rooms || 0,
-      baths: item.brojkupatila || item.baths || 0,
-      image: item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg',
-      contactphone: item.contactphone || ''
-    }
+  const tt = (key, fallback) => {
+    const val = t(key)
+    return val === key ? fallback : val
   }
+
+  function formatPrice(price) {
+    if (price === null || price === undefined || price === '') return '';
+    const num = Number(String(price).replace(/[^0-9.-]+/g, ''));
+    if (Number.isNaN(num)) return String(price);
+    return new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 }).format(Math.round(num)) + ' €';
+  }
+
+  const makeFavObject = (item) => ({
+    id: String(item.id ?? item.code ?? Date.now()),
+    title: item.naslov || item.title || '',
+    price: item.cena ? `${item.cena} €` : (item.price || ''),
+    location: [item.mesto, item.naselje].filter(Boolean).join(', ') || (item.location || ''),
+    size: item.kvadratura_int || item.size || 0,
+    rooms: item.brojsoba || item.rooms || 0,
+    baths: item.brojkupatila || item.baths || 0,
+    image: item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg',
+    contactphone: item.contactphone || ''
+  })
 
   const isFavorite = (id) => {
     if (id === undefined || id === null) return false
@@ -81,16 +121,7 @@ export default function ProdajaPage() {
       return updated
     })
   }
- 
-  function formatPrice(price) {
-    if (price === null || price === undefined || price === '') return '';
-    // pokušaj parsiranja (podržava stringove i brojeve)
-    const num = Number(String(price).replace(/[^0-9.-]+/g, ''));
-    if (Number.isNaN(num)) return String(price);
-    return new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 }).format(Math.round(num)) + ' €';
-  }
 
-  //bg-gradient-to-b from-black via-gray-900
   if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-bold text-2xl animate-pulse">Učitavanje...</div>
 
   return (
@@ -107,7 +138,9 @@ export default function ProdajaPage() {
         </div>
 
         {filteredListings.length === 0 ? (
-          <div className="text-center py-20 text-gray-500 text-xl">Nema rezultata za traženi filter.</div>
+          <div className="text-center py-20 text-gray-500 text-xl">
+             Nema rezultata za kategoriju: <span className="text-yellow-400">{typeFilter}</span>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {currentItems.map(item => {
@@ -136,7 +169,7 @@ export default function ProdajaPage() {
                       <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int} m²</div>
                     </div>
                     <div className="grid grid-cols-5 gap-2 mt-6">
-                      <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4  bg-transparent border border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
+                      <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-transparent border border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
                       <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">{t('contactTitle')}</a>
                     </div>
                   </div>
@@ -148,13 +181,13 @@ export default function ProdajaPage() {
 
         {totalPages > 1 && (
           <div className="flex justify-center mt-12 gap-3">
-            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0, 0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronLeft /></button>
+            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0, 0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30 text-white"><FaChevronLeft /></button>
             {[...Array(totalPages)].map((_, i) => (
               <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0, 0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-white'}`}>
                 {i + 1}
               </button>
             ))}
-            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0, 0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronRight /></button>
+            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0, 0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30 text-white"><FaChevronRight /></button>
           </div>
         )}
       </div>
