@@ -32,6 +32,10 @@ export default function Footer() {
                 <MdPhone className="w-5 h-5 text-yellow-400" />
                 <span>+381 62 815 0586</span>
               </a>
+              <a href="tel:+38163238564" className="flex items-center gap-3 hover:text-yellow-400 transition">
+                <MdPhone className="w-5 h-5 text-yellow-400" />
+                <span>+381 63 238 564</span>
+              </a>
 
               <a
                 href="https://www.google.com/maps/place/%D0%8B%D0%B8%D1%80%D0%BF%D0%B0%D0%BD%D0%BE%D0%B2%D0%B0+37,+%D0%9D%D0%BE%D0%B2%D0%B8+%D0%A1%D0%B0%D0%B4/@45.252208,19.8133722,15z"
@@ -139,12 +143,12 @@ export default function Footer() {
                 </a>
 
                 <a
-                  href="https://nadjinekretnine.com/prodavci/agencija/1635/serbes-d-o-o"
+                  href="https://www.halooglasi.com/nekretnine/prodaja-stanova/novi-sad"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded hover:opacity-95 transition text-sm"
                 >
-                  Nađi nekretnine
+                  Halo Oglasi
                 </a>
 
                 <a
@@ -156,13 +160,22 @@ export default function Footer() {
                   Indomio
                 </a>
                 <a
-                  href="https://www.oglasi.rs/nekretnine/"
+                  href="https://www.indomio.rs/agencija/serbes-d.o.o./9751"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded hover:opacity-95 transition text-sm"
                 >
-                 Oglasi.rs
+                  Nadji Nekretnine
                 </a>
+               <a
+                  href="https://nadjinekretnine.com/prodavci/agencija/1635/serbes-d-o-o"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded hover:opacity-95 transition text-sm"
+                >
+                  Nekretnine.rs
+                </a>
+                
               </div>
             </div>
 
@@ -216,8 +229,9 @@ export default function Footer() {
                 <a
                   href="https://www.youtube.com/@draganacobanov7551"
                   className="w-11 h-11 flex items-center justify-center rounded-full border border-yellow-600/30 text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
-                  aria-label="Viber"
-                  title="Viber"
+                  aria-label="YouTube"
+                  title="YouTube"
+                  
                 >
                   <FaYoutube size={18} />
                 </a>
