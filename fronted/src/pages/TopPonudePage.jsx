@@ -45,7 +45,7 @@ function TopPonudePage() {
 
     timerRef.current = setInterval(() => {
       setIndex(i => (i + 1) % items.length)
-    }, 3500)
+    }, 3000)
 
     return () => clearInterval(timerRef.current)
   }, [paused, items])

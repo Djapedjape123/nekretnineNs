@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { MdLocationOn } from 'react-icons/md'
 import { FaBed, FaBath, FaArrowLeft, FaExpand, FaTimes } from 'react-icons/fa'
 import { t } from '../i1n8'
+import { API_BASE } from '../config'
 
 export default function SinglePage() {
   const { id } = useParams()
@@ -243,7 +244,7 @@ export default function SinglePage() {
       setProperty(null)
       setImages([])
       try {
-        const res = await fetch(`http://localhost:3001/oglasi/${encodeURIComponent(id)}`)
+        const res = await fetch(`${API_BASE}/oglasi/${encodeURIComponent(id)}`)
         if (!res.ok) {
           if (res.status === 404) throw new Error('Nekretnina nije pronađena.')
           throw new Error('Greška pri dohvatu podataka.')
@@ -458,36 +459,36 @@ export default function SinglePage() {
           <div className="mt-6 bg-black/30 border border-white/5 rounded-lg p-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-300">
               <div>
-                <div className="text-xs text-gray-400">Tip ponude</div>
+                <div className="text-xs text-gray-400">{t('tipPonude')}</div>
                 <div className="font-semibold">{meta.offerType || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">Tip nekretnine</div>
+                <div className="text-xs text-gray-400">{t('tipNekretnine')}</div>
                 <div className="font-semibold">{meta.propertyType || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">Površina</div>
+                <div className="text-xs text-gray-400">{t('povrsina')}</div>
                 <div className="font-semibold">{meta.area ? `${meta.area} m²` : (property.size ? `${property.size} m²` : '-')}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">Godina</div>
+                <div className="text-xs text-gray-400">{t('godina')}</div>
                 <div className="font-semibold">{meta.yearBuilt || '-'}</div>
               </div>
 
               <div>
-                <div className="text-xs text-gray-400">Sprat</div>
+                <div className="text-xs text-gray-400">{t('sprat')}</div>
                 <div className="font-semibold">{meta.floor || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">Spratova</div>
+                <div className="text-xs text-gray-400">{t('spratnost')}</div>
                 <div className="font-semibold">{meta.floorTotal || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">ID kod</div>
+                <div className="text-xs text-gray-400">{t('Id')}</div>
                 <div className="font-semibold">{meta.idCode || property.id || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">Grejanje</div>
+                <div className="text-xs text-gray-400">{t('grejanje')}</div>
                 <div className="font-semibold">{meta.heating || '-'}</div>
               </div>
             </div>

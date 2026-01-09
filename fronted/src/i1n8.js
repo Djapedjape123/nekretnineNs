@@ -16,6 +16,10 @@ export const translations = {
 
     showCity: 'Prikaži grad',
     allCities: 'Svi gradovi',
+    //prodaja i izdavanje
+    nemaRezultata: 'Nema rezultata za kategoriju',
+    pronadjeno: 'Pronađeno',
+    nekretnina:' nekretnina',
 
     saleTitle: 'Nekretnine na prodaju',
     rentTitle: 'Nekretnine za izdavanje',
@@ -119,6 +123,23 @@ export const translations = {
     infoLinks: 'Koriste Informacije',
     topPonude: 'Top ponude',
 
+    //single Pege
+     tipPonude: 'Tip ponude',
+     tipNekretnine:' Tip nekretnine',
+     povrsina: 'Površina',
+     godina: 'Godina izgradnje',
+     sprat:'Sprat',
+     spratnost: 'Spratnost',
+     Id:'Id kod nekretnine',
+     grejanje:' Grejanje',
+
+     //onama
+     onama: 'O nama',
+     tekst1:' Naša agencija se bavi posredovanjem u kupoprodaji i izdavanju nekretnina više od deset godina,Posvećeni smo profesionalnom pristupu, transparentnosti i pružanju najbolje vrednosti našim klijentima.',
+     tekst2:'Kombinujemo iskustvo sa savremenim digitalnim alatima kako bismo osigurali da svaki proces bude brz, jednostavan i siguran.Vaša nekretnina je u sigurnim rukama.',
+            
+
+
 
     // DODATO: prevodi za UslugePage
     services: {
@@ -146,14 +167,14 @@ export const translations = {
         },
       ],
     },
-    offers: {
+    
       heading: 'Usluge koje nudimo',
       longTermTitle: 'Dugoročno izdavanje',
       p1: 'Dugoročno izdavanje predstavlja iznajmljivanje nekretnine na period od više meseci ili godina. Prihod od ovakvog iznajmljivanja bi trebalo da je stabilan i sa manje problema, ali da li je uvek tako?',
       p2: 'Često je potrebno mnogo obilazaka i sastanaka sa potencijalnim stanarima pre sklapanja dogovora. Ima slučajeva da se pojave problemi sa naplatom kirije, nagomilavanjem neplaćenih računa, uništavanjem inventara i još mnogo čime.',
       p3: 'Mi kao agencija, pružamo uslugu traženja pouzdanih stanara, potpisivanja ugovora i rukovođenja administrativnim poslovima vezanih za dugoročno iznajmljivanje. Sa nama, stanodavac može da se fokusira na svoje poslove i ima miran san. Ukoliko ste zainteresovani za dugoročno iznajmljivanje vaše nekretnine, obratite nam se za više informacija.',
       imageAlt: 'Zgrade'
-    }
+    
 
   },
 
@@ -181,6 +202,26 @@ export const translations = {
     ugovor3: 'Общие условия бизнеса',
     povrsina: 'Площадь',
 
+    //prodaja i izdavanje
+    nemaRezultata: 'Нет результатов для категории',
+    pronadjeno: 'Найдено',
+    nekretnina:' недвижимость',
+
+    //Single Pege
+      tipPonude: 'Тип предложения',
+      tipNekretnine:' Тип недвижимости',
+      povrsina: 'Площадь',
+      godina: 'Год постройки',
+      sprat:'Этаж',
+      spratnost: 'Этажность',
+      Id:'ID код недвижимости',
+      grejanje:' Отопление',
+
+
+      //onama
+      onama: 'О нас',
+      tekst1:' Наше агентство занимается посредничеством в купле-продаже и аренде недвижимости более десяти лет. Мы привержены профессиональному подходу, прозрачности и предоставлению наилучшей ценности нашим клиентам.',
+      tekst2:' Мы сочетаем опыт с современными цифровыми инструментами, чтобы обеспечить быстрый, простой и безопасный процесс. Ваша недвижимость в надежных руках.',
     showCity: 'Выбор города',
     allCities: 'Все города',
 
@@ -278,7 +319,14 @@ export const translations = {
     loading: 'Загрузка...',
     infoLinks: 'Полезная информация',
     topPonude: 'Лучшие предложения',
-
+    
+      heading: 'Услуги, которые мы предлагаем',
+      longTermTitle: 'Долгосрочная аренда',
+      p1: 'Долгосрочная аренда — это сдача недвижимости на срок от нескольких месяцев до лет. Доход от такой аренды должен быть стабильным и сопровождаться меньшим количеством проблем, но так ли это всегда?',
+      p2: 'Часто требуется много просмотров и встреч с потенциальными арендаторами перед заключением сделки. Бывают случаи проблем с оплатой аренды, накоплением неоплаченных счетов, уничтожением имущества и многое другое.',
+      p3: 'Мы как агентство предоставляем услугу поиска надежных арендаторов, оформления договоров и ведения административных вопросов, связанных с долгосрочной арендой. С нами арендодатель может сосредоточиться на своих делах и спать спокойно. Если вы заинтересованы в долгосрочной аренде вашей недвижимости, свяжитесь с нами для получения дополнительной информации.',
+      imageAlt: 'Здания',
+    
     // DODATO: prevodi za UslugePage
     services: {
       heading: 'Наши ключевые ценности',
@@ -305,14 +353,7 @@ export const translations = {
         },
       ],
     },
-    offers: {
-      heading: 'Услуги, которые мы предлагаем',
-      longTermTitle: 'Долгосрочная аренда',
-      p1: 'Долгосрочная аренда — это сдача недвижимости на срок от нескольких месяцев до лет. Доход от такой аренды должен быть стабильным и сопровождаться меньшим количеством проблем, но так ли это всегда?',
-      p2: 'Часто требуется много просмотров и встреч с потенциальными арендаторами перед заключением сделки. Бывают случаи проблем с оплатой аренды, накоплением неоплаченных счетов, уничтожением имущества и многое другое.',
-      p3: 'Мы как агентство предоставляем услугу поиска надежных арендаторов, оформления договоров и ведения административных вопросов, связанных с долгосрочной арендой. С нами арендодатель может сосредоточиться на своих делах и спать спокойно. Если вы заинтересованы в долгосрочной аренде вашей недвижимости, свяжитесь с нами для получения дополнительной информации.',
-      imageAlt: 'Здания'
-    }
+    
 
   },
 
@@ -343,6 +384,25 @@ export const translations = {
 
     garaza: 'Garage',
     sobe: 'Rooms',
+    //prodaja i izdavanje
+    nemaRezultata: 'No results for category',
+    pronadjeno: 'Found',
+    nekretnina:' property',
+
+    //Single Pege
+      tipPonude: 'Offer type',
+      tipNekretnine:' Property type',
+      povrsina: 'Area',
+      godina: 'Year built',
+      sprat:'Floor',
+      spratnost: 'Total floors',
+      Id:'Property ID code',
+      grejanje:' Heating',
+
+      //onama
+      onama: 'About us',
+      tekst1:' Our agency has been engaged in mediation in the purchase and sale and rental of real estate for more than ten years. We are committed to a professional approach, transparency and providing the best value to our clients.',
+      tekst2:'We combine experience with modern digital tools to ensure that every process is fast, simple and secure. Your property is in safe hands.',
 
     saleTitle: 'Properties for sale',
     rentTitle: 'Properties for rent',
@@ -428,7 +488,13 @@ export const translations = {
     land: 'Land',
     office: 'Office',
     villa: 'Villa',
-
+    
+    heading: 'Services we offer',
+    longTermTitle: 'Long-term renting',
+    p1: 'Long-term renting means leasing a property for several months or years at a time. The income from such renting should be stable and with fewer problems, but is that always the case?',
+    p2: 'Often many viewings and meetings with potential tenants are required before closing a deal...',
+    p3: 'As an agency we provide tenant screening services, contract signing, and administrative management related to long-term renting...',
+    imageAlt: 'Buildings',
     any: 'Any',
 
     minPrice: 'Min price (€)',
@@ -461,14 +527,8 @@ export const translations = {
       ],
     },
   },
-  offers: {
-    heading: 'Services we offer',
-    longTermTitle: 'Long-term renting',
-    p1: 'Long-term renting means leasing a property for several months or years. Income from such renting should be stable and come with fewer issues — but is that always the case?',
-    p2: 'Often many viewings and meetings with potential tenants are required before a deal is closed. There can be problems with rent collection, unpaid bills, damage to inventory and more.',
-    p3: 'As an agency we provide tenant screening, contract signing and handling administrative tasks related to long-term renting. With us the landlord can focus on other work and sleep peacefully. If you are interested in long-term renting your property, contact us for more information.',
-    imageAlt: 'Buildings'
-  }
+    // DODATO: prevodi za PonudeNudimo
+  
 
 }
 

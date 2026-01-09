@@ -21,23 +21,23 @@ function PonudeNudimo() {
           }`}
         >
           <h2 className="text-4xl md:text-5xl font-extrabold text-yellow-400 mb-8">
-            {t('offers.heading')}
+            {t('heading')}
           </h2>
 
           <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-            {t('offers.longTermTitle')}
+            {t('longTermTitle')}
           </h3>
 
           <p className="text-gray-700 mb-4 leading-relaxed">
-            {t('offers.p1')}
+            {t('p1')}
           </p>
 
           <p className="text-gray-700 mb-4 leading-relaxed">
-            {t('offers.p2')}
+            {t('p2')}
           </p>
 
           <p className="text-gray-700 leading-relaxed">
-            {t('offers.p3')}
+            {t('p3')}
           </p>
         </div>
 
@@ -49,7 +49,7 @@ function PonudeNudimo() {
         >
           <img
             src={buildingsImage}
-            alt={t('offers.imageAlt')}
+            alt={t('imageAlt')}
             className="w-full h-full object-cover transform hover:scale-105 transition duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>

@@ -128,7 +128,7 @@ function NavBar() {
                                 className="flex justify-between items-center p-4 cursor-pointer hover:bg-yellow-500/10 transition-colors"
                                 onClick={() => { setProdajaOpen(!prodajaOpen); setIzdavanjeOpen(false); }}
                             >
-                                <span className={navClass}>{t('sales')}</span>
+                                <NavLink to="/prodaja" className={navClass} onClick={closeAll}>{t('sales')}</NavLink>
                                 <span className={`text-xl transition-transform duration-300 ${prodajaOpen ? 'rotate-180 text-yellow-400' : 'text-gray-500'}`}>
                                     {prodajaOpen ? '−' : '+'}
                                 </span>
@@ -150,7 +150,7 @@ function NavBar() {
                                 className="flex justify-between items-center p-4 cursor-pointer hover:bg-yellow-500/10 transition-colors"
                                 onClick={() => { setIzdavanjeOpen(!izdavanjeOpen); setProdajaOpen(false); }}
                             >
-                                <span className={navClass}>{t('rent')}</span>
+                                <NavLink to="/izdavanje" className={navClass} onClick={closeAll}>{t('rent')}</NavLink>
                                 <span className={`text-xl transition-transform duration-300 ${izdavanjeOpen ? 'rotate-180 text-yellow-400' : 'text-gray-500'}`}>
                                     {izdavanjeOpen ? '−' : '+'}
                                 </span>

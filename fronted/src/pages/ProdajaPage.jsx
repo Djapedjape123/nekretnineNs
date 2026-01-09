@@ -133,20 +133,20 @@ export default function ProdajaPage() {
             <h1 className="text-4xl md:text-6xl font-black text-yellow-400 uppercase tracking-tighter">
               {typeFilter ? `${typeFilter} - Prodaja` : tt('saleTitle', 'Prodaja')}
             </h1>
-            <p className="text-gray-400 mt-2">Pronađeno {filteredListings.length} nekretnina</p>
+            <p className="text-gray-400 mt-2">{t('pronadjeno')} {filteredListings.length}  {t('nekretnina')}</p>
           </div>
         </div>
 
         {filteredListings.length === 0 ? (
           <div className="text-center py-20 text-gray-500 text-xl">
-             Nema rezultata za kategoriju: <span className="text-yellow-400">{typeFilter}</span>
+             {t('nemaRezultata')} <span className="text-yellow-400">{typeFilter}</span>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {currentItems.map(item => {
               const stableId = String(item.id ?? item.code ?? Date.now())
               return (
-                <article key={stableId} className="bg-black border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
+                <article key={stableId} className="bg-black border border-white/10 rounded-3xl overflow-hidden hover:border-4 hover:border-yellow-500 transition-all group">
                   <div className="relative h-64">
                     <img src={item.slike?.slika?.[0]?.url || '/placeholder.jpg'} alt="" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                     <div className="absolute top-4 right-4 flex flex-col gap-2">

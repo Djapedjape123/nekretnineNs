@@ -223,6 +223,8 @@ export default function Footer() {
                   className="w-11 h-11 flex items-center justify-center rounded-full border border-yellow-600/30 text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
                   aria-label="Viber"
                   title="Viber"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <FaViber size={18} />
                 </a>
@@ -231,6 +233,8 @@ export default function Footer() {
                   className="w-11 h-11 flex items-center justify-center rounded-full border border-yellow-600/30 text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
                   aria-label="YouTube"
                   title="YouTube"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   
                 >
                   <FaYoutube size={18} />

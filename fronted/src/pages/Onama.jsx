@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import logo from '../assets/dedaci.jpg' // ubaci svoj logo
+import { t } from '../i1n8'
 
 function ONama() {
   const [loaded, setLoaded] = useState(false)
@@ -33,17 +34,15 @@ function ONama() {
           }`}
         >
           <h2 className="text-4xl md:text-5xl font-extrabold text-yellow-400 mb-6">
-            O nama
+           {t('onama')}
           </h2>
 
           <p className="text-gray-200 mb-4 leading-relaxed text-lg">
-            Naša agencija se bavi posredovanjem u kupoprodaji i izdavanju nekretnina više od deset godina. 
-            Posvećeni smo profesionalnom pristupu, transparentnosti i pružanju najbolje vrednosti našim klijentima.
+            {t('tekst1')}
           </p>
 
           <p className="text-gray-200 leading-relaxed text-lg">
-            Kombinujemo iskustvo sa savremenim digitalnim alatima kako bismo osigurali da svaki proces bude brz, jednostavan i siguran.
-            Vaša nekretnina je u sigurnim rukama.
+           {t('tekst2')}
           </p>
         </div>
       </div>

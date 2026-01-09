@@ -194,6 +194,19 @@ app.get("/oglasi/search", (req, res) => {
   res.json(results);
 });
 
+app.get('/set-cookie', (req, res) => {
+  res.cookie('__Secure-YEC', 'neka-vrednost', {
+    httpOnly: true,      // sprečava pristup iz JS
+    secure: true,        // cookie se šalje samo preko HTTPS
+    sameSite: 'none',    // dozvoljava cross-site slanje
+    path: '/',
+    maxAge: 7 * 24 * 60 * 60 * 1000  // opciono: trajanje u milisekundama
+  });
+
+  res.json({ message: 'Cookie set!' });
+});
+
+
 
 
 const PORT = 3001;
