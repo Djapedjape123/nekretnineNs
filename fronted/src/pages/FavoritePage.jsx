@@ -43,6 +43,30 @@ export default function FavoritePage() {
     return () => clearTimeout(id)
   }, [])
 
+  const formatPrice = (value) => {
+    if (value === null || value === undefined) return ''
+
+    // Pretvori u string i ukloni sve što nije cifra, tačka ili zarez
+    let s = String(value)
+    // Ako ima euro znak ili razmak, ukloni ih (ostavi samo cifre i . i ,)
+    s = s.replace(/[^\d.,-]/g, '')
+
+    if (!s) return ''
+
+    // Najjednostavniji i siguran pristup za cene: uklonimo sve separatorе (tačke i zareze)
+    // i parsiramo kao ceo broj (većina oglasa koristi cele evre).
+    const onlyDigits = s.replace(/[.,]/g, '')
+
+    const num = Number(onlyDigits)
+    if (isNaN(num)) return value
+
+    // Formatiraj za srpsko tržište: 319300 -> 319.300
+    return new Intl.NumberFormat('sr-RS').format(num)
+  }
+
+
+
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 text-white py-12 px-6">
       <div className="max-w-7xl mx-auto">
@@ -73,9 +97,10 @@ export default function FavoritePage() {
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute top-3 left-3 bg-yellow-400 text-black font-bold px-3 py-1 rounded-md shadow">
-                    {item.price}
+                  <div className="absolute bottom-4 left-4 bg-yellow-400 text-black px-4 py-1 rounded-lg font-black text-xl">
+                    {formatPrice(item.cena || item.price)}
                   </div>
+
                   <button
                     onClick={() => toggleFavorite(item)}
                     className="absolute top-3 right-3 bg-black/50 hover:bg-black/30 p-2 rounded-full text-yellow-400 transition"
@@ -112,7 +137,7 @@ export default function FavoritePage() {
                   <div className="mt-5 flex items-center gap-3">
                     <button
                       className="flex-1 bg-transparent border border-yellow-600/30 text-yellow-400 py-2 rounded-md hover:bg-yellow-600/10 transition"
-                      onClick={() =>  navigate(`/single/${item.id}`)}
+                      onClick={() => navigate(`/single/${item.id}`)}
                     >
                       {tt('details', 'Detalji')}
                     </button>

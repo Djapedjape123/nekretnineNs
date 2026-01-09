@@ -11,6 +11,8 @@ export const translations = {
     zemljiste: 'Zemljišta',
     poslovniProstor: 'Poslovni prostori',
 
+    deteljnaPPredraga:'Detaljna pretraga',
+
     heroTitle: 'Pronađite savršenu nekretninu',
     heroSubtitle: 'Prodaja i izdavanje nekretnina u Srbiji',
 
@@ -39,7 +41,7 @@ export const translations = {
     detaljnaPretraga: 'Detaljna Pretraga Nekretnina',
     vrstaPunude: 'Vrsta ponude',
     lokal:'Lokal',
-    ugostiteljski:'Ugostiteljski',
+    ugostiteljski:'Ugostiteljski objekat',
     grad: 'Grad',
     novisad: 'Novi Sad',
     petrovac: 'Petrovaradin',
@@ -58,7 +60,16 @@ export const translations = {
     ponistiFilter: 'Poništi filter',
     pretragaId: 'Pretraga po ID-u nekretnine',
     kvadratura: 'Kvadratura',
-
+    
+    //forma home pege 
+    garsonjera: 'Garsonjera',
+    jednosoban: 'Jednosoban',
+    dvosoban: 'Dvosoban',
+    trosoban: 'Trosoban',
+    cetvorosoban: 'Četvorosoban',
+    jednoiposoban: 'Jednoiposoban',
+    dvoiposoban: 'Dvoiposoban',
+    trosiposoban: 'Trosiposoban',
     
     
 
@@ -130,6 +141,8 @@ export const translations = {
     type: 'Tip',
     propertyType: 'Vrsta',
     cene: 'Cena',
+    cenaDo: 'Cena do',
+    cenaOd: 'Cena od',
 
     sale: 'Prodaja',
     rentOption: 'Izdavanje',
@@ -235,6 +248,8 @@ export const translations = {
     ugovor3: 'Общие условия бизнеса',
     povrsina: 'Площадь',
 
+    
+
     //search more page
     detaljnaPretraga: 'Расширенный поиск недвижимости',
     vrstaPunude: 'Тип предложения',
@@ -258,6 +273,9 @@ export const translations = {
     ponistiFilter: 'Сбросить фильтр',
     pretragaId: 'Поиск по ID недвижимости',
     kvadratura: 'Квадратура',
+
+    cenaDo: 'Цена до',
+    cenaOd: 'Цена от',
 
     //prodaja i izdavanje
     nemaRezultata: 'Нет результатов для категории',
@@ -296,6 +314,16 @@ export const translations = {
 
     rooms: 'комнаты',
     baths: 'ванные',
+   
+    //forma home pege 
+    garsonjera: 'Студия',
+    jednosoban: 'Однокомнатная',
+    dvosoban: 'Двухкомнатная',
+    trosoban: 'Трехкомнатная',
+    cetvorosoban: 'Четырехкомнатная',
+    jednoiposoban: 'Однокомнатная с половиной',
+    dvoiposoban: 'Двухкомнатная с половиной',
+    trosiposoban: 'Трехкомнатная с половиной',
 
     details: 'Подробнее',
     contactBtn: 'Контакт',
@@ -368,8 +396,10 @@ export const translations = {
     land: 'Земля',
     office: 'Офис',
     villa: 'Вилла',
+    detaljnaPPretraga: 'Расширенный поиск недвижимости',
 
     any: 'Любой',
+    detaljnaPretraga: 'Расширенный поиск',
 
     minPrice: 'Мин. цена (€)',
     maxPrice: 'Макс. цена (€)',
@@ -434,12 +464,26 @@ export const translations = {
     ugovor1: 'Sales brokerage agreement',
     ugovor2: 'Ministry decision',
     ugovor3: 'General terms of business',
+    detaljnaPPretraga:'Detailed property search',
 
     heroTitle: 'Find your perfect property',
     heroSubtitle: 'Sales and rentals of properties in Serbia',
     povrsina: 'Area',
     showCity: 'Show city',
     allCities: 'All cities',
+
+    cenaDo: 'Price to',
+    cenaOd: 'Price from',
+
+    //forma home pege
+    garsonjera: 'Studio',
+    jednosoban: 'One-bedroom',
+    dvosoban: 'Two-bedroom',
+    trosoban: 'Three-bedroom',
+    cetvorosoban: 'Four-bedroom',
+    jednoiposoban: 'One-and-a-half-bedroom',
+    dvoiposoban: 'Two-and-a-half-bedroom',
+    trosiposoban: 'Three-and-a-half-bedroom',
 
     //search more page
     detaljnaPretraga: 'Detailed Property Search',

@@ -79,10 +79,10 @@ function HomePage() {
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
                     <option className="bg-black text-white" value="Prodaja">
-                      {t("Prodaja")}
+                      {t("sales")}
                     </option>
                     <option className="bg-black text-white" value="Izdavanje">
-                      {t("Izdavanje")}
+                      {t("rent")}
                     </option>
                   </select>
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
@@ -104,22 +104,22 @@ function HomePage() {
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
                     <option className="bg-black text-white" value="Stan">
-                      {t("Stan")}
+                      {t("stanovi")}
                     </option>
                     <option className="bg-black text-white" value="Kuća">
-                      {t("Kuća")}
+                      {t("kuce")}
                     </option>
                     <option className="bg-black text-white" value="Poslovni prostor">
-                      {t("Poslovni prostor")}
+                      {t("poslovniProstor")}
                     </option>
                     <option className="bg-black text-white" value="Parcela">
-                      {t("Parcela")}
+                      {t("parcele")}
                     </option>
                     <option className="bg-black text-white" value="Lokal">
                       {t("Lokal")}
                     </option>
                     <option className="bg-black text-white" value="Ugostiteljski objekat">
-                      {t("Ugostiteljski objekat")}
+                      {t("ugostiteljski")}
                     </option>
                   </select>
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
@@ -131,7 +131,7 @@ function HomePage() {
               {/* 3. Broj soba (Širina: 2/12) */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
-                  {t("Broj soba")}
+                  {t("brojSoba")}
                 </label>
                 <div className="relative">
                   <select
@@ -144,28 +144,28 @@ function HomePage() {
                       {t("Sve")}
                     </option>
                     <option className="bg-black text-white" value="0.5">
-                      Garsonjera
+                      {t('garsonjera')}
                     </option>
                     <option className="bg-black text-white" value="1">
-                      Jednosoban
+                      {t('jednosoban')}
                     </option>
                     <option className="bg-black text-white" value="1.5">
-                      Jednoiposoban
+                      {t('jednoiposoban')}
                     </option>
                     <option className="bg-black text-white" value="2">
-                      Dvosoban
+                      {t('dvosoban')}
                     </option>
                     <option className="bg-black text-white" value="2.5">
-                      Dvoiposoban
+                      {t('dvoiposoban')}
                     </option>
                     <option className="bg-black text-white" value="3">
-                      Trosoban
+                      {t('trosoban')}
                     </option>
                     <option className="bg-black text-white" value="3.5">
-                      Troiposoban
+                      {t('trosiposoban')}
                     </option>
                     <option className="bg-black text-white" value="4">
-                      Četvorosoban
+                      {t('cetvorosoban')}
                     </option>
                   </select>
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
@@ -177,7 +177,7 @@ function HomePage() {
               {/*4. Sekcija za Kvart - ISPRAVLJENO */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
-                  Lokacija
+                  {t('location')}
                 </label>
                 <div className="relative">
                   <select
@@ -286,7 +286,7 @@ function HomePage() {
                   to="/searchmore"
                   className="w-full h-[46px] flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-yellow-500 border border-gray-600 hover:bg-gray-700 hover:border-yellow-500 transition font-medium"
                 >
-                  Detaljnija pretraga
+                  {t("deteljnaPPredraga")}
                 </Link>
               </div>
 
@@ -310,7 +310,7 @@ function HomePage() {
                       d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"
                     />
                   </svg>
-                  {t("pretraga") || "Pretraga"}
+                  {t("pretrazi") || "Pretraga"}
                 </button>
               </div>
 

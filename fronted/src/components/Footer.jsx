@@ -250,6 +250,19 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* developer credit - skroz dole, malo sivim slovima */}
+      <div className="py-3 text-center text-sm text-gray-400">
+        development by{' '}
+        <a
+          href="https://www.pedjadev.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-300 hover:text-yellow-400 font-semibold"
+        >
+          prWeb
+        </a>
+      </div>
+
       {/* bottom thin bar */}
       <div className="border-t border-yellow-600/10 py-3 text-center text-sm text-gray-500 md:hidden">
         © {new Date().getFullYear()} Serbes Nekretnine. {t('footerRights')}
