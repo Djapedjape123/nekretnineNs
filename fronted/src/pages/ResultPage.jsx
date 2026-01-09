@@ -197,6 +197,13 @@ export default function ResultsPage() {
       return updated
     })
   }
+  const formatPrice = (value) => {
+    if (!value) return ''
+    const num = Number(value.toString().replace(/\./g, '').replace(',', '.'))
+    if (isNaN(num)) return value
+    return new Intl.NumberFormat('sr-RS').format(num)
+  }
+
 
   if (loading) return (
     <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-bold text-2xl animate-pulse">
@@ -240,10 +247,10 @@ export default function ResultsPage() {
             {currentItems.map(item => (
               <article key={item.id} className="bg-black border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
                 <div className="relative h-64">
-                  <img 
-                    src={item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg'} 
-                    alt="" 
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
+                  <img
+                    src={item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg'}
+                    alt=""
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                   />
                   <div className="absolute top-4 right-4">
                     <button onClick={() => toggleFavorite(item)} className="p-3 bg-black/50 backdrop-blur-md rounded-full">
@@ -251,8 +258,9 @@ export default function ResultsPage() {
                     </button>
                   </div>
                   <div className="absolute bottom-4 left-4 bg-yellow-400 text-black px-4 py-1 rounded-lg font-black text-xl">
-                    {item.cena || item.price} €
+                    {formatPrice(item.cena || item.price)} €
                   </div>
+
                 </div>
 
                 <div className="p-6">
@@ -261,8 +269,8 @@ export default function ResultsPage() {
                     <MdLocationOn className="text-yellow-400" /> {item.mesto || item.location}
                   </div>
                   <div className="flex gap-4 mt-4 border-t border-white/5 pt-4">
-                    <div className="flex items-center gap-1"><FaBed className="text-yellow-400"/> {item.brojsoba || 0}</div>
-                    <div className="flex items-center gap-1"><FaBath className="text-yellow-400"/> {item.brojkupatila || 0}</div>
+                    <div className="flex items-center gap-1"><FaBed className="text-yellow-400" /> {item.brojsoba || 0}</div>
+                    <div className="flex items-center gap-1"><FaBath className="text-yellow-400" /> {item.brojkupatila || 0}</div>
                     <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int || item.size} m²</div>
                   </div>
                   <div className="grid grid-cols-5 gap-2 mt-6">
@@ -277,13 +285,13 @@ export default function ResultsPage() {
 
         {totalPages > 1 && (
           <div className="flex justify-center mt-12 gap-3">
-            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0,0) }} className="p-4 bg-black rounded-xl disabled:opacity-30"><FaChevronLeft/></button>
+            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0, 0) }} className="p-4 bg-black rounded-xl disabled:opacity-30"><FaChevronLeft /></button>
             {[...Array(totalPages)].map((_, i) => (
-              <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0,0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-black text-white'}`}>
+              <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0, 0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-black text-white'}`}>
                 {i + 1}
               </button>
             ))}
-            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0,0) }} className="p-4 bg-black rounded-xl disabled:opacity-30"><FaChevronRight/></button>
+            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0, 0) }} className="p-4 bg-black rounded-xl disabled:opacity-30"><FaChevronRight /></button>
           </div>
         )}
       </div>
