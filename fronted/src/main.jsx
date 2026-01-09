@@ -9,6 +9,11 @@ import ProdajaPage from './pages/ProdajaPage.jsx'
 import IzdavanjePage from './pages/IzdavanjePage.jsx'
 import FavoritePage from './pages/FavoritePage.jsx'
 import SinglePege from './pages/SinglePege.jsx'
+<<<<<<< Updated upstream
+=======
+import ResultPage from './pages/ResultPage.jsx'
+import SearchMore from './pages/SearchMore.jsx'
+>>>>>>> Stashed changes
 
 
 const router = createBrowserRouter([
@@ -35,6 +40,10 @@ const router = createBrowserRouter([
        {
         path: '/favorite',
         element: <FavoritePage />
+      },
+       {
+        path: '/search',
+        element: <ResultPage />
       },
       {
         path: '/single/:id',
