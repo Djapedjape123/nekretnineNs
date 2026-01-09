@@ -43,7 +43,7 @@ export default function ResultsPage() {
         })
         const res = await fetch(`http://localhost:3001/oglasi/search?${params.toString()}`)
         const data = await res.json()
-        setListings(data)
+        setListings(Array.isArray(data) ? data : data.results || [])
       } catch (err) {
         console.error(err)
       } finally {
@@ -51,12 +51,12 @@ export default function ResultsPage() {
       }
     }
     fetchData()
-  }, [transaction, type, brojsoba, loc, priceFrom, priceTo])
+  }, [transaction, type, brojsoba, kvart, priceFrom, priceTo])
 
   // Reset paginacije na novu pretragu
   useEffect(() => {
     setCurrentPage(1)
-  }, [transaction, type, brojsoba, loc, priceFrom, priceTo])
+  }, [transaction, type, brojsoba, kvart, priceFrom, priceTo])
 
   const tt = (key, fallback) => {
     const val = t(key)
