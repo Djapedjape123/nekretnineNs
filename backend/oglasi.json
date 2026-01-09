@@ -1030,7 +1030,7 @@
       ]
     }
   },
-
+  
   {
     "code": "211001720",
     "id": "1720",
@@ -1405,108 +1405,7 @@
       ]
     }
   },
-  
-  {
-    "code": "211001716",
-    "id": "1716",
-    "naslov": "Lux garsonjera 27m2 kod Socijalnog ID#1716",
-    "keywords": "",
-    "ulica": "",
-    "kvadratura": "27.00",
-    "kvadratura_int": "27",
-    "kvadratura_a": "0",
-    "cena": "83000",
-    "brojsoba": "1.0",
-    "brojkupatila": "0",
-    "brojtelin": "1",
-    "daystart": "2025-11-03",
-    "lastupdate": "2025-12-15T14:13:52",
-    "agentid": "211001",
-    "namestenost": "namešten",
-    "ptt": "21000",
-    "drzava": "Srbija",
-    "grad": "NOVI SAD",
-    "vrstagradnje": "novogradnja",
-    "objectstate": "Lux",
-    "mesto": "Novi Sad",
-    "naselje": "Socijalno",
-    "contactphone": "0628150586",
-    "slike": {
-      "slika": [
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_5_20230728154536.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_3_20230728154535.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_2_20230728154534.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_4_20230728154536.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_9_20230728154544.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_11_20230728154546.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_1_20230728154533.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_7_20230728154541.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_7_20230728154541.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_10_20230728154544.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_13_20230728154549.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_10_20230728154544.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_1_20230728154533.jpg",
-          "title": ""
-        },
-        {
-          "url": "https://safeporter.com/photos/serbesnekretnine/211001420_13_20230728154549.jpg",
-          "title": ""
-        }
-      ]
-    },
-    "vrstanekretnine": "Stan",
-    "ambijent": "u zgradi",
-    "vrstaponude": "Prodaja",
-    "vrstagrejanja": "CG",
-    "sprat": "Visoko prizemlje",
-    "spratova": "4",
-    "opis": "Prodajem novu garsonjeru 27m2 kod Socijalnog. Garsonjera se nalazi u novoj kvalitetnoj sagradjenoj zgradi. U manjoj mirnoj ulici. Kompletno namestena modernim nameštajem . Kuhinja opremljena posudjem ima ravnu ploču , mikro talasnu i frizider . Ugaona garnitura na razvlacenje, udobna za spavanje . LCD tv, klima . Na terasi sto i stolica . U kupatilu tus kabina i ima ves masina . U predsoblju veliki plakar sa dosta mesta za odlaganje . Stan sveže okrečen. Uknjižen 1/1 bez tereta.",
-    "video_url": "https://youtube.com/shorts/6Ba_8tqRpL0?feature=share",
-    "videotour": "https://youtube.com/shorts/6Ba_8tqRpL0?feature=share",
-    "attribs": {
-      "attrib": {
-        "name": "Snižena cena",
-        "value": "da"
-      }
-    }
-  },
+
   {
     "code": "211001715",
     "id": "1715",

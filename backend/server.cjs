@@ -26,6 +26,74 @@ const getOglasi = (callback) => {
   });
 };
 
+// ================== FILTER ==================
+app.get("/oglasi/search", (req, res) => {
+  console.log("QUERY:", req.query);
+  
+  const {
+    transaction,  // vrstaponude
+    type,         // vrstanekretnine
+    city,         // grad
+    district,     // naselje
+    price_min,
+    price_max,
+    area_min,
+    area_max,
+    brojsoba_od,
+    brojsoba_do,
+    vrstagrejanja,
+    lift,
+    terasa,
+    namesten,
+    parking
+  } = req.query;
+
+  getOglasi((err, oglasi) => {
+    if (err) {
+      return res.status(500).json({ error: "Greška pri čitanju fajla" });
+    }
+
+    const results = oglasi.filter(o => {
+      const ponuda = (o.vrstaponude || "").toLowerCase();
+      const tip = (o.vrstanekretnine || "").toLowerCase();
+      const g = (o.mesto || "").toLowerCase();
+      const n = (o.naselje || "").toLowerCase();
+      const grejanje = (o.vrstagrejanja || "").toLowerCase();
+
+      const cena = Number(o.cena || 0);
+      const kvadrat = Number(o.kvadratura_int || 0);
+      const sobe = Number(o.brojsoba || 0);
+
+      if (transaction && !ponuda.includes(transaction.toLowerCase())) return false;
+      if (type && !tip.includes(type.toLowerCase())) return false;
+      if (city && !g.includes(city.toLowerCase())) return false;
+      if (district && district !== "all" && !n.includes(district.toLowerCase())) return false;
+
+
+      if (price_min && cena < Number(price_min)) return false;
+      if (price_max && cena > Number(price_max)) return false;
+
+      if (area_min && kvadrat < Number(area_min)) return false;
+      if (area_max && kvadrat > Number(area_max)) return false;
+
+      if (brojsoba_od && sobe < Number(brojsoba_od)) return false;
+      if (brojsoba_do && sobe > Number(brojsoba_do)) return false;
+
+      if (vrstagrejanja && vrstagrejanja !== "all" &&
+          grejanje !== vrstagrejanja.toLowerCase()) return false;
+
+      /*if (lift === "1" && !hasAttrib(o, "lift")) return false;
+      if (terasa === "1" && !hasAttrib(o, "terasa")) return false;
+      if (namesten === "1" && !hasAttrib(o, "namešten")) return false;
+      if (parking === "1" && !hasAttrib(o, "parking")) return false;*/
+
+      return true;
+    });
+
+    res.json(results);
+  });
+});
+
 // ================== PRODAJA ==================
 app.get("/oglasi/prodaja", (req, res) => {
   const requestedType = req.query.type?.toLowerCase();
@@ -152,59 +220,19 @@ async function loadXML() {
   });
 }
 
-// ================== FILTER ==================
-app.get("/oglasi/search", (req, res) => {
-  console.log("QUERY:", req.query);
-  const {
-    transaction,  // vrstaponude
-    type,         // vrstanekretnine
-    brojsoba,     // broj soba
-    kvart,        // naselje
-    priceFrom,
-    priceTo
-  } = req.query;
+// Pomoćna funkcija za proveru atributa
+const hasAttrib = (o, needle) => {
+  if (!o.attribs || !Array.isArray(o.attribs.attrib)) return false;
 
-  const results = oglasi.filter(o => {
-    // UVEK UZIMAMO PRVI ELEMENT IZ NIZA
-    const vrstePonude = (o.vrstaponude?.[0] || "").toLowerCase();
-    const vrsteNekretnine = (o.vrstanekretnine?.[0] || "").toLowerCase();
-    const brojSoba = String(o.brojsoba?.[0] || "").toLowerCase();
-    const naselje = (o.naselje?.[0] || "").toLowerCase();
-    const cena = Number(o.cena?.[0] || 0);
+  return o.attribs.attrib.some(a =>
+    a.value === "da" &&
+    a.name.toLowerCase().includes(needle.toLowerCase())
+  );
+};
 
-    if (transaction && transaction !== "" &&
-        vrstePonude !== transaction.toLowerCase()) return false;
 
-    if (type && type !== "" &&
-        vrsteNekretnine !== type.toLowerCase()) return false;
 
-    if (brojsoba && brojsoba !== "all" &&
-        brojSoba !== brojsoba.toLowerCase()) return false;
 
-    if (kvart && kvart !== "" &&
-        !naselje.includes(kvart.toLowerCase())) return false;
-
-    if (priceFrom && cena < Number(priceFrom)) return false;
-
-    if (priceTo && cena > Number(priceTo)) return false;
-
-    return true;
-  });
-
-  res.json(results);
-});
-
-app.get('/set-cookie', (req, res) => {
-  res.cookie('__Secure-YEC', 'neka-vrednost', {
-    httpOnly: true,      // sprečava pristup iz JS
-    secure: true,        // cookie se šalje samo preko HTTPS
-    sameSite: 'none',    // dozvoljava cross-site slanje
-    path: '/',
-    maxAge: 7 * 24 * 60 * 60 * 1000  // opciono: trajanje u milisekundama
-  });
-
-  res.json({ message: 'Cookie set!' });
-});
 
 
 

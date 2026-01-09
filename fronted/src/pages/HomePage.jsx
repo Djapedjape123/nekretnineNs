@@ -11,11 +11,11 @@ function HomePage() {
   const navigate = useNavigate()
 
   const [form, setForm] = useState({
-    transaction: 'prodaja',
-    type: 'stan',
+    transaction: 'Prodaja',
+    type: 'Stan',
     price: 'all',
     brojsoba: 'all',
-    kvart: 'all',
+    lokacija: 'all',
     location: 'all',
   })
 
@@ -78,11 +78,11 @@ function HomePage() {
                     onChange={handleChange}
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
-                    <option className="bg-black text-white" value="prodaja">
-                      {t("sale")}
+                    <option className="bg-black text-white" value="Prodaja">
+                      {t("Prodaja")}
                     </option>
-                    <option className="bg-black text-white" value="izdavanje">
-                      {t("rentOption")}
+                    <option className="bg-black text-white" value="Izdavanje">
+                      {t("Izdavanje")}
                     </option>
                   </select>
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
@@ -103,26 +103,23 @@ function HomePage() {
                     onChange={handleChange}
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
-                    <option className="bg-black text-white" value="stan">
-                      {t("apartment")}
+                    <option className="bg-black text-white" value="Stan">
+                      {t("Stan")}
                     </option>
-                    <option className="bg-black text-white" value="kuca">
-                      {t("house")}
+                    <option className="bg-black text-white" value="Kuća">
+                      {t("Kuća")}
                     </option>
-                    <option className="bg-black text-white" value="poslovni">
-                      {t("office")}
+                    <option className="bg-black text-white" value="Poslovni prostor">
+                      {t("Poslovni prostor")}
                     </option>
-                    <option className="bg-black text-white" value="parcela">
-                      {t("parcele")}
+                    <option className="bg-black text-white" value="Parcela">
+                      {t("Parcela")}
                     </option>
-                    <option className="bg-black text-white" value="objekat-odmor">
-                      {t("obejakatOdmor")}
+                    <option className="bg-black text-white" value="Lokal">
+                      {t("Lokal")}
                     </option>
-                    <option className="bg-black text-white" value="garaza">
-                      {t("garaza")}
-                    </option>
-                    <option className="bg-black text-white" value="soba">
-                      {t("sobe")}
+                    <option className="bg-black text-white" value="Ugostiteljski objekat">
+                      {t("Ugostiteljski objekat")}
                     </option>
                   </select>
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
@@ -177,53 +174,68 @@ function HomePage() {
                 </div>
               </div>
 
-              {/* 4. Kvart (Širina: 2/12) */}
+              {/*4. Sekcija za Kvart - ISPRAVLJENO */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
-                  Kvart
+                  Lokacija
                 </label>
                 <div className="relative">
                   <select
-                    name="kvart"
-                    value={form.kvart}
+                    name="kvart"  // <-- PROMENJENO (bilo je "area")
+                    value={form.kvart} // <-- PROMENJENO (bilo je form.area)
                     onChange={handleChange}
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
                     <option className="bg-black text-white" value="all">
-                      Svi
+                      Sve
                     </option>
-                    <option className="bg-black text-white" value="grbavica">
+                    <option className="bg-black text-white" value="Grbavica">
                       Grbavica
                     </option>
-                    <option className="bg-black text-white" value="sajmiste">
+                    <option className="bg-black text-white" value="Sajmiste">
                       Sajmiste
                     </option>
-                    <option className="bg-black text-white" value="adice">
+                    <option className="bg-black text-white" value="Adice">
                       Adice
                     </option>
-                    <option className="bg-black text-white" value="telep">
+                    <option className="bg-black text-white" value="Telep">
                       Telep
                     </option>
-                    <option className="bg-black text-white" value="novo-naselje">
-                      Novo Naselje
+                    <option className="bg-black text-white" value="Novo naselje">
+                      Novo naselje
                     </option>
-                    <option className="bg-black text-white" value="liman1">
+                    <option className="bg-black text-white" value="Liman I">
                       Liman 1
                     </option>
-                    <option className="bg-black text-white" value="liman2">
+                    <option className="bg-black text-white" value="Liman II">
                       Liman 2
                     </option>
-                    <option className="bg-black text-white" value="liman3">
+                    <option className="bg-black text-white" value="Liman III">
                       Liman 3
                     </option>
-                    <option className="bg-black text-white" value="liman4">
+                    <option className="bg-black text-white" value="Liman IV">
                       Liman 4
                     </option>
-                    <option className="bg-black text-white" value="detelinara">
+                    <option className="bg-black text-white" value="Detelinara">
                       Detelinara
                     </option>
-                    <option className="bg-black text-white" value="nova-etelinara">
+                    <option className="bg-black text-white" value="Nova detelinara">
                       Nova detelinara
+                    </option>
+                    <option className="bg-black text-white" value="Centar">
+                      Centar
+                    </option>
+                    <option className="bg-black text-white" value="Podbara">
+                      Podbara
+                    </option>
+                    <option className="bg-black text-white" value="Salajka">
+                      Salajka
+                    </option>
+                    <option className="bg-black text-white" value="Rotkvarija">
+                      Rotkvarija
+                    </option>
+                    <option className="bg-black text-white" value="Telep">
+                      Telep
                     </option>
                   </select>
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">

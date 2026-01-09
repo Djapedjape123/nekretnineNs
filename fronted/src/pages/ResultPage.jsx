@@ -8,15 +8,48 @@ import { t } from '../i1n8'
 export default function ResultsPage() {
   const navigate = useNavigate()
   const location = useLocation()
-
-  // Čitanje query parametara iz URL
   const query = new URLSearchParams(location.search)
-  const transaction = query.get('transaction') || ''
-  const type = query.get('type') || ''
-  const brojsoba = query.get('brojsoba') || ''
-  const kvart = query.get('kvart') || ''
-  const priceFrom = query.get('priceFrom') || ''
-  const priceTo = query.get('priceTo') || ''
+
+  
+  // ----- podrška za HomePage + SearchMore -----
+
+const transaction = query.get('transaction') || ''
+const type = query.get('type') || ''
+
+// grad / kvart / district
+const city = query.get('city') || ''
+const district =
+  query.get('district') ||
+  query.get('kvart') || ''
+
+// cena
+const price_min =
+  query.get('price_min') ||
+  query.get('priceFrom') || ''
+
+const price_max =
+  query.get('price_max') ||
+  query.get('priceTo') || ''
+
+// kvadratura
+const area_min = query.get('area_min') || ''
+const area_max = query.get('area_max') || ''
+
+// broj soba (HomePage šalje samo jedan parametar)
+const brojsoba =
+  query.get('brojsoba') || ''
+
+const brojsoba_od =
+  query.get('brojsoba_od') || brojsoba || ''
+
+const brojsoba_do =
+  query.get('brojsoba_do') || brojsoba || ''
+
+// dodatni filteri
+const lift = query.get('lift') || ''
+const terasa = query.get('terasa') || ''
+const namesten = query.get('namesten') || ''
+const parking = query.get('parking') || ''
 
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -36,10 +69,18 @@ export default function ResultsPage() {
         const params = new URLSearchParams({
           transaction,
           type,
-          brojsoba,
-          kvart,
-          priceFrom,
-          priceTo
+          city,
+          district,
+          price_min,
+          price_max,
+          area_min,
+          area_max,
+          brojsoba_od,
+          brojsoba_do,
+          lift,
+          terasa,
+          namesten,
+          parking
         })
         const res = await fetch(`http://localhost:3001/oglasi/search?${params.toString()}`)
         const data = await res.json()
@@ -51,13 +92,42 @@ export default function ResultsPage() {
       }
     }
     fetchData()
-  }, [transaction, type, brojsoba, kvart, priceFrom, priceTo])
+  }, [
+    transaction,
+    type,
+    city,
+    district,
+    price_min,
+    price_max,
+    area_min,
+    area_max,
+    brojsoba_od,
+    brojsoba_do,
+    lift,
+    terasa,
+    namesten,
+    parking
+  ])
 
   // Reset paginacije na novu pretragu
-  useEffect(() => {
+ useEffect(() => {
     setCurrentPage(1)
-  }, [transaction, type, brojsoba, kvart, priceFrom, priceTo])
-
+  }, [
+    transaction,
+    type,
+    city,
+    district,
+    price_min,
+    price_max,
+    area_min,
+    area_max,
+    brojsoba_od,
+    brojsoba_do,
+    lift,
+    terasa,
+    namesten,
+    parking
+  ])
   const tt = (key, fallback) => {
     const val = t(key)
     return val === key ? fallback : val
