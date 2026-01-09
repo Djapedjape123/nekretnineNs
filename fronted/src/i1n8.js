@@ -14,8 +14,12 @@ export const translations = {
     heroTitle: 'Pronađite savršenu nekretninu',
     heroSubtitle: 'Prodaja i izdavanje nekretnina u Srbiji',
 
+    //result page
+     nemaRezultata: 'Nema rezultata za kriterijume pretrage',
     showCity: 'Prikaži grad',
     allCities: 'Svi gradovi',
+    nemaFiltera: 'Nema primenjenih filtera',
+
     //prodaja i izdavanje
     nemaRezultata: 'Nema rezultata za kategoriju',
     pronadjeno: 'Pronađeno',
@@ -30,6 +34,35 @@ export const translations = {
 
     latestListings: 'Pregled najnovijih oglasa',
     found: 'Pronađeno',
+    
+    //search more page
+    detaljnaPretraga: 'Detaljna Pretraga Nekretnina',
+    vrstaPunude: 'Vrsta ponude',
+    lokal:'Lokal',
+    ugostiteljski:'Ugostiteljski',
+    grad: 'Grad',
+    novisad: 'Novi Sad',
+    petrovac: 'Petrovaradin',
+    sremaskikarlovci: 'Sremski Karlovci',
+    naselje: 'Naselje',
+    svaNaselja: 'Sva naselja',
+    brojSoba: 'Broj soba',
+    vrsteGrejanja: 'Vrste grejanja',
+    svevrstegrejanja:' Sve vrste grejanja',
+    podno: 'Podno',
+    centralno: 'Centralno',
+    toplePumpe: 'Toplotne pumpe',
+    struja:' Grejanje na struju',
+    gas: 'Gasno grejanje',
+    pretrazi: 'Pretraži',
+    ponistiFilter: 'Poništi filter',
+    pretragaId: 'Pretraga po ID-u nekretnine',
+    kvadratura: 'Kvadratura',
+
+    
+    
+
+    
 
     rooms: 'sobe',
     baths: 'kupatila',
@@ -202,6 +235,30 @@ export const translations = {
     ugovor3: 'Общие условия бизнеса',
     povrsina: 'Площадь',
 
+    //search more page
+    detaljnaPretraga: 'Расширенный поиск недвижимости',
+    vrstaPunude: 'Тип предложения',
+    lokal:'Коммерческая недвижимость',
+    ugostiteljski:'Ресторанный бизнес',
+    grad: 'Город',
+    novisad: 'Нови-Сад',
+    petrovac: 'Петроварадин',
+    sremaskikarlovci: 'Сремски-Карловцы',
+    naselje: 'Район',
+    svaNaselja: 'Все районы',
+    brojSoba: 'Количество комнат',
+    vrsteGrejanja: 'Типы отопления',
+    svevrstegrejanja:' Все типы отопления',
+    podno: 'Напольное',
+    centralno: 'Центральное',
+    toplePumpe: 'Тепловые насосы',
+    struja:' Электрическое отопление',
+    gas: 'Газовое отопление',
+    pretrazi: 'Поиск',
+    ponistiFilter: 'Сбросить фильтр',
+    pretragaId: 'Поиск по ID недвижимости',
+    kvadratura: 'Квадратура',
+
     //prodaja i izdavanje
     nemaRezultata: 'Нет результатов для категории',
     pronadjeno: 'Найдено',
@@ -216,7 +273,9 @@ export const translations = {
       spratnost: 'Этажность',
       Id:'ID код недвижимости',
       grejanje:' Отопление',
-
+      //result page
+       nemaRezultata: 'Нет результатов для критериев поиска',
+       nemaFiltera: 'Нет примененных фильтров',
 
       //onama
       onama: 'О нас',
@@ -382,6 +441,33 @@ export const translations = {
     showCity: 'Show city',
     allCities: 'All cities',
 
+    //search more page
+    detaljnaPretraga: 'Detailed Property Search',
+    vrstaPunude: 'Type of offer',
+    lokal:'Commercial property',
+    ugostiteljski:'Hospitality',
+    grad: 'City',
+    novisad: 'Novi Sad',
+    petrovac: 'Petrovaradin',
+    sremaskikarlovci: 'Sremski Karlovci',
+    naselje: 'Neighborhood',
+    svaNaselja: 'All neighborhoods',
+    brojSoba: 'Number of rooms',
+    vrsteGrejanja: 'Types of heating',
+    svevrstegrejanja:' All types of heating',
+    podno: 'Underfloor',
+    centralno: 'Central',
+    toplePumpe: 'Heat pumps',
+    struja:' Electric heating',
+    gas: 'Gas heating',
+    pretrazi: 'Search',
+    ponistiFilter: 'Reset filter',
+    pretragaId: 'Search by property ID',
+
+    //DODATO: result page
+    nemaRezultata: 'No results for search criteria',
+    nemaFiltera: 'No applied filters',
+
     garaza: 'Garage',
     sobe: 'Rooms',
     //prodaja i izdavanje
@@ -427,7 +513,7 @@ export const translations = {
 
     prev: 'Previous',
     next: 'Next',
-
+    kvadratura: 'Square footage',
     favoritesTitle: 'Favorite properties',
     noFavorites: 'No saved properties yet.',
 
@@ -468,7 +554,7 @@ export const translations = {
     footerRights: 'All rights reserved.',
     parecle: 'Parcels',
     vile: 'Villas',
-
+    
     naslov: 'Search for your property',
 
     location: 'Location',

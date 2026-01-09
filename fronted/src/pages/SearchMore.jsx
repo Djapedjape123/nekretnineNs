@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { t } from '../i1n8'
 function SearchMore() {
     const navigate = useNavigate();
     const [form, setForm] = useState({
@@ -80,42 +80,42 @@ function SearchMore() {
             <div className="max-w-6xl mx-auto bg-black backdrop-blur-xl border border-yellow-600/30 p-6 md:p-10 rounded-2xl shadow-2xl">
 
                 <h2 className="text-2xl font-bold mt-10 mb-8 text-yellow-500 border-b border-yellow-600/20 pb-4">
-                    Detaljna Pretraga Nekretnina
+                    {t('detaljnaPretraga')}
                 </h2>
 
                 <form className="space-y-8" onSubmit={handleSubmit}>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div>
-                            <label className="block text-sm font-medium mb-2 text-gray-400">Vrsta ponude</label>
+                            <label className="block text-sm font-medium mb-2 text-gray-400">{t('vrstaPunude')}</label>
                             <select name="vrstaponude" value={form.vrstaponude} onChange={handleChange} className="w-full bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none transition">
-                                <option value="Prodaja">Prodaja</option>
-                                <option value="Izdavanje">Izdavanje</option>
+                                <option value="Prodaja">{t('sales')}</option>
+                                <option value="Izdavanje">{t('rent')}</option>
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2 text-gray-400">Tip nekretnine</label>
+                            <label className="block text-sm font-medium mb-2 text-gray-400">{t('tipNekretnine')}</label>
                             <select name="vrstanekretnine" value={form.vrstanekretnine} onChange={handleChange} className="w-full bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none transition">
-                                <option value="Stan">Stan</option>
-                                <option value="Kuca">Kuća</option>
-                                <option value="Poslovni prostor">Poslovni prostor</option>
-                                <option value="Parcela">Parcela</option>
-                                <option value="Lokal">Lokal</option>
-                                <option value="Ugostiteljski">Ugostiteljski</option>
+                                <option value="Stan">{t('stanovi')}</option>
+                                <option value="Kuca">{t('kuce')}</option>
+                                <option value="Poslovni prostor">{t('poslovniProstor')}</option>
+                                <option value="Parcela">{t('parcele')}</option>
+                                <option value="Lokal">{t('lokal')}</option>
+                                <option value="Ugostiteljski">{t('ugostiteljski')}</option>
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2 text-gray-400">Grad</label>
+                            <label className="block text-sm font-medium mb-2 text-gray-400">{t('grad')}</label>
                             <select name="grad" value={form.grad} onChange={handleChange} className="w-full bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none transition">
-                                <option value="Novi Sad">Novi Sad</option>
-                                <option value="Petrovaradin">Petrovaradin</option>
-                                <option value="Sremski Karlovci">Sremski Karlovci</option>
+                                <option value="Novi Sad">{t('novisad')}</option>
+                                <option value="Petrovaradin">{t('petrovac')}</option>
+                                <option value="Sremski Karlovci">{t('sremaskikarlovci')}</option>
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2 text-gray-400">Naselje</label>
+                            <label className="block text-sm font-medium mb-2 text-gray-400">{t('naselje')}</label>
                             <select name="naselje" value={form.naselje} onChange={handleChange} className="w-full bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none transition">
-                                <option value="all">Sva naselja</option>
+                                <option value="all">{t('svaNaselja')}</option>
                                 <option value="Bulevar Evrope">Bulevar Evrope</option>
                                 <option value="Bulevar Oslobodjenja">Bulevar Oslobođenja</option>
                                 <option value="Centar">Centar</option>
@@ -146,21 +146,21 @@ function SearchMore() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-400">Cena (€)</label>
+                            <label className="block text-sm font-medium text-gray-400">{t('cene')} (€)</label>
                             <div className="flex gap-2">
                                 <input type="number" name="cena_od" placeholder="od" onChange={handleChange} className="w-1/2 bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none" />
                                 <input type="number" name="cena_do" placeholder="do" onChange={handleChange} className="w-1/2 bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none" />
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-400">Kvadratura (m²)</label>
+                            <label className="block text-sm font-medium text-gray-400">{t('kvadratura')} (m²)</label>
                             <div className="flex gap-2">
                                 <input type="number" name="kvadratura_od" placeholder="od" onChange={handleChange} className="w-1/2 bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none" />
                                 <input type="number" name="kvadratura_do" placeholder="do" onChange={handleChange} className="w-1/2 bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none" />
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-400">Sprat</label>
+                            <label className="block text-sm font-medium text-gray-400">{t('sprat')}</label>
                             <div className="flex gap-2">
                                 <select name="sprat_od" onChange={handleChange} className="w-1/2 bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none">
                                     <option value="">od</option>
@@ -195,7 +195,7 @@ function SearchMore() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-400">Broj soba</label>
+                            <label className="block text-sm font-medium text-gray-400">{t('brojSoba')}</label>
                             <div className="flex gap-2">
                                 <select name="brojsoba_od" onChange={handleChange} className="w-1/2 bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none">
                                     <option value="">od</option>
@@ -228,14 +228,14 @@ function SearchMore() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                         <div>
-                            <label className="block text-sm font-medium mb-2 text-gray-400">Vrsta grejanja</label>
+                            <label className="block text-sm font-medium mb-2 text-gray-400">{t('vrsteGrejanja')}</label>
                             <select name="vrstagrejanja" onChange={handleChange} className="w-full bg-[#1a1a1a] border border-gray-800 rounded-lg p-3 focus:border-yellow-500 outline-none">
-                                <option value="all">Sve vrste grejanja</option>
-                                <option value="cg">Centralno grejanje</option>
-                                <option value="toplotne pumpe">Toplotne pumpe</option>
-                                <option value="podno">Podno grejanje</option>
-                                <option value="struja">Grejanje na struju</option>
-                                <option value="gas">Gasno grejanje</option>
+                                <option value="all">{t('svevrstegrejanja')}</option>
+                                <option value="cg">{t('centralno')}</option>
+                                <option value="toplotne pumpe">{t('toplePumpe')}</option>
+                                <option value="podno">{t('podno')}</option>
+                                <option value="struja">{t('struja')}</option>
+                                <option value="gas">{t('gas')}</option>
                             </select>
                         </div>
                         <div className="md:col-span-2 flex flex-wrap gap-6 py-4">
@@ -257,10 +257,10 @@ function SearchMore() {
                     <div className="pt-8 border-t border-yellow-600/20 flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="flex gap-4 w-full md:w-auto">
                             <button type="submit" className="flex-1 md:flex-none px-10 py-3 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition shadow-lg shadow-yellow-500/20">
-                                PRETRAŽI
+                                {t('pretrazi')}
                             </button>
                             <button type="button" onClick={handleReset} className="flex-1 md:flex-none px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition">
-                                ✕ PONIŠTI FILTER
+                                ✕ {t('ponistiFilter')}
                             </button>
                         </div>
 
@@ -271,7 +271,7 @@ function SearchMore() {
                                 onClick={handleSearchById}
                                 className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-md transition"
                             >
-                                Pretraga po ID-u:
+                                {t('pretragaId')}
                             </button>
 
                         

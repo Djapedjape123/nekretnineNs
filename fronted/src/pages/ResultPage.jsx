@@ -4,52 +4,39 @@ import { MdLocationOn } from 'react-icons/md'
 import { FaBed, FaBath, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { FiHeart } from 'react-icons/fi'
 import { t } from '../i1n8'
+import { API_BASE } from '../config'
 
 export default function ResultsPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const query = new URLSearchParams(location.search)
 
-  
   // ----- podrška za HomePage + SearchMore -----
+  const transaction = query.get('transaction') || ''
+  const type = query.get('type') || ''
 
-const transaction = query.get('transaction') || ''
-const type = query.get('type') || ''
+  // grad / kvart / district
+  const city = query.get('city') || ''
+  const district = query.get('district') || query.get('kvart') || ''
 
-// grad / kvart / district
-const city = query.get('city') || ''
-const district =
-  query.get('district') ||
-  query.get('kvart') || ''
+  // cena
+  const price_min = query.get('price_min') || query.get('priceFrom') || ''
+  const price_max = query.get('price_max') || query.get('priceTo') || ''
 
-// cena
-const price_min =
-  query.get('price_min') ||
-  query.get('priceFrom') || ''
+  // kvadratura
+  const area_min = query.get('area_min') || ''
+  const area_max = query.get('area_max') || ''
 
-const price_max =
-  query.get('price_max') ||
-  query.get('priceTo') || ''
+  // broj soba (HomePage šalje samo jedan parametar)
+  const brojsoba = query.get('brojsoba') || ''
+  const brojsoba_od = query.get('brojsoba_od') || brojsoba || ''
+  const brojsoba_do = query.get('brojsoba_do') || brojsoba || ''
 
-// kvadratura
-const area_min = query.get('area_min') || ''
-const area_max = query.get('area_max') || ''
-
-// broj soba (HomePage šalje samo jedan parametar)
-const brojsoba =
-  query.get('brojsoba') || ''
-
-const brojsoba_od =
-  query.get('brojsoba_od') || brojsoba || ''
-
-const brojsoba_do =
-  query.get('brojsoba_do') || brojsoba || ''
-
-// dodatni filteri
-const lift = query.get('lift') || ''
-const terasa = query.get('terasa') || ''
-const namesten = query.get('namesten') || ''
-const parking = query.get('parking') || ''
+  // dodatni filteri
+  const lift = query.get('lift') || ''
+  const terasa = query.get('terasa') || ''
+  const namesten = query.get('namesten') || ''
+  const parking = query.get('parking') || ''
 
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -60,6 +47,11 @@ const parking = query.get('parking') || ''
   })
 
   const itemsPerPage = 9
+
+  // Ensure page scrolls to top when component mounts or when route/search changes
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname, location.search])
 
   // Fetch filtered oglasi sa servera
   useEffect(() => {
@@ -82,7 +74,7 @@ const parking = query.get('parking') || ''
           namesten,
           parking
         })
-        const res = await fetch(`http://localhost:3001/oglasi/search?${params.toString()}`)
+        const res = await fetch(`${API_BASE}/oglasi/search?${params.toString()}`)
         const data = await res.json()
         setListings(Array.isArray(data) ? data : data.results || [])
       } catch (err) {
@@ -110,7 +102,7 @@ const parking = query.get('parking') || ''
   ])
 
   // Reset paginacije na novu pretragu
- useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1)
   }, [
     transaction,
@@ -128,10 +120,50 @@ const parking = query.get('parking') || ''
     namesten,
     parking
   ])
+
   const tt = (key, fallback) => {
     const val = t(key)
     return val === key ? fallback : val
   }
+
+  // --- funkcija koja pravi čitljiv rezime filtera ---
+  const buildSearchSummary = () => {
+    const parts = []
+
+    if (transaction) parts.push(`${tt('transaction', 'Transakcija')}: ${transaction}`)
+    if (type) parts.push(`${tt('type', 'Tip')}: ${type}`)
+    if (city) parts.push(`${tt('city', 'Grad')}: ${city}`)
+    if (district) parts.push(`${tt('district', 'Kvart')}: ${district}`)
+
+    if (price_min || price_max) {
+      if (price_min && price_max) parts.push(`Cena: ${price_min} - ${price_max} €`)
+      else if (price_min) parts.push(`Cena ≥ ${price_min} €`)
+      else parts.push(`Cena ≤ ${price_max} €`)
+    }
+
+    if (area_min || area_max) {
+      if (area_min && area_max) parts.push(`Kvadratura: ${area_min} - ${area_max} m²`)
+      else if (area_min) parts.push(`Kvadratura ≥ ${area_min} m²`)
+      else parts.push(`Kvadratura ≤ ${area_max} m²`)
+    }
+
+    if (brojsoba_od || brojsoba_do) {
+      if (brojsoba_od && brojsoba_do) parts.push(`Broj soba: ${brojsoba_od} - ${brojsoba_do}`)
+      else if (brojsoba_od) parts.push(`Broj soba ≥ ${brojsoba_od}`)
+      else parts.push(`Broj soba ≤ ${brojsoba_do}`)
+    }
+
+    const extras = []
+    if (lift && lift !== 'false') extras.push('Lift')
+    if (terasa && terasa !== 'false') extras.push('Terasa')
+    if (namesten && namesten !== 'false') extras.push('Namešten')
+    if (parking && parking !== 'false') extras.push('Parking')
+    if (extras.length) parts.push(`Dodatno: ${extras.join(', ')}`)
+
+    return parts
+  }
+
+  const summary = buildSearchSummary()
 
   // Paginacija
   const totalPages = Math.ceil(listings.length / itemsPerPage)
@@ -173,25 +205,40 @@ const parking = query.get('parking') || ''
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-white text-white py-24 px-6">
+    <div className="min-h-screen bg-white text-white py-24 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
           <div>
             <h1 className="text-4xl md:text-6xl font-black text-yellow-400 uppercase tracking-tighter">
               {tt('searchResults', 'Rezultati pretrage')}
             </h1>
             <p className="text-gray-400 mt-2">Pronađeno {listings.length} oglasa</p>
           </div>
+
+          {/* Ovde prikazujemo rezime pretrage */}
+          <div className="min-w-[220px]">
+            {summary.length === 0 ? (
+              <div className="text-sm text-gray-400">{t('nemaFiltera')}</div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {summary.map((s, i) => (
+                  <span key={i} className="text-sm bg-black border border-yellow-300 px-3 py-1 rounded-full text-white">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {listings.length === 0 ? (
           <div className="text-center py-20 text-gray-500 text-xl border border-dashed border-white/10 rounded-3xl">
-            Nema rezultata za kriterijume pretrage
+            {t('nemaRezultata')}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {currentItems.map(item => (
-              <article key={item.id} className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
+              <article key={item.id} className="bg-black border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
                 <div className="relative h-64">
                   <img 
                     src={item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg'} 
@@ -219,8 +266,8 @@ const parking = query.get('parking') || ''
                     <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int || item.size} m²</div>
                   </div>
                   <div className="grid grid-cols-5 gap-2 mt-6">
-                    <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-white/10 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
-                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black">📞</a>
+                    <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-transparent border-2 border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
+                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">{t('contactTitle')}</a>
                   </div>
                 </div>
               </article>
@@ -230,13 +277,13 @@ const parking = query.get('parking') || ''
 
         {totalPages > 1 && (
           <div className="flex justify-center mt-12 gap-3">
-            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0,0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronLeft/></button>
+            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0,0) }} className="p-4 bg-black rounded-xl disabled:opacity-30"><FaChevronLeft/></button>
             {[...Array(totalPages)].map((_, i) => (
-              <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0,0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-white'}`}>
+              <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0,0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-black text-white'}`}>
                 {i + 1}
               </button>
             ))}
-            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0,0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30"><FaChevronRight/></button>
+            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0,0) }} className="p-4 bg-black rounded-xl disabled:opacity-30"><FaChevronRight/></button>
           </div>
         )}
       </div>
