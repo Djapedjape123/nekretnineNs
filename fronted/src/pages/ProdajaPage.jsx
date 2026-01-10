@@ -181,13 +181,13 @@ export default function ProdajaPage() {
 
         {totalPages > 1 && (
           <div className="flex justify-center mt-12 gap-3">
-            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0, 0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30 text-white"><FaChevronLeft /></button>
+            <button disabled={currentPage === 1} onClick={() => { setCurrentPage(prev => prev - 1); window.scrollTo(0, 0) }} className="p-4 bg-black rounded-xl disabled:opacity-30 text-white"><FaChevronLeft /></button>
             {[...Array(totalPages)].map((_, i) => (
-              <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0, 0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-white'}`}>
+              <button key={i} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0, 0) }} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-black text-white'}`}>
                 {i + 1}
               </button>
             ))}
-            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0, 0) }} className="p-4 bg-gray-900 rounded-xl disabled:opacity-30 text-white"><FaChevronRight /></button>
+            <button disabled={currentPage === totalPages} onClick={() => { setCurrentPage(prev => prev + 1); window.scrollTo(0, 0) }} className="p-4 bg-black rounded-xl disabled:opacity-30 text-white"><FaChevronRight /></button>
           </div>
         )}
       </div>
