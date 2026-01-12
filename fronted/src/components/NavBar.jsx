@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { t } from '../i1n8'
-import logo from '../assets/dedaci.jpg'
+import logo from '../assets/dedazi2.jpg'
 import { TiThMenu } from "react-icons/ti";
 
 function NavBar() {

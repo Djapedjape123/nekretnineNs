@@ -15,7 +15,7 @@ export default function Footer() {
           {/* Brand + opis */}
           <div className="space-y-4">
             <h2 className="text-2xl font-extrabold text-yellow-400 tracking-wide">
-              Serbes Nekretnine
+              SERBES DOO NOVI SAD
             </h2>
             <p className="text-sm leading-relaxed text-gray-400">
               {t('footerDescription')}
@@ -242,7 +242,7 @@ export default function Footer() {
               </div>
 
               <div className="pt-6 text-sm text-gray-400">
-                <div>© {new Date().getFullYear()} Serbes Nekretnine.</div>
+                <div>© {new Date().getFullYear()} SERBES DOO NOVI SAD.</div>
                 <div className="text-gray-500">{t('footerRights')}</div>
               </div>
             </div>

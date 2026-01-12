@@ -1,8 +1,7 @@
-// SinglePage.jsx
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { MdLocationOn } from 'react-icons/md'
-import { FaBed, FaBath, FaArrowLeft, FaExpand, FaTimes } from 'react-icons/fa'
+import { FaBed, FaBath, FaArrowLeft, FaExpand, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { t } from '../i1n8'
 import { API_BASE } from '../config'
 
@@ -21,100 +20,62 @@ export default function SinglePage() {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
 
+  // --- HELPERI ---
+
   const formatPrice = (val) => {
     if (val === undefined || val === null || val === '') return ''
     if (typeof val === 'number') {
-      try {
-        return new Intl.NumberFormat('de-DE').format(val) + ' €'
-      } catch {
-        return String(val) + ' €'
-      }
+      try { return new Intl.NumberFormat('de-DE').format(val) + ' €' } catch { return String(val) + ' €' }
     }
     const s = String(val)
     if (s.includes('€')) return s
     const digits = s.replace(/[^0-9]/g, '')
     if (!digits) return s
-    try {
-      return new Intl.NumberFormat('de-DE').format(Number(digits)) + ' €'
-    } catch {
-      return s + ' €'
-    }
+    try { return new Intl.NumberFormat('de-DE').format(Number(digits)) + ' €' } catch { return s + ' €' }
   }
 
-  // helper: make a readable sentence from attribute name/value
   const makeSentence = (raw) => {
     if (!raw && raw !== 0) return ''
     try {
-      let s = String(raw)
-      // replace underscores/dashes, multiple spaces, strip excess punctuation
-      s = s.replace(/[_\-]+/g, ' ')
-      s = s.replace(/\s+/g, ' ').trim()
-      // lowercase then uppercase first letter
+      let s = String(raw).replace(/[_\-]+/g, ' ').replace(/\s+/g, ' ').trim()
       s = s.toLowerCase()
       s = s.charAt(0).toUpperCase() + s.slice(1)
-      // if it looks like "da" / "ne", convert to "Da" / "Ne"
       if (/^da$/i.test(s)) return 'Da'
       if (/^ne$/i.test(s)) return 'Ne'
       return s
-    } catch {
-      return String(raw)
-    }
+    } catch { return String(raw) }
   }
 
-  // safer: avoid direct window access (handle SSR)
   const getProtocol = () => (typeof window !== 'undefined' && window.location && window.location.protocol) ? window.location.protocol : 'https:'
 
-  // robust YouTube embed extractor (supports /shorts/, youtu.be, watch?v=, /embed/)
   const getYoutubeEmbedUrl = useCallback((rawUrl) => {
     if (!rawUrl) return ''
     let url = String(rawUrl).trim()
     if (!url) return ''
-
     if (url.startsWith('//')) url = `${getProtocol()}${url}`
     if (!/^https?:\/\//i.test(url)) url = `https://${url}`
-
     try {
       const parsed = new URL(url)
       const host = (parsed.hostname || '').toLowerCase()
-
       if (host.includes('youtu.be')) {
         const id = parsed.pathname.replace(/^\/+/, '').split('/')[0]
         if (id) return `https://www.youtube.com/embed/${id}`
       }
-
-      {
-        const m = parsed.pathname.match(/\/shorts\/([A-Za-z0-9_-]{4,})/)
-        if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
-      }
-
-      {
-        const v = parsed.searchParams.get('v')
-        if (v) return `https://www.youtube.com/embed/${v}`
-      }
-
-      {
-        const m = parsed.pathname.match(/\/embed\/([A-Za-z0-9_-]{4,})/)
-        if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
-      }
-
-      {
-        const m = url.match(/(?:v=|\/embed\/|youtu\.be\/|\/shorts\/)([A-Za-z0-9_-]{4,})/)
-        if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
-      }
-
+      const m1 = parsed.pathname.match(/\/shorts\/([A-Za-z0-9_-]{4,})/)
+      if (m1 && m1[1]) return `https://www.youtube.com/embed/${m1[1]}`
+      const v = parsed.searchParams.get('v')
+      if (v) return `https://www.youtube.com/embed/${v}`
+      const m2 = parsed.pathname.match(/\/embed\/([A-Za-z0-9_-]{4,})/)
+      if (m2 && m2[1]) return `https://www.youtube.com/embed/${m2[1]}`
       return ''
-    } catch (e) {
-      const regex = /(?:v=|\/embed\/|youtu\.be\/|\/shorts\/)([A-Za-z0-9_-]{4,})/
-      const m = String(rawUrl).match(regex)
-      if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
-      return ''
-    }
+    } catch (e) { return '' }
   }, [])
 
+  // --- LOGIKA NORMALIZACIJE ---
   useEffect(() => {
     const normalize = (raw, fallbackId) => {
       const base = raw || {}
-
+      
       let imgs = []
       try {
         if (Array.isArray(base.slike?.slika) && base.slike.slika.length > 0) {
@@ -123,34 +84,21 @@ export default function SinglePage() {
           imgs = base.images.map(String).filter(Boolean)
         } else if (base.image) {
           imgs = [String(base.image)]
-        } else if (typeof base.slike === 'object' && base.slike !== null && base.slike.url) {
+        } else if (typeof base.slike === 'object' && base.slike?.url) {
           imgs = [String(base.slike.url)]
         }
-      } catch (e) {
-        imgs = []
-      }
-
+      } catch (e) { imgs = [] }
       if (!imgs.length) imgs = ['/placeholder.jpg']
 
-      const collectVideoField = (field) => {
-        const v = base[field]
-        if (v === undefined || v === null) return []
-        if (Array.isArray(v)) {
-          return v.flat().map(x => (typeof x === 'object' ? (x.url ?? '') : String(x))).filter(Boolean)
-        }
-        if (typeof v === 'object') {
-          if (v.url) return [String(v.url)]
-          return Object.values(v).map(String).filter(Boolean)
-        }
+      let videos = []
+      const collectVideo = (field) => {
+        const v = base[field]; if(!v) return []
+        if(Array.isArray(v)) return v.flat().map(x => (typeof x === 'object' ? x.url : x)).filter(Boolean)
+        if(typeof v === 'object') return [v.url].filter(Boolean)
         return [String(v)]
       }
-
-      let videos = []
-      videos = videos.concat(collectVideoField('video_url'))
-      videos = videos.concat(collectVideoField('videotour'))
-      videos = videos.concat(collectVideoField('video'))
-      videos = videos.map(s => String(s || '').trim()).filter(Boolean)
-      videos = Array.from(new Set(videos))
+      const allVideos = [...collectVideo('video_url'), ...collectVideo('videotour'), ...collectVideo('video')]
+      videos = [...new Set(allVideos)] 
 
       const get = (...keys) => {
         for (const k of keys) {
@@ -159,508 +107,314 @@ export default function SinglePage() {
         return ''
       }
 
-      const toArray = (val) => {
-        if (!val && val !== 0) return []
-        if (Array.isArray(val)) return val.map(String)
-        if (typeof val === 'object') {
-          if (val.attrib) {
-            if (Array.isArray(val.attrib)) return val.attrib.map(a => a?.name ?? a?.value ?? String(a)).filter(Boolean)
-            return [val.attrib.name ?? val.attrib.value ?? String(val.attrib)].filter(Boolean)
-          }
-          return Object.values(val).flat?.() || Object.values(val).map(String)
+      const toArray = (val, isAttributeObject = false) => {
+        if (!val) return []
+        if (isAttributeObject && val.attrib) {
+           const list = Array.isArray(val.attrib) ? val.attrib : [val.attrib];
+           return list.map(item => {
+               const name = item.name ? String(item.name).trim() : '';
+               const value = item.value ? String(item.value).trim() : '';
+               if (name && value) return `${name}: ${value}`;
+               return name || value;
+           }).filter(Boolean);
         }
+        if (Array.isArray(val)) return val.map(String)
+        if (typeof val === 'object') return Object.values(val).map(String)
         return String(val).split(/[,;|\n]+/).map(s => s.trim()).filter(Boolean)
       }
 
-      const equipment = toArray(get('oprema', 'opremljeno', 'namestenost'))
-      const additional = toArray(get('dodatno', 'extra', 'attribs', 'atributi'))
-      const characteristics = toArray(get('karakteristike', 'features', 'karakteristike_list'))
+      const equipment = toArray(get('oprema', 'opremljeno'))
+      const rawAttribs = get('attribs', 'atributi', 'dodatno', 'extra');
+      const additional = toArray(rawAttribs, !!(rawAttribs && rawAttribs.attrib)); 
 
       const structured = {
         offerType: get('vrstaponude', 'vrstaponude_text') || '',
-        propertyType: get('vrstanekretnine', 'vrstap', 'type') || '',
-        subtype: get('podtip', 'podtipnekretnine', 'tip') || '',
+        propertyType: get('vrstanekretnine', 'type') || '',
+        subtype: get('podtip', 'podtipnekretnine') || '',
         area: get('kvadratura_int', 'kvadratura', 'povrsina') || '',
-        yearBuilt: get('godinaizgradnje', 'godina', 'year') || '',
+        yearBuilt: get('godinaizgradnje', 'godina') || '',
         floor: get('sprat', 'sprat_text') || '',
         floorTotal: get('spratova', 'spratova_total') || '',
-        terraceArea: get('povrsinaterase', 'terrace_area') || '',
         roomsCount: get('brojsoba', 'rooms') || '',
         bedrooms: get('brojspavacihsoba', 'spavace') || '',
         bathrooms: get('brojkupatila', 'baths') || '',
         wcCount: get('brojwc', 'wc') || '',
         region: get('regija', 'region') || '',
         city: get('grad', 'mesto', 'naselje') || '',
-        furnished: get('namestenost', 'opremljeno') || '',
         idCode: base.id ?? base.code ?? fallbackId ?? '',
         equipment,
         additional,
-        characteristics,
         carpentry: get('stolarija', 'stolarija_tip') || '',
-        heating: get('vrstagrejanja', 'grejanje') || ''
+        heating: get('vrstagrejanja', 'grejanje') || '',
+        state: get('stanje', 'objectstate') || '',
+        // --- NOVI PODACI KOJI SU FALILI ---
+        constructionType: get('vrstagradnje') || '',
+        ambience: get('ambijent') || '',
+        publishedDate: get('daystart') || '',
+        lastUpdate: get('lastupdate') || '',
+        agentId: get('agentid') || '',
+        zipCode: get('ptt') || '',
+        country: get('drzava') || '',
+        furnishing: get('namestenost') || ''
       }
 
       return {
-        id: base.id ?? base.code ?? fallbackId,
+        id: structured.idCode,
         naslov: base.naslov ?? base.title ?? '',
         opis: base.opis ?? base.description ?? '',
         cena: base.cena ?? base.price ?? '',
         images: imgs,
         image: imgs[0] || '/placeholder.jpg',
         location: [base.mesto, base.naselje, base.grad].filter(Boolean).join(', ') || (base.location || ''),
-        rooms: Number(base.brojsoba ?? base.rooms ?? structured.roomsCount ?? 0) || 0,
-        baths: Number(base.brojkupatila ?? base.baths ?? structured.bathrooms ?? 0) || 0,
-        size: structured.area || base.kvadratura_int || base.kvadratura || 0,
+        rooms: Number(structured.roomsCount) || 0,
+        baths: Number(structured.bathrooms) || 0,
+        size: structured.area || 0,
         contactphone: base.contactphone ?? base.brojtelin ?? '',
         video_urls: videos,
         meta: structured
       }
     }
 
-    const pre = location.state?.item
-    if (pre) {
-      try {
-        const normalized = normalize(pre, id)
-        setProperty(normalized)
-        setImages(Array.isArray(normalized.images) ? normalized.images : [normalized.image])
-        setCurrentImage(0)
-        setLoading(false)
-      } catch (e) {
-        setError('Greška pri procesiranju podataka (prefetch).')
-        setLoading(false)
-      }
-      return
-    }
-
-    if (!id) {
-      setError('Neispravan ID.')
-      setLoading(false)
-      return
-    }
-
+    if (!id) { setError('Neispravan ID.'); setLoading(false); return }
     let cancelled = false
     const fetchProperty = async () => {
-      setLoading(true)
-      setError(null)
-      setProperty(null)
-      setImages([])
+      setLoading(true); setError(null);
       try {
         const res = await fetch(`${API_BASE}/oglasi/${encodeURIComponent(id)}`)
-        if (!res.ok) {
-          if (res.status === 404) throw new Error('Nekretnina nije pronađena.')
-          throw new Error('Greška pri dohvatu podataka.')
-        }
+        if (!res.ok) throw new Error('Greška')
         const data = await res.json()
         if (!cancelled) {
-          const normalized = normalize(data, id)
-          setProperty(normalized)
-          setImages(Array.isArray(normalized.images) ? normalized.images : [normalized.image])
-          setCurrentImage(0)
+          const norm = normalize(data, id)
+          setProperty(norm)
+          setImages(norm.images)
+          setLoading(false)
         }
-      } catch (err) {
-        if (!cancelled) setError(err.message || 'Greška')
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
+      } catch (err) { if (!cancelled) { setError('Greška'); setLoading(false) } }
     }
     fetchProperty()
     return () => { cancelled = true }
-  }, [id, location.state, getYoutubeEmbedUrl])
+  }, [id, getYoutubeEmbedUrl])
 
   useEffect(() => {
-    const prev = (typeof window !== 'undefined' && window.history && window.history.scrollRestoration) ? window.history.scrollRestoration : null
-    try {
-      if (typeof window !== 'undefined' && window.history && 'scrollRestoration' in window.history) {
-        window.history.scrollRestoration = 'manual'
-      }
-    } catch (e) { }
-
-    if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: 'auto', block: 'start' })
-    } else if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-    }
-
-    return () => {
-      try {
-        if (typeof window !== 'undefined' && window.history && prev !== null) {
-          window.history.scrollRestoration = prev
-        }
-      } catch (e) { }
-    }
+    if (topRef.current) topRef.current.scrollIntoView({ behavior: 'auto' })
+    else window.scrollTo(0,0)
   }, [location.key])
 
-  const prevImage = () => {
-    setCurrentImage(i => {
-      const imgs = Array.isArray(images) ? images : [images]
-      if (imgs.length === 0) return 0
-      return (i <= 0 ? imgs.length - 1 : i - 1)
-    })
-  }
-  const nextImage = () => {
-    setCurrentImage(i => {
-      const imgs = Array.isArray(images) ? images : [images]
-      if (imgs.length === 0) return 0
-      return (i >= imgs.length - 1 ? 0 : i + 1)
-    })
-  }
-
-  const openLightbox = (index = 0) => {
-    setLightboxIndex(index || 0)
-    setLightboxOpen(true)
-  }
+  const prevImage = () => setCurrentImage(i => (i <= 0 ? images.length - 1 : i - 1))
+  const nextImage = () => setCurrentImage(i => (i >= images.length - 1 ? 0 : i + 1))
+  
+  const openLightbox = (index = 0) => { setLightboxIndex(index); setLightboxOpen(true) }
   const closeLightbox = () => setLightboxOpen(false)
-  const lbPrev = () => {
-    setLightboxIndex(i => {
-      const imgs = Array.isArray(images) ? images : [images]
-      if (imgs.length === 0) return 0
-      return (i <= 0 ? imgs.length - 1 : i - 1)
-    })
-  }
-  const lbNext = () => {
-    setLightboxIndex(i => {
-      const imgs = Array.isArray(images) ? images : [images]
-      if (imgs.length === 0) return 0
-      return (i >= imgs.length - 1 ? 0 : i + 1)
-    })
-  }
-
+  const nextLightbox = (e) => { e?.stopPropagation(); setLightboxIndex(i => (i >= images.length - 1 ? 0 : i + 1)) }
+  const prevLightbox = (e) => { e?.stopPropagation(); setLightboxIndex(i => (i <= 0 ? images.length - 1 : i - 1)) }
+  
   useEffect(() => {
-    if (lightboxOpen) document.body.style.overflow = 'hidden'
-    else document.body.style.overflow = ''
-
+    if (!lightboxOpen) return
     const onKey = (e) => {
-      if (!lightboxOpen) return
-      if (e.key === 'Escape') closeLightbox()
-      if (e.key === 'ArrowLeft') lbPrev()
-      if (e.key === 'ArrowRight') lbNext()
+       if (e.key === 'Escape') closeLightbox()
+       if (e.key === 'ArrowRight') nextLightbox()
+       if (e.key === 'ArrowLeft') prevLightbox()
     }
     window.addEventListener('keydown', onKey)
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
-    }
-  }, [lightboxOpen, images])
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightboxOpen, images.length])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-yellow-400 font-bold text-xl">{t('loading', 'Učitavanje...')}</div>
-      </div>
-    )
-  }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-        <div className="text-center">
-          <h2 className="text-xl text-yellow-400 mb-4">{t('noResults', 'Nema rezultata')}</h2>
-          <p className="text-gray-300 mb-6">{error}</p>
-          <div className="flex justify-center gap-3">
-            <button onClick={() => navigate(-1)} className="px-4 py-2 bg-yellow-400 text-black rounded font-semibold">{t('backToSearch', 'Nazad')}</button>
-            <button onClick={() => navigate('/')} className="px-4 py-2 border border-white/10 text-white rounded">{t('home', 'Početna')}</button>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <div className="min-h-screen bg-black text-white flex items-center justify-center font-bold">Učitavanje...</div>
+  if (error || !property) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Nema rezultata</div>
 
-  if (!property) return null
-
-  const safeImages = Array.isArray(images) ? images : [images || property.image || '/placeholder.jpg']
-  const videoEmbeds = (property.video_urls || []).map(v => {
-    try { return getYoutubeEmbedUrl(v) } catch { return '' }
-  }).filter(Boolean)
-
+  const safeImages = Array.isArray(images) ? images : [property.image]
   const meta = property.meta || {}
+
+  const infoTable = [
+    { label: t('tipPonude', 'Tip ponude'), val: meta.offerType },
+    { label: t('cena', 'Cena'), val: formatPrice(property.cena), isPrice: true },
+    { label: t('lokacija', 'Lokacija'), val: property.location },
+    { label: t('tipNekretnine', 'Tip nekretnine'), val: meta.propertyType },
+    { label: t('podtip', 'Podtip'), val: meta.subtype },
+    { label: t('povrsina', 'Površina'), val: meta.area ? `${meta.area} m²` : '' }, 
+    { label: t('gradnja', 'Vrsta gradnje'), val: meta.constructionType },
+    { label: t('ambijent', 'Ambijent'), val: meta.ambience },
+    { label: t('stanje', 'Stanje'), val: meta.state },
+    { label: t('godina', 'Godina izgradnje'), val: meta.yearBuilt },
+    { label: t('sprat', 'Spratnost'), val: meta.floor && meta.floorTotal ? `${meta.floor} / ${meta.floorTotal}` : meta.floor },
+    { label: t('sobe', 'Broj soba'), val: meta.roomsCount },
+    { label: t('kupatila', 'Broj kupatila'), val: meta.bathrooms },
+    { label: t('grejanje', 'Grejanje'), val: meta.heating },
+    { label: t('namestenost', 'Nameštenost'), val: meta.furnishing },
+    { label: t('objavljeno', 'Objavljeno'), val: meta.publishedDate },
+    { label: t('azurirano', 'Poslednja izmena'), val: meta.lastUpdate },
+    { label: t('agent', 'ID Agenta'), val: meta.agentId },
+    { label: t('id', 'ID oglasa'), val: meta.idCode },
+    { label: t('stolarija', 'Stolarija'), val: meta.carpentry },
+    { label: t('grad', 'Grad/PTT'), val: meta.zipCode ? `${meta.city} ${meta.zipCode}` : meta.city },
+  ].filter(i => i.val && i.val !== '0' && i.val !== '0.0')
 
   return (
     <div className="min-h-screen bg-black text-white py-12 px-8 mt-10">
       <div className="max-w-5xl mx-auto" ref={topRef}>
+        
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-yellow-400 mb-6 hover:text-yellow-300">
           <FaArrowLeft /> {t('backToSearch', 'Nazad')}
         </button>
 
-        {/* IMAGE SLIDER */}
-        <div className="relative rounded-xl overflow-hidden border border-yellow-600/20 shadow-xl">
+        {/* Galerija */}
+        <div className="relative rounded-xl overflow-hidden border border-yellow-600/20 shadow-xl bg-gray-900">
           <img
             src={safeImages[currentImage] || property.image}
-            alt={property.naslov || ''}
-            className="w-full h-[420px] object-cover transition-all duration-500 cursor-pointer"
+            alt={property.naslov}
+            className="w-full h-[420px] object-cover cursor-pointer"
             onClick={() => openLightbox(currentImage)}
             onError={(e) => { e.currentTarget.src = '/placeholder.jpg' }}
           />
-
-          <button
-            onClick={() => openLightbox(currentImage)}
-            className="absolute top-4 right-4 z-20 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black/70 transition"
-            aria-label="Proširi sliku"
-            title="Pogledaj slajder"
-          >
+          <button onClick={() => openLightbox(currentImage)} className="absolute top-4 right-4 z-20 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black/70">
             <FaExpand />
           </button>
-
           {safeImages.length > 1 && (
             <>
               <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black z-10">‹</button>
               <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black z-10">›</button>
-
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                 {safeImages.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentImage(i)}
-                    className={`w-3 h-3 rounded-full transition ${currentImage === i ? 'bg-yellow-400 scale-110' : 'bg-white/40'}`}
-                    aria-label={`go to image ${i + 1}`}
-                  />
+                  <button key={i} onClick={() => setCurrentImage(i)} className={`w-3 h-3 rounded-full transition ${currentImage === i ? 'bg-yellow-400 scale-110' : 'bg-white/40'}`} />
                 ))}
               </div>
             </>
           )}
         </div>
 
-        {/* Content */}
+        {/* Detalji */}
         <div className="mt-8 bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <h1 className="text-3xl font-extrabold text-yellow-400">{property.naslov}</h1>
             <div className="text-2xl font-bold text-white">{formatPrice(property.cena)}</div>
           </div>
-
           <div className="flex items-center gap-2 text-gray-300 mt-3">
             <MdLocationOn className="text-yellow-400" />
             <span className='font-bold'>{property.location}</span>
           </div>
 
+          {/* Glavni bedževi */}
           <div className="mt-6 grid grid-cols-3 gap-4 text-gray-300">
             <div className="bg-black/40 p-4 rounded border border-yellow-600/10 flex flex-col items-center justify-center text-center min-h-[110px]">
               <FaBed className="text-yellow-400 text-3xl mb-2" />
               <div className="text-2xl font-bold text-white">{property.rooms}</div>
-              <div className="text-sm text-gray-400 mt-1">
-                {t('rooms', 'sobe')}
-              </div>
+              <div className="text-sm text-gray-400 mt-1">{t('rooms', 'sobe')}</div>
             </div>
-
             <div className="bg-black/40 p-4 rounded border border-yellow-600/10 flex flex-col items-center justify-center text-center min-h-[110px]">
               <FaBath className="text-yellow-400 text-3xl mb-2" />
               <div className="text-2xl font-bold text-white">{property.baths}</div>
-              <div className="text-sm text-gray-400 mt-1">
-                {t('baths', 'kupatila')}
-              </div>
+              <div className="text-sm text-gray-400 mt-1">{t('baths', 'kupatila')}</div>
             </div>
-
             <div className="bg-black/40 p-4 rounded border border-yellow-600/10 flex flex-col items-center justify-center text-center min-h-[110px]">
-              <div className="text-2xl font-bold text-white">
-                {property.size} m²
-              </div>
-              <div className="text-sm text-gray-400 mt-1">
-                {t('size', 'kvadratura')}
-              </div>
+              <div className="text-2xl font-bold text-white">{property.size} m²</div>
+              <div className="text-sm text-gray-400 mt-1">{t('size', 'kvadratura')}</div>
             </div>
           </div>
 
+          <p className="mt-6 text-gray-300 leading-relaxed whitespace-pre-line">{property.opis}</p>
 
-          <p className="mt-6 text-gray-300 leading-relaxed">{property.opis}</p>
-
-          {/* meta block */}
-          <div className="mt-6 bg-black/30 border border-white/5 rounded-lg p-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-300">
-              <div>
-                <div className="text-lg text-gray-400">{t('tipPonude')}</div>
-                <div className="font-semibold">{meta.offerType || '-'}</div>
-              </div>
-              <div>
-                <div className="text-lg text-gray-400">{t('tipNekretnine')}</div>
-                <div className="font-semibold">{meta.propertyType || '-'}</div>
-              </div>
-              <div>
-                <div className="text-lg text-gray-400">{t('povrsina')}</div>
-                <div className="font-semibold">{meta.area ? `${meta.area} m²` : (property.size ? `${property.size} m²` : '-')}</div>
-              </div>
-              <div>
-                <div className="text-lg text-gray-400">{t('godina')}</div>
-                <div className="font-semibold">{meta.yearBuilt || '-'}</div>
-              </div>
-
-              <div>
-                <div className="text-lg text-gray-400">{t('sprat')}</div>
-                <div className="font-semibold">{meta.floor || '-'}</div>
-              </div>
-              <div>
-                <div className="text-lg text-gray-400">{t('spratnost')}</div>
-                <div className="font-semibold">{meta.floorTotal || '-'}</div>
-              </div>
-              <div>
-                <div className="text-lg text-gray-400">{t('Id')}</div>
-                <div className="font-semibold">{meta.idCode || property.id || '-'}</div>
-              </div>
-              <div>
-                <div className="text-lg text-gray-400">{t('grejanje')}</div>
-                <div className="font-semibold">{meta.heating || '-'}</div>
-              </div>
+          <div className="mt-10 space-y-10">
+            {/* Tabela sa informacijama */}
+            <div>
+                 <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">Informacije o nekretnini</h3>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
+                     {infoTable.map((item, idx) => (
+                         <div key={idx} className="flex flex-col border-b border-white/5 pb-1">
+                             <span className="text-gray-500 text-sm uppercase">{item.label}</span>
+                             <span className={`text-lg font-medium ${item.isPrice ? 'text-yellow-400' : 'text-white'}`}>{makeSentence(item.val)}</span>
+                         </div>
+                     ))}
+                 </div>
             </div>
 
-            {/* Accessible lists for equipment / additional / characteristics
-                MODIFIED: display side-by-side. On small screens allow horizontal scroll.
-            */}
-            <div className="mt-8 flex flex-col gap-6">
-
-              {/* --- SEKCIJA 1: OPREMA (Lista jedna ispod druge) --- */}
-              <div className="flex flex-col bg-neutral-900/60 backdrop-blur-md border border-yellow-500/20 rounded-2xl overflow-hidden shadow-lg">
-                {/* Naslov */}
-                <div className="bg-white/5 p-4 border-b border-white/5">
-                  <h3 className="text-xl text-yellow-400 font-bold tracking-wide uppercase flex items-center gap-2">
-                    <span className="w-2 h-8 bg-yellow-500 rounded-full inline-block"></span>
-                    {t('oprema')}
-                  </h3>
+            {/* Oprema */}
+            {meta.equipment && meta.equipment.length > 0 && (
+                <div>
+                    <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('oprema', 'Oprema')}</h3>
+                    <div className="flex flex-wrap gap-3">
+                        {meta.equipment.map((item, i) => (
+                            <span key={i} className="px-3 py-1 bg-white/10 text-gray-200 rounded text-base border border-white/10">{makeSentence(item)}</span>
+                        ))}
+                    </div>
                 </div>
+            )}
 
-                {/* Sadržaj Opreme */}
-                <div className="p-4">
-                  <ul className="space-y-4">
-                    {Array.isArray(meta.equipment) && meta.equipment.length > 0 ? (
-                      meta.equipment.map((item, i) => (
-                        <li
-                          key={i}
-                          className="group flex items-start gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors duration-300 border border-transparent hover:border-yellow-500/30"
-                        >
-                          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 text-black font-black text-lg flex items-center justify-center shadow-lg shadow-yellow-500/20 group-hover:scale-110 transition-transform">
-                            {i + 1}
-                          </div>
-                          <div className="flex-1 pt-1">
-                            <p className="text-lg text-gray-200 font-medium leading-relaxed">
-                              {makeSentence(item)}
-                            </p>
-                          </div>
-                        </li>
-                      ))
-                    ) : (
-                      <li className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 border-dashed">
-                        <span className="text-gray-500 text-lg italic w-full text-center">
-                          {t('noEquipment', 'Nema opreme')}
-                        </span>
-                      </li>
-                    )}
-                  </ul>
+            {/* Dodatno (Atributi) */}
+            {meta.additional && meta.additional.length > 0 && (
+                <div>
+                    <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('dodatno', 'Dodatne karakteristike')}</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {meta.additional.map((item, i) => {
+                            const parts = String(item).split(':');
+                            const hasValue = parts.length > 1;
+                            const label = hasValue ? parts[0] : item;
+                            const rawVal = hasValue ? parts[1].trim().toLowerCase() : 'da';
+                            const isYes = rawVal === 'da' || rawVal === 'true';
+                            const isNo = rawVal === 'ne' || rawVal === 'false';
+                            let displayVal = 'Da';
+                            let valClass = 'text-yellow-400';
+                            if (isNo) { displayVal = 'Ne'; valClass = 'text-gray-500'; }
+                            else if (!isYes) { displayVal = makeSentence(rawVal); valClass = 'text-white'; }
+                            return (
+                                <div key={i} className="flex justify-between items-center bg-black/40 p-3 rounded border border-white/5">
+                                    <span className="text-gray-300 font-medium">{makeSentence(label)}</span>
+                                    <span className={`font-bold uppercase ${valClass}`}>{displayVal}</span>
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
-              </div>
-
-
-              {/* --- SEKCIJA 2: DODATNO (Lista jedna pored druge sa wrap-om) --- */}
-              <div className="flex flex-col bg-neutral-900/60 backdrop-blur-md border border-yellow-500/20 rounded-2xl overflow-hidden shadow-lg">
-                {/* Naslov */}
-                <div className="bg-white/5 p-4 border-b border-white/5">
-                  <h3 className="text-xl text-yellow-400 font-bold tracking-wide uppercase flex items-center gap-2">
-                    <span className="w-2 h-8 bg-yellow-500 rounded-full inline-block"></span>
-                    {t('dodatno')}
-                  </h3>
-                </div>
-
-                {/* Sadržaj Dodatno - OVDE JE PROMENA (flex-wrap) */}
-                <div className="p-4">
-                  <ul className="flex flex-wrap gap-4">
-                    {Array.isArray(meta.additional) && meta.additional.length > 0 ? (
-                      meta.additional.map((item, i) => (
-                        <li
-                          key={i}
-                          // grow klasa omogućava da se kartice lepo rašire, a w-auto da budu jedne pored drugih
-                          className="group flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors duration-300 border border-transparent hover:border-yellow-500/30 w-full md:w-auto"
-                        >
-                          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 text-black font-black text-lg flex items-center justify-center shadow-lg shadow-yellow-500/20 group-hover:scale-110 transition-transform">
-                            {i + 1}
-                          </div>
-                          <div className="pt-1">
-                            <p className="text-lg text-gray-200 font-medium leading-relaxed whitespace-nowrap md:whitespace-normal">
-                              {makeSentence(item)}
-                            </p>
-                          </div>
-                        </li>
-                      ))
-                    ) : (
-                      <li className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 border-dashed w-full">
-                        <span className="text-gray-500 text-lg italic w-full text-center">
-                          {t('noAdditional', 'Nema dodatnih informacija')}
-                        </span>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-
-            </div>
-
+            )}
           </div>
 
           <div className="mt-8 flex gap-4 flex-col sm:flex-row">
-            <a
-              href={`mailto:serbesnekretnine@gmail.com?subject=${encodeURIComponent(`${t('mailSubjectPrefix', 'Zainteresovan za:')} ${property.naslov}`)}`}
-              className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow"
-            >
-              {t('contactBtn', 'Kontakt')}
-            </a>
-
-            <a
-              href={property.contactphone ? `tel:${property.contactphone}` : 'tel:+38163238564'}
-              className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow"
-            >
-              {t('cta', 'Pozovi')}
-            </a>
+            <a href={`mailto:serbesnekretnine@gmail.com?subject=${encodeURIComponent(`Zainteresovan za: ${property.naslov}`)}`} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow text-center">{t('contactBtn', 'Kontakt')}</a>
+            <a href={property.contactphone ? `tel:${property.contactphone}` : 'tel:+381628150586'} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow text-center">{t('cta', 'Pozovi')}</a>
           </div>
         </div>
 
-        {/* Videos */}
-        {videoEmbeds.length > 0 && (
+        {/* Video sekcija */}
+        {property.video_urls && property.video_urls.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-lg font-bold text-yellow-400 mb-3">{t('videoTour', 'Video tura')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {videoEmbeds.map((src, i) => (
-                <div key={i} className="aspect-video w-full rounded overflow-hidden border border-white/5">
-                  <iframe
-                    title={`video-tour-${i}`}
-                    src={src}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              ))}
-            </div>
+             {property.video_urls.map((v, i) => (
+               <div key={i} className="mb-6 rounded-xl overflow-hidden border border-yellow-600/20 shadow-xl">
+                 <iframe src={getYoutubeEmbedUrl(v)} className="w-full h-[300px] md:h-[500px]" title={`video-${i}`} allowFullScreen />
+               </div>
+             ))}
           </div>
         )}
-
-        {/* Lightbox */}
-        {lightboxOpen && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 sm:p-6"
-            role="dialog"
-            aria-modal="true"
-            onClick={(e) => { if (e.target === e.currentTarget) closeLightbox() }}
-          >
-            <div className="relative w-full h-full max-w-[1200px] max-h-[96vh] bg-transparent flex flex-col lg:flex-row items-stretch">
-              <button onClick={closeLightbox} className="absolute top-4 right-4 z-40 bg-black/40 p-3 rounded-full text-white hover:bg-black/60"><FaTimes /></button>
-              <button onClick={lbPrev} className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/40 p-3 rounded-full text-white hover:bg-black/60">‹</button>
-              <button onClick={lbNext} className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/40 p-3 rounded-full text-white hover:bg-black/60">›</button>
-
-              <div className="flex-1 flex items-center justify-center p-4 lg:p-6">
-                <img src={safeImages[lightboxIndex] || property.image} alt="" className="max-h-[85vh] w-full object-contain" onError={(e) => { e.currentTarget.src = '/placeholder.jpg' }} />
-              </div>
-
-              <div className="w-full lg:w-36 lg:ml-4 flex lg:flex-col gap-2 items-center lg:items-stretch overflow-auto px-4 pb-4">
-                <div className="flex lg:hidden gap-2 w-full overflow-x-auto">
-                  {safeImages.map((src, i) => (
-                    <button key={i} onClick={() => setLightboxIndex(i)} className={`flex-shrink-0 w-24 h-16 rounded overflow-hidden border ${i === lightboxIndex ? 'border-yellow-400' : 'border-white/20'}`}><img src={src} className="w-full h-full object-cover" alt="" /></button>
-                  ))}
-                </div>
-                <div className="hidden lg:flex flex-col gap-2 w-full">
-                  {safeImages.map((src, i) => (
-                    <button key={i} onClick={() => setLightboxIndex(i)} className={`w-full h-20 rounded overflow-hidden border ${i === lightboxIndex ? 'border-yellow-400' : 'border-white/20'}`}><img src={src} className="w-full h-full object-cover" alt="" /></button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
       </div>
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center select-none" onClick={closeLightbox}>
+          <button onClick={closeLightbox} className="absolute top-6 right-6 text-white text-4xl hover:text-yellow-400 transition-colors z-[110]">
+            <FaTimes />
+          </button>
+          {safeImages.length > 1 && (
+            <button onClick={prevLightbox} className="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-yellow-400 text-5xl transition-all z-[110] p-4">
+              <FaChevronLeft />
+            </button>
+          )}
+          <div className="relative max-w-[90%] max-h-[90%] flex flex-col items-center">
+            <img 
+              src={safeImages[lightboxIndex]} 
+              alt="" 
+              className="max-w-full max-h-[85vh] object-contain shadow-2xl animate-in fade-in zoom-in duration-300" 
+              onClick={(e) => e.stopPropagation()} 
+            />
+            <div className="text-white/60 mt-4 font-medium tracking-widest uppercase text-sm">
+              {lightboxIndex + 1} / {safeImages.length}
+            </div>
+          </div>
+          {safeImages.length > 1 && (
+            <button onClick={nextLightbox} className="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-yellow-400 text-5xl transition-all z-[110] p-4">
+              <FaChevronRight />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
