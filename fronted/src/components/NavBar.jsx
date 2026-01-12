@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { t } from '../i1n8'
 import logo from '../assets/dedaci.jpg'
+import { TiThMenu } from "react-icons/ti";
 
 function NavBar() {
     const [open, setOpen] = useState(false)
@@ -68,6 +69,11 @@ function NavBar() {
                             <Link to="/prodaja" state={{ type: 'kuca' }} onClick={closeAll} className={dropdownItemClass}> {t('kuce')} </Link>
                             <Link to="/prodaja" state={{ type: 'plac' }} onClick={closeAll} className={dropdownItemClass}> {t('parcele') || 'Parcele'} </Link>
                             <Link to="/prodaja" state={{ type: 'poslovni' }} onClick={closeAll} className={dropdownItemClass}> {t('poslovniProstor')}</Link>
+                            <Link to="/prodaja" state={{ type: 'vikendica' }} onClick={closeAll} className={dropdownItemClass}>{t('vikendice')}</Link>
+                            <Link to="/prodaja" state={{ type: 'lokal' }} onClick={closeAll} className={dropdownItemClass}>{t('lokal')}</Link>
+                            <Link to="/prodaja" state={{ type: 'njiva' }} onClick={closeAll} className={dropdownItemClass}>{t('njiva')}</Link>
+                            <Link to="/prodaja" state={{ type: 'magacin' }} onClick={closeAll} className={dropdownItemClass}>{t('magacin')}</Link>
+                            <Link to="/prodaja" state={{ type: 'poslovna zgrada' }} onClick={closeAll} className={dropdownItemClass}>{t('poslovnaZG')}</Link>
                         </div>
                     </div>
 
@@ -78,6 +84,10 @@ function NavBar() {
                             <Link to="/izdavanje" state={{ type: 'stan' }} onClick={closeAll} className={dropdownItemClass}>{t('stanovi')}</Link>
                             <Link to="/izdavanje" state={{ type: 'kuca' }} onClick={closeAll} className={dropdownItemClass}>{t('kuce')}</Link>
                             <Link to="/izdavanje" state={{ type: 'poslovni' }} onClick={closeAll} className={dropdownItemClass}>{t('poslovniProstor')}</Link>
+                            <Link to="/izdavanje" state={{ type: 'vikendica' }} onClick={closeAll} className={dropdownItemClass}>{t('vikendice')}</Link>
+                            <Link to="/izdavanje" state={{ type: 'lokal' }} onClick={closeAll} className={dropdownItemClass}>{t('lokal')}</Link>
+                            <Link to="/izdavanje" state={{ type: 'magacin' }} onClick={closeAll} className={dropdownItemClass}>{t('magacin')}</Link>
+                            <Link to="/izdavanje" state={{ type: 'poslovna zgrada' }} onClick={closeAll} className={dropdownItemClass}>{t('poslovnaZG')}</Link>
                         </div>
                     </div>
 
@@ -104,14 +114,18 @@ function NavBar() {
                 </div>
 
                 {/* Mobile button */}
-                <button onClick={() => setOpen(!open)} className="md:hidden text-white text-2xl" aria-label="toggle menu">
-                    ☰
+                <button
+                    onClick={() => setOpen(!open)}
+                    className={`md:hidden text-2xl transition-colors duration-300 ${open ? 'text-red-500' : 'text-white hover:text-yellow-500'}`}
+                    aria-label="toggle menu"
+                >
+                    <TiThMenu />
                 </button>
             </div>
 
             {/* Mobile menu */}
             {open && (
-                <div className="md:hidden fixed inset-x-0 top-20 bg-black/95 backdrop-blur-xl border-t border-yellow-500/50 text-white min-h-screen z-[60] animate-in fade-in slide-in-from-top duration-300">
+                <div className="md:hidden inset-x-0 top-20 bg-black/95 backdrop-blur-xl border-t border-yellow-500/50 text-white min-h-screen z-[60] animate-in fade-in slide-in-from-top duration-300">
                     <nav className="flex flex-col p-3 gap-1">
 
                         <NavLink
@@ -135,11 +149,17 @@ function NavBar() {
                             </div>
 
                             {prodajaOpen && (
-                                <div className="flex flex-col gap-1 pb-4 px-4 animate-in slide-in-from-top-2 duration-200">
+                                /* DODATO: max-h-64 (oko 250px) i overflow-y-auto za skrol unutar ove sekcije */
+                                <div className="flex flex-col gap-1 pb-4 px-4 animate-in slide-in-from-top-2 duration-200 max-h-64 overflow-y-auto custom-scrollbar">
                                     <Link to="/prodaja" state={{ type: 'stan' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}> {t('stanovi')} </Link>
                                     <Link to="/prodaja" state={{ type: 'kuca' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}> {t('kuce')} </Link>
                                     <Link to="/prodaja" state={{ type: 'plac' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}> {t('parcele') || 'Parcele'} </Link>
                                     <Link to="/prodaja" state={{ type: 'poslovni' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}> {t('poslovniProstor')}</Link>
+                                    <Link to="/prodaja" state={{ type: 'vikendica' }} onClick={closeAll} className={dropdownItemClass}>{t('vikendice')}</Link>
+                                    <Link to="/prodaja" state={{ type: 'lokal' }} onClick={closeAll} className={dropdownItemClass}>{t('lokal')}</Link>
+                                    <Link to="/prodaja" state={{ type: 'njiva' }} onClick={closeAll} className={dropdownItemClass}>{t('njiva')}</Link>
+                                    <Link to="/prodaja" state={{ type: 'magacin' }} onClick={closeAll} className={dropdownItemClass}>{t('magacin')}</Link>
+                                    <Link to="/prodaja" state={{ type: 'poslovna zgrada' }} onClick={closeAll} className={dropdownItemClass}>{t('poslovnaZG')}</Link>
                                 </div>
                             )}
                         </div>
@@ -157,10 +177,18 @@ function NavBar() {
                             </div>
 
                             {izdavanjeOpen && (
-                                <div className="flex flex-col gap-1 pb-4 px-4 animate-in slide-in-from-top-2 duration-200">
+                                /* DODATO: 
+                                   max-h-60 -> ograničava visinu da ne bi gurao ceo meni van ekrana
+                                   overflow-y-auto -> omogućava skrolovanje (slider) unutar ove sekcije
+                                */
+                                <div className="flex flex-col gap-1 pb-4 px-4 animate-in slide-in-from-top-2 duration-200 max-h-60 overflow-y-auto custom-scrollbar">
                                     <Link to="/izdavanje" state={{ type: 'stan' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}>{t('stanovi')}</Link>
                                     <Link to="/izdavanje" state={{ type: 'kuca' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}>{t('kuce')}</Link>
                                     <Link to="/izdavanje" state={{ type: 'poslovni' }} onClick={closeAll} className={`${dropdownItemClass} rounded-lg`}>{t('poslovniProstor')}</Link>
+                                    <Link to="/izdavanje" state={{ type: 'vikendica' }} onClick={closeAll} className={dropdownItemClass}>{t('vikendice')}</Link>
+                                    <Link to="/izdavanje" state={{ type: 'lokal' }} onClick={closeAll} className={dropdownItemClass}>{t('lokal')}</Link>
+                                    <Link to="/izdavanje" state={{ type: 'magacin' }} onClick={closeAll} className={dropdownItemClass}>{t('magacin')}</Link>
+                                    <Link to="/izdavanje" state={{ type: 'poslovna zgrada' }} onClick={closeAll} className={dropdownItemClass}>{t('poslovnaZG')}</Link>
                                 </div>
                             )}
                         </div>

@@ -11,6 +11,13 @@ export const translations = {
     zemljiste: 'Zemljišta',
     poslovniProstor: 'Poslovni prostori',
 
+    //navbar
+    vikendice: 'Vikendice',
+    lokal: 'Lokal',
+    magacin: 'Magacin',
+    poslovnaZG: 'Poslovna zgrada',
+    njiva: 'Njiva',
+
     deteljnaPPredraga:'Detaljna pretraga',
 
     heroTitle: 'Pronađite savršenu nekretninu',
@@ -71,7 +78,9 @@ export const translations = {
     dvoiposoban: 'Dvoiposoban',
     trosiposoban: 'Trosiposoban',
     
-    
+    //single page
+    dodatno: 'Dodatno',
+    oprema: 'Oprema',
 
     
 
@@ -248,7 +257,16 @@ export const translations = {
     ugovor3: 'Общие условия бизнеса',
     povrsina: 'Площадь',
 
-    
+    //navbar
+    vikendice: 'Загородные дома',
+    lokal: 'Коммерческое помещение',
+    magacin: 'Склад',
+    poslovnaZG: 'Деловое здание',
+    njiva: 'Поле',
+
+    //single page
+    dodatno: 'Дополнительно',
+    oprema: 'Оборудование',
 
     //search more page
     detaljnaPretraga: 'Расширенный поиск недвижимости',
@@ -472,6 +490,10 @@ export const translations = {
     showCity: 'Show city',
     allCities: 'All cities',
 
+    //single page
+    dodatno: 'Additional',
+    oprema: 'Equipment',
+
     cenaDo: 'Price to',
     cenaOd: 'Price from',
 
@@ -507,7 +529,13 @@ export const translations = {
     pretrazi: 'Search',
     ponistiFilter: 'Reset filter',
     pretragaId: 'Search by property ID',
-
+  
+    //navbar
+    vikendice: 'Cottages',
+    lokal: 'Commercial space',
+    magacin: 'Warehouse',
+    poslovnaZG: 'Business building',
+    njiva: 'Field',
     //DODATO: result page
     nemaRezultata: 'No results for search criteria',
     nemaFiltera: 'No applied filters',

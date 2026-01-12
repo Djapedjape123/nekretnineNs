@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react'
+// SinglePage.jsx
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { MdLocationOn } from 'react-icons/md'
 import { FaBed, FaBath, FaArrowLeft, FaExpand, FaTimes } from 'react-icons/fa'
@@ -9,7 +10,7 @@ export default function SinglePage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const topRef = useRef(null) // <--- dodato
+  const topRef = useRef(null)
 
   const [property, setProperty] = useState(null)
   const [images, setImages] = useState([])
@@ -40,6 +41,26 @@ export default function SinglePage() {
     }
   }
 
+  // helper: make a readable sentence from attribute name/value
+  const makeSentence = (raw) => {
+    if (!raw && raw !== 0) return ''
+    try {
+      let s = String(raw)
+      // replace underscores/dashes, multiple spaces, strip excess punctuation
+      s = s.replace(/[_\-]+/g, ' ')
+      s = s.replace(/\s+/g, ' ').trim()
+      // lowercase then uppercase first letter
+      s = s.toLowerCase()
+      s = s.charAt(0).toUpperCase() + s.slice(1)
+      // if it looks like "da" / "ne", convert to "Da" / "Ne"
+      if (/^da$/i.test(s)) return 'Da'
+      if (/^ne$/i.test(s)) return 'Ne'
+      return s
+    } catch {
+      return String(raw)
+    }
+  }
+
   // safer: avoid direct window access (handle SSR)
   const getProtocol = () => (typeof window !== 'undefined' && window.location && window.location.protocol) ? window.location.protocol : 'https:'
 
@@ -49,7 +70,6 @@ export default function SinglePage() {
     let url = String(rawUrl).trim()
     if (!url) return ''
 
-    // normalize protocol-less
     if (url.startsWith('//')) url = `${getProtocol()}${url}`
     if (!/^https?:\/\//i.test(url)) url = `https://${url}`
 
@@ -57,31 +77,26 @@ export default function SinglePage() {
       const parsed = new URL(url)
       const host = (parsed.hostname || '').toLowerCase()
 
-      // youtu.be/ID
       if (host.includes('youtu.be')) {
         const id = parsed.pathname.replace(/^\/+/, '').split('/')[0]
         if (id) return `https://www.youtube.com/embed/${id}`
       }
 
-      // /shorts/ID
       {
         const m = parsed.pathname.match(/\/shorts\/([A-Za-z0-9_-]{4,})/)
         if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
       }
 
-      // watch?v=ID
       {
         const v = parsed.searchParams.get('v')
         if (v) return `https://www.youtube.com/embed/${v}`
       }
 
-      // /embed/ID
       {
         const m = parsed.pathname.match(/\/embed\/([A-Za-z0-9_-]{4,})/)
         if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
       }
 
-      // fallback regex (covers many edge cases)
       {
         const m = url.match(/(?:v=|\/embed\/|youtu\.be\/|\/shorts\/)([A-Za-z0-9_-]{4,})/)
         if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
@@ -89,7 +104,6 @@ export default function SinglePage() {
 
       return ''
     } catch (e) {
-      // fallback simple regex
       const regex = /(?:v=|\/embed\/|youtu\.be\/|\/shorts\/)([A-Za-z0-9_-]{4,})/
       const m = String(rawUrl).match(regex)
       if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`
@@ -98,11 +112,9 @@ export default function SinglePage() {
   }, [])
 
   useEffect(() => {
-    // Normalize helper used both for prefetch and fetched data
     const normalize = (raw, fallbackId) => {
       const base = raw || {}
 
-      // images: accept different shapes (array, object with slika array, single string)
       let imgs = []
       try {
         if (Array.isArray(base.slike?.slika) && base.slike.slika.length > 0) {
@@ -120,7 +132,6 @@ export default function SinglePage() {
 
       if (!imgs.length) imgs = ['/placeholder.jpg']
 
-      // videos: accept string, array, object {url}
       const collectVideoField = (field) => {
         const v = base[field]
         if (v === undefined || v === null) return []
@@ -128,12 +139,9 @@ export default function SinglePage() {
           return v.flat().map(x => (typeof x === 'object' ? (x.url ?? '') : String(x))).filter(Boolean)
         }
         if (typeof v === 'object') {
-          // object may be {url: '...'} or nested
           if (v.url) return [String(v.url)]
-          // flatten values (rare)
           return Object.values(v).map(String).filter(Boolean)
         }
-        // string
         return [String(v)]
       }
 
@@ -141,12 +149,9 @@ export default function SinglePage() {
       videos = videos.concat(collectVideoField('video_url'))
       videos = videos.concat(collectVideoField('videotour'))
       videos = videos.concat(collectVideoField('video'))
-
-      // normalize videos: trim + dedupe
       videos = videos.map(s => String(s || '').trim()).filter(Boolean)
       videos = Array.from(new Set(videos))
 
-      // helper to safely read multiple possible keys
       const get = (...keys) => {
         for (const k of keys) {
           if (k in base && base[k] !== undefined && base[k] !== null && String(base[k]).trim() !== '') return base[k]
@@ -154,14 +159,11 @@ export default function SinglePage() {
         return ''
       }
 
-      // equipment/attributes parsing (string with commas or array or object)
       const toArray = (val) => {
         if (!val && val !== 0) return []
         if (Array.isArray(val)) return val.map(String)
         if (typeof val === 'object') {
-          // try common patterns
           if (val.attrib) {
-            // attrib may be object or array
             if (Array.isArray(val.attrib)) return val.attrib.map(a => a?.name ?? a?.value ?? String(a)).filter(Boolean)
             return [val.attrib.name ?? val.attrib.value ?? String(val.attrib)].filter(Boolean)
           }
@@ -215,7 +217,6 @@ export default function SinglePage() {
       }
     }
 
-    // immediate prefetch from location.state
     const pre = location.state?.item
     if (pre) {
       try {
@@ -266,16 +267,13 @@ export default function SinglePage() {
     return () => { cancelled = true }
   }, [id, location.state, getYoutubeEmbedUrl])
 
-  // ensure page is at top when we mount/navigate here
   useEffect(() => {
     const prev = (typeof window !== 'undefined' && window.history && window.history.scrollRestoration) ? window.history.scrollRestoration : null
     try {
       if (typeof window !== 'undefined' && window.history && 'scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'manual'
       }
-    } catch(e) {
-      // ignore (some environments deny access)
-    }
+    } catch (e) { }
 
     if (topRef.current) {
       topRef.current.scrollIntoView({ behavior: 'auto', block: 'start' })
@@ -288,12 +286,10 @@ export default function SinglePage() {
         if (typeof window !== 'undefined' && window.history && prev !== null) {
           window.history.scrollRestoration = prev
         }
-      } catch(e) { /* ignore */ }
+      } catch (e) { }
     }
-  // location.key se menja pri svakom ulasku u rutu, pa osigurava izvršavanje pri navigaciji
   }, [location.key])
 
-  // Slider controls
   const prevImage = () => {
     setCurrentImage(i => {
       const imgs = Array.isArray(images) ? images : [images]
@@ -329,7 +325,6 @@ export default function SinglePage() {
     })
   }
 
-  // keyboard navigation + block scroll while open
   useEffect(() => {
     if (lightboxOpen) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
@@ -380,7 +375,7 @@ export default function SinglePage() {
   const meta = property.meta || {}
 
   return (
-    <div className="min-h-screen bg-black text-white py-12 px-6 mt-10">
+    <div className="min-h-screen bg-black text-white py-12 px-8 mt-10">
       <div className="max-w-5xl mx-auto" ref={topRef}>
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-yellow-400 mb-6 hover:text-yellow-300">
           <FaArrowLeft /> {t('backToSearch', 'Nazad')}
@@ -426,79 +421,173 @@ export default function SinglePage() {
 
         {/* Content */}
         <div className="mt-8 bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl p-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <h1 className="text-3xl font-extrabold text-yellow-400">{property.naslov}</h1>
             <div className="text-2xl font-bold text-white">{formatPrice(property.cena)}</div>
           </div>
 
           <div className="flex items-center gap-2 text-gray-300 mt-3">
             <MdLocationOn className="text-yellow-400" />
-            <span>{property.location}</span>
+            <span className='font-bold'>{property.location}</span>
           </div>
 
-          <div className="mt-6 grid grid-cols-3 gap-4 text-sm text-gray-300">
-            <div className="bg-black/40 p-3 rounded border border-yellow-600/10 text-center">
-              <FaBed className="text-yellow-400 mb-1 inline-block" />
-              <div className="mt-1 font-semibold">{property.rooms}</div>
-              <div className="text-xs text-gray-400">{t('rooms', 'sobe')}</div>
+          <div className="mt-6 grid grid-cols-3 gap-4 text-gray-300">
+            <div className="bg-black/40 p-4 rounded border border-yellow-600/10 flex flex-col items-center justify-center text-center min-h-[110px]">
+              <FaBed className="text-yellow-400 text-3xl mb-2" />
+              <div className="text-2xl font-bold text-white">{property.rooms}</div>
+              <div className="text-sm text-gray-400 mt-1">
+                {t('rooms', 'sobe')}
+              </div>
             </div>
-            <div className="bg-black/40 p-3 rounded border border-yellow-600/10 text-center">
-              <FaBath className="text-yellow-400 mb-1 inline-block" />
-              <div className="mt-1 font-semibold">{property.baths}</div>
-              <div className="text-xs text-gray-400">{t('baths', 'kupatila')}</div>
+
+            <div className="bg-black/40 p-4 rounded border border-yellow-600/10 flex flex-col items-center justify-center text-center min-h-[110px]">
+              <FaBath className="text-yellow-400 text-3xl mb-2" />
+              <div className="text-2xl font-bold text-white">{property.baths}</div>
+              <div className="text-sm text-gray-400 mt-1">
+                {t('baths', 'kupatila')}
+              </div>
             </div>
-            <div className="bg-black/40 p-3 rounded border border-yellow-600/10 text-center">
-              <div className="mt-1 font-semibold">{property.size} m²</div>
-              <div className="text-xs text-gray-400">{t('size', 'kvadratura')}</div>
+
+            <div className="bg-black/40 p-4 rounded border border-yellow-600/10 flex flex-col items-center justify-center text-center min-h-[110px]">
+              <div className="text-2xl font-bold text-white">
+                {property.size} m²
+              </div>
+              <div className="text-sm text-gray-400 mt-1">
+                {t('size', 'kvadratura')}
+              </div>
             </div>
           </div>
+
 
           <p className="mt-6 text-gray-300 leading-relaxed">{property.opis}</p>
 
-          {/* meta block kept same styling as before (kept concise) */}
+          {/* meta block */}
           <div className="mt-6 bg-black/30 border border-white/5 rounded-lg p-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-300">
               <div>
-                <div className="text-xs text-gray-400">{t('tipPonude')}</div>
+                <div className="text-lg text-gray-400">{t('tipPonude')}</div>
                 <div className="font-semibold">{meta.offerType || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">{t('tipNekretnine')}</div>
+                <div className="text-lg text-gray-400">{t('tipNekretnine')}</div>
                 <div className="font-semibold">{meta.propertyType || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">{t('povrsina')}</div>
+                <div className="text-lg text-gray-400">{t('povrsina')}</div>
                 <div className="font-semibold">{meta.area ? `${meta.area} m²` : (property.size ? `${property.size} m²` : '-')}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">{t('godina')}</div>
+                <div className="text-lg text-gray-400">{t('godina')}</div>
                 <div className="font-semibold">{meta.yearBuilt || '-'}</div>
               </div>
 
               <div>
-                <div className="text-xs text-gray-400">{t('sprat')}</div>
+                <div className="text-lg text-gray-400">{t('sprat')}</div>
                 <div className="font-semibold">{meta.floor || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">{t('spratnost')}</div>
+                <div className="text-lg text-gray-400">{t('spratnost')}</div>
                 <div className="font-semibold">{meta.floorTotal || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">{t('Id')}</div>
+                <div className="text-lg text-gray-400">{t('Id')}</div>
                 <div className="font-semibold">{meta.idCode || property.id || '-'}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-400">{t('grejanje')}</div>
+                <div className="text-lg text-gray-400">{t('grejanje')}</div>
                 <div className="font-semibold">{meta.heating || '-'}</div>
               </div>
             </div>
 
-            {/* chips */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {(meta.equipment || []).map((it, i) => <span key={`eq-${i}`} className="text-xs px-2 py-1 bg-white/5 rounded border border-white/10">{it}</span>)}
-              {(meta.additional || []).map((it, i) => <span key={`ad-${i}`} className="text-xs px-2 py-1 bg-white/5 rounded border border-white/10">{it}</span>)}
-              {(meta.characteristics || []).map((it, i) => <span key={`ch-${i}`} className="text-xs px-2 py-1 bg-white/5 rounded border border-white/10">{it}</span>)}
+            {/* Accessible lists for equipment / additional / characteristics
+                MODIFIED: display side-by-side. On small screens allow horizontal scroll.
+            */}
+            <div className="mt-8 flex flex-col gap-6">
+
+              {/* --- SEKCIJA 1: OPREMA (Lista jedna ispod druge) --- */}
+              <div className="flex flex-col bg-neutral-900/60 backdrop-blur-md border border-yellow-500/20 rounded-2xl overflow-hidden shadow-lg">
+                {/* Naslov */}
+                <div className="bg-white/5 p-4 border-b border-white/5">
+                  <h3 className="text-xl text-yellow-400 font-bold tracking-wide uppercase flex items-center gap-2">
+                    <span className="w-2 h-8 bg-yellow-500 rounded-full inline-block"></span>
+                    {t('oprema')}
+                  </h3>
+                </div>
+
+                {/* Sadržaj Opreme */}
+                <div className="p-4">
+                  <ul className="space-y-4">
+                    {Array.isArray(meta.equipment) && meta.equipment.length > 0 ? (
+                      meta.equipment.map((item, i) => (
+                        <li
+                          key={i}
+                          className="group flex items-start gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors duration-300 border border-transparent hover:border-yellow-500/30"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 text-black font-black text-lg flex items-center justify-center shadow-lg shadow-yellow-500/20 group-hover:scale-110 transition-transform">
+                            {i + 1}
+                          </div>
+                          <div className="flex-1 pt-1">
+                            <p className="text-lg text-gray-200 font-medium leading-relaxed">
+                              {makeSentence(item)}
+                            </p>
+                          </div>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 border-dashed">
+                        <span className="text-gray-500 text-lg italic w-full text-center">
+                          {t('noEquipment', 'Nema opreme')}
+                        </span>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+
+
+              {/* --- SEKCIJA 2: DODATNO (Lista jedna pored druge sa wrap-om) --- */}
+              <div className="flex flex-col bg-neutral-900/60 backdrop-blur-md border border-yellow-500/20 rounded-2xl overflow-hidden shadow-lg">
+                {/* Naslov */}
+                <div className="bg-white/5 p-4 border-b border-white/5">
+                  <h3 className="text-xl text-yellow-400 font-bold tracking-wide uppercase flex items-center gap-2">
+                    <span className="w-2 h-8 bg-yellow-500 rounded-full inline-block"></span>
+                    {t('dodatno')}
+                  </h3>
+                </div>
+
+                {/* Sadržaj Dodatno - OVDE JE PROMENA (flex-wrap) */}
+                <div className="p-4">
+                  <ul className="flex flex-wrap gap-4">
+                    {Array.isArray(meta.additional) && meta.additional.length > 0 ? (
+                      meta.additional.map((item, i) => (
+                        <li
+                          key={i}
+                          // grow klasa omogućava da se kartice lepo rašire, a w-auto da budu jedne pored drugih
+                          className="group flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors duration-300 border border-transparent hover:border-yellow-500/30 w-full md:w-auto"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 text-black font-black text-lg flex items-center justify-center shadow-lg shadow-yellow-500/20 group-hover:scale-110 transition-transform">
+                            {i + 1}
+                          </div>
+                          <div className="pt-1">
+                            <p className="text-lg text-gray-200 font-medium leading-relaxed whitespace-nowrap md:whitespace-normal">
+                              {makeSentence(item)}
+                            </p>
+                          </div>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 border-dashed w-full">
+                        <span className="text-gray-500 text-lg italic w-full text-center">
+                          {t('noAdditional', 'Nema dodatnih informacija')}
+                        </span>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+
             </div>
+
           </div>
 
           <div className="mt-8 flex gap-4 flex-col sm:flex-row">
