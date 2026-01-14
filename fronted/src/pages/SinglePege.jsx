@@ -3,7 +3,9 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { MdLocationOn } from 'react-icons/md'
 import { FaBed, FaBath, FaArrowLeft, FaExpand, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { t } from '../i1n8'
+import { IoMdResize } from "react-icons/io";
 import { API_BASE } from '../config'
+
 
 export default function SinglePage() {
   const { id } = useParams()
@@ -307,6 +309,7 @@ export default function SinglePage() {
               <div className="text-sm text-gray-400 mt-1">{t('baths', 'kupatila')}</div>
             </div>
             <div className="bg-black/40 p-4 rounded border border-yellow-600/10 flex flex-col items-center justify-center text-center min-h-[110px]">
+              <IoMdResize className="text-yellow-400 text-3xl mb-2" />
               <div className="text-2xl font-bold text-white">{property.size} m²</div>
               <div className="text-sm text-gray-400 mt-1">{t('size', 'kvadratura')}</div>
             </div>

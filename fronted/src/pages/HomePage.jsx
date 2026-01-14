@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import backgroundImage from '../assets/pozadina.jpg'
+import backgroundImage from '../assets/ns.jpg'
 import { t } from '../i1n8'
 import TopPonudePage from './TopPonudePage'
 import UslugePage from './UslugePage'
@@ -45,7 +45,7 @@ function HomePage() {
         }}
       >
         {/* Overlay samo za hero */}
-        <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
+        {/* <div className="absolute inset-0 bg-black/60" aria-hidden="true" /> */}
 
         {/* HERO CONTENT */}
         <div className="relative z-10 flex-1 flex flex-col mt-14 text-white px-4 pt-6">
@@ -54,7 +54,7 @@ function HomePage() {
               {t('heroTitle')}
             </h1>
 
-            <p className="mt-4 text-lg md:text-xl text-gray-200 max-w-2xl">
+            <p className="mt-4 text-xl md:text-xl text-white font-bold max-w-2xl">
               {t('heroSubtitle')}
             </p>
           </div>
