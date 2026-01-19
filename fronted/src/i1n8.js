@@ -148,7 +148,7 @@ export const translations = {
     searchId: 'Unesite ID nekretnine',
 
     type: 'Tip',
-    propertyType: 'Vrsta',
+    propertyType: 'Vrsta nekretnine',
     cene: 'Cena',
     cenaDo: 'Cena do',
     cenaOd: 'Cena od',
