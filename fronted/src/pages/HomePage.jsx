@@ -4,6 +4,7 @@ import backgroundImage from '../assets/ns.jpg'
 import { t } from '../i1n8'
 import TopPonudePage from './TopPonudePage'
 import UslugePage from './UslugePage'
+import PonudeNudimo2 from './PonudeNudimo2'
 import PonudeNudimo from './PonudeNudimo'
 import ONama from './Onama'
 
@@ -327,10 +328,13 @@ function HomePage() {
         <TopPonudePage />
       </div>
       <div className="relative z-10">
-        <UslugePage />
+        <UslugePage/>
       </div>
       <div className="relative z-10">
-        <PonudeNudimo />
+        <PonudeNudimo/>
+      </div>
+      <div className="relative z-10">
+        <PonudeNudimo2/>
       </div>
       <div className="relative z-10">
         <ONama />
