@@ -19,6 +19,30 @@ export const translations = {
     njiva: 'Njiva',
 
     deteljnaPPredraga:'Detaljna pretraga',
+ 
+    //PonudeNudimo page
+    proces: 'Proces prodaje',
+    strucnaProcena: 'Stručna procena realne tržišne vrednosti nekretnine',
+    onalnaPrezentacija: 'Profesionalna prezentacija i ciljano oglašavanje',
+    selekcija: 'Selekcija ozbiljnih i kreditno sposobnih kupaca',
+    organizacijaPregovora: 'Organizacija i vođenje pregovora',
+    pravnaPodrska: 'Pravna podrška do zaključenja posla',
+    luxuzneNekretnine: 'Luksuzne nekretnine',
+    gdesu:'Gde su ',
+    poverenje:'poverenje i diskrecija',
+    osnovni:'osnovni temelji svake uspešne saradnje.',
+    vasPartner:'Vaš pouzdan partner',
+    godinaIskustva:'Godina Iskustva',
+    inividualanPristup:'Individualan pristup',
+    etickiStandardi:'Etički standardi',
+
+    //ponude nudimo 2 page
+    premiumUsluga: 'Premium Usluga',
+    dugorocna:'"Dugoročna saradnja, stabilan prihod i sigurnost za vlasnike, kao i kvalitetna i odgovarajuća nekretnina za zakupce."',
+    pronadji:'Pronađite idealan dom uz potpunu pravnu sigurnost.',
+    nasCilji: 'Naš Cilj',
+    service1: 'Procene realne tržišne cene zakupa',
+
 
     heroTitle: 'Pronađite savršenu nekretninu',
     heroSubtitle: 'Prodaja i izdavanje nekretnina u Srbiji',
@@ -220,6 +244,14 @@ export const translations = {
             'Posebno  u radu sa vrednim i luksuznim nekretninama, garantujemo visok nivo diskrecije, etičnosti i profesionalnog ponašanja u svakoj fazi saradnje.',
         },
       ],
+      servicesHeading: 'Usluga obuhvata:',
+      servicesItems: [
+        'Procene realne tržišne cene zakupa',
+        'Profesionalno oglašavanje i prezentaciju nekretnine',
+        'Selekciju i proveru zakupaca',
+        'Organizaciju obilazaka i pregovora',
+        'Izradu i potpisivanje ugovora o zakupu'
+      ]
     },
     
       heading: 'Usluge koje nudimo',
@@ -276,6 +308,25 @@ export const translations = {
     poslovnaZG: 'Деловое здание',
     njiva: 'Поле',
 
+
+    //ponude nudimo page
+    proces: 'Процесс продажи',
+    strucnaProcena: 'Профессиональная оценка реальной рыночной стоимости недвижимости',
+    onalnaPrezentacija: 'Профессиональная презентация и целевая реклама',
+    selekcija: 'Отбор серьезных и кредитоспособных покупателей',
+    organizacijaPregovora: 'Организация и ведение переговоров',
+    pravnaPodrska: 'Юридическая поддержка до заключения сделки',
+    luxuzneNekretnine: 'Роскошная недвижимость',
+    gdesu:'Где ',
+    poverenje:'доверие и конфиденциальность',
+    osnovni:'основные принципы каждого успешного сотрудничества.',
+    vasPartner:'Ваш надежный партнер',
+    godinaIskustva:'Лет опыта',
+    inividualanPristup:'Индивидуальный подход',
+    etickiStandardi:'Этические стандарты',
+
+
+
     //single page
     dodatno: 'Дополнительно',
     oprema: 'Оборудование',
@@ -306,6 +357,13 @@ export const translations = {
 
     cenaDo: 'Цена до',
     cenaOd: 'Цена от',
+
+    //ponude nudimo 2 page
+    premiumUsluga: 'Премиум услуга',
+    dugorocna:'"Долгосрочное сотрудничество, стабильный доход и безопасность для владельцев, а также качественная и подходящая недвижимость для арендаторов."',
+    pronadji:'Найдите идеальный дом с полной юридической безопасностью.',
+    nasCilji: 'Наша цель',
+
 
     //prodaja i izdavanje
     nemaRezultata: 'Нет результатов для категории',
@@ -471,6 +529,14 @@ export const translations = {
             'Особенно при работе с ценными и элитными объектами мы гарантируем высокий уровень конфиденциальности, этичности и профессионального поведения на каждом этапе сотрудничества.',
         },
       ],
+      servicesHeading: 'Услуги включают:',
+      servicesItems: [
+        'Оценка реальной рыночной цены аренды',
+        'Профессиональная реклама и презентация недвижимости',
+        'Отбор и проверка арендаторов',
+        'Организация просмотров и переговоров',
+        'Подготовка и подписание договора аренды'
+      ]
     },
     heading: 'Услуги, которые мы предлагаем',
     longTermTitle: 'Продажа недвижимости',
@@ -514,6 +580,28 @@ export const translations = {
     povrsina: 'Area',
     showCity: 'Show city',
     allCities: 'All cities',
+
+    //ponude nudimo 2 page
+    premiumUsluga: 'Premium Service',
+    dugorocna:'"Long-term cooperation, stable income and security for owners, as well as quality and suitable property for tenants."',
+    pronadji:'Find the ideal home with complete legal security.',
+    nasCilji: 'Our Goal',
+
+    //ponude nudimo page
+    proces: 'Sales process',
+    strucnaProcena: 'Professional assessment of the real market value of the property',
+    onalnaPrezentacija: 'Professional presentation and targeted advertising',
+    selekcija: 'Selection of serious and creditworthy buyers',
+    organizacijaPregovora: 'Organization and conduct of negotiations',
+    pravnaPodrska: 'Legal support until the conclusion of the deal',
+    luxuzneNekretnine: 'Luxury properties',
+    gdesu:'Where ',
+    poverenje:'trust and discretion ',
+    osnovni:'are the basic foundations of every successful cooperation.',
+    vasPartner:'Your reliable partner',
+    godinaIskustva:'Years of Experience',
+    inividualanPristup:'Individual approach',
+    etickiStandardi:'Ethical standards',
 
     //single page
     dodatno: 'Additional',
@@ -708,6 +796,14 @@ export const translations = {
           desc: 'Especially when working with valuable and luxury properties, we guarantee a high level of discretion, ethical conduct, and professionalism at every stage of cooperation.',
         },
       ],
+      servicesHeading: 'Service includes:',
+      servicesItems: [
+        'Assessment of real market rent prices',
+        'Professional advertising and property presentation',
+        'Tenant selection and verification',
+        'Organization of viewings and negotiations',
+        'Preparation and signing of rental agreement'
+      ]
     },
         // DODATO: prevodi za PonudeNudimo
     heading: 'Serves we offer',

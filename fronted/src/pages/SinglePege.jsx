@@ -7,6 +7,30 @@ import { IoMdResize } from "react-icons/io";
 import { API_BASE } from '../config'
 import noImage from '../assets/dedazi2.jpg'
 
+// --- POMOĆNE FUNKCIJE ---
+const formatPrice = (val) => {
+  if (val === undefined || val === null || val === '') return ''
+  if (typeof val === 'number') {
+    try { return new Intl.NumberFormat('de-DE').format(val) + ' €' } catch { return String(val) + ' €' }
+  }
+  const s = String(val)
+  if (s.includes('€')) return s
+  const digits = s.replace(/[^0-9]/g, '')
+  if (!digits) return s
+  try { return new Intl.NumberFormat('de-DE').format(Number(digits)) + ' €' } catch { return s + ' €' }
+}
+
+const makeSentence = (raw) => {
+  if (!raw && raw !== 0) return ''
+  try {
+    let s = String(raw).replace(/[_\-]+/g, ' ').replace(/\s+/g, ' ').trim()
+    s = s.toLowerCase()
+    s = s.charAt(0).toUpperCase() + s.slice(1)
+    if (/^da$/i.test(s)) return 'Da'
+    if (/^ne$/i.test(s)) return 'Ne'
+    return s
+  } catch { return String(raw) }
+}
 
 export default function SinglePage() {
   const { id } = useParams()
@@ -23,71 +47,8 @@ export default function SinglePage() {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
 
-  // --- HELPERS ---
-  const formatPrice = (val) => {
-    if (val === undefined || val === null || val === '') return ''
-    if (typeof val === 'number') {
-      try { return new Intl.NumberFormat('de-DE').format(val) + ' €' } catch { return String(val) + ' €' }
-    }
-    const s = String(val)
-    if (s.includes('€')) return s
-    const digits = s.replace(/[^0-9]/g, '')
-    if (!digits) return s
-    try { return new Intl.NumberFormat('de-DE').format(Number(digits)) + ' €' } catch { return s + ' €' }
-  }
-
-  const makeSentence = (raw) => {
-    if (!raw && raw !== 0) return ''
-    try {
-      let s = String(raw).replace(/[_\-]+/g, ' ').replace(/\s+/g, ' ').trim()
-      s = s.toLowerCase()
-      s = s.charAt(0).toUpperCase() + s.slice(1)
-      if (/^da$/i.test(s)) return 'Da'
-      if (/^ne$/i.test(s)) return 'Ne'
-      return s
-    } catch { return String(raw) }
-  }
-
-  const getProtocol = () => (typeof window !== 'undefined' && window.location && window.location.protocol) ? window.location.protocol : 'https:'
-
-  const getYoutubeEmbedUrl = useCallback((rawUrl) => {
-    if (!rawUrl) return ''
-    let url = String(rawUrl).trim()
-    if (!url) return ''
-    if (url.startsWith('//')) url = `${getProtocol()}${url}`
-    if (!/^https?:\/\//i.test(url)) url = `https://${url}`
-    try {
-      const parsed = new URL(url)
-      const host = (parsed.hostname || '').toLowerCase()
-      if (host.includes('youtu.be')) {
-        const vid = parsed.pathname.replace(/^\/+/, '').split('/')[0]
-        if (vid) return `https://www.youtube.com/embed/${vid}`
-      }
-      const m1 = parsed.pathname.match(/\/shorts\/([A-Za-z0-9_-]{4,})/)
-      if (m1 && m1[1]) return `https://www.youtube.com/embed/${m1[1]}`
-      const v = parsed.searchParams.get('v')
-      if (v) return `https://www.youtube.com/embed/${v}`
-      const m2 = parsed.pathname.match(/\/embed\/([A-Za-z0-9_-]{4,})/)
-      if (m2 && m2[1]) return `https://www.youtube.com/embed/${m2[1]}`
-      return ''
-    } catch (e) { return '' }
-  }, [])
-
-  const makeStableId = (item, fallbackId = '') => {
-    if (!item) return String(fallbackId || '')
-    if (item.id) return String(item.id)
-    if (item.code) return String(item.code)
-    const base = `${item.naslov ?? ''}|${item.mesto ?? ''}|${item.kvadratura_int ?? ''}`.trim()
-    return base ? base.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-]/g,'') : String(fallbackId || '')
-  }
-
-  const formatTel = (raw) => {
-    if (!raw) return ''
-    return String(raw).replace(/[^\d+]/g, '')
-  }
-
-  // --- NORMALIZE (isti pristup kao i pre, ali koristi makeStableId) ---
-  const normalize = (raw, fallbackId) => {
+  // --- NORMALIZACIJA PODATAKA ---
+  const normalize = useCallback((raw, fallbackId) => {
     const base = raw || {}
     let imgs = []
     try {
@@ -101,7 +62,7 @@ export default function SinglePage() {
         imgs = [String(base.slike.url)]
       }
     } catch (e) { imgs = [] }
-    // fallback -> use bundled noImage
+    
     if (!imgs.length) imgs = [noImage]
 
     const collectVideo = (field) => {
@@ -170,6 +131,14 @@ export default function SinglePage() {
       furnishing: get('namestenost') || ''
     }
 
+    const makeStableId = (item, fallbackId = '') => {
+        if (!item) return String(fallbackId || '')
+        if (item.id) return String(item.id)
+        if (item.code) return String(item.code)
+        const base = `${item.naslov ?? ''}|${item.mesto ?? ''}|${item.kvadratura_int ?? ''}`.trim()
+        return base ? base.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-]/g,'') : String(fallbackId || '')
+    }
+
     const stableId = makeStableId(base, fallbackId)
 
     return {
@@ -187,9 +156,40 @@ export default function SinglePage() {
       video_urls: videos,
       meta: structured
     }
+  }, [])
+
+  // --- HELPER ZA YOUTUBE ---
+  const getProtocol = () => (typeof window !== 'undefined' && window.location && window.location.protocol) ? window.location.protocol : 'https:'
+  
+  const getYoutubeEmbedUrl = useCallback((rawUrl) => {
+    if (!rawUrl) return ''
+    let url = String(rawUrl).trim()
+    if (!url) return ''
+    if (url.startsWith('//')) url = `${getProtocol()}${url}`
+    if (!/^https?:\/\//i.test(url)) url = `https://${url}`
+    try {
+      const parsed = new URL(url)
+      const host = (parsed.hostname || '').toLowerCase()
+      if (host.includes('youtu.be')) {
+        const vid = parsed.pathname.replace(/^\/+/, '').split('/')[0]
+        if (vid) return `https://www.youtube.com/embed/${vid}`
+      }
+      const m1 = parsed.pathname.match(/\/shorts\/([A-Za-z0-9_-]{4,})/)
+      if (m1 && m1[1]) return `https://www.youtube.com/embed/${m1[1]}`
+      const v = parsed.searchParams.get('v')
+      if (v) return `https://www.youtube.com/embed/${v}`
+      const m2 = parsed.pathname.match(/\/embed\/([A-Za-z0-9_-]{4,})/)
+      if (m2 && m2[1]) return `https://www.youtube.com/embed/${m2[1]}`
+      return ''
+    } catch (e) { return '' }
+  }, [])
+
+  const formatTel = (raw) => {
+    if (!raw) return ''
+    return String(raw).replace(/[^\d+]/g, '')
   }
 
-  // --- FETCH sa AbortController i res.ok proverom ---
+  // --- FETCH ---
   useEffect(() => {
     if (!id) { setError('Neispravan ID.'); setLoading(false); return }
     const ac = new AbortController()
@@ -218,16 +218,16 @@ export default function SinglePage() {
     }
     fetchProperty()
     return () => ac.abort()
-  }, [id, getYoutubeEmbedUrl])
+  }, [id, normalize])
 
   useEffect(() => {
     if (topRef.current) topRef.current.scrollIntoView({ behavior: 'auto' })
     else window.scrollTo(0,0)
   }, [location.key])
 
+  // --- LIGHTBOX CONTROLS ---
   const prevImage = () => setCurrentImage(i => (i <= 0 ? images.length - 1 : i - 1))
   const nextImage = () => setCurrentImage(i => (i >= images.length - 1 ? 0 : i + 1))
-
   const openLightbox = (index = 0) => { setLightboxIndex(index); setLightboxOpen(true) }
   const closeLightbox = () => setLightboxOpen(false)
   const nextLightbox = (e) => { e?.stopPropagation(); setLightboxIndex(i => (i >= images.length - 1 ? 0 : i + 1)) }
@@ -244,8 +244,9 @@ export default function SinglePage() {
     return () => window.removeEventListener('keydown', onKey)
   }, [lightboxOpen, images.length])
 
-  // --- UI render ---
+
   if (loading) return <div className="min-h-screen bg-black text-white flex items-center justify-center font-bold">Učitavanje...</div>
+  
   if (error || !property) return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">
       <div className="text-center">
@@ -260,16 +261,14 @@ export default function SinglePage() {
 
   const safeImages = (Array.isArray(images) ? images : [property.image]).map(i => i || noImage)
   const meta = property.meta || {}
-
-  // --- Nova logika: sakrij kartu za kvadraturu ako je vrednost "0" ili 0 ---
   const rawSize = property.size ?? meta.area ?? ''
+  
   let showSize = false
   if (rawSize !== '' && rawSize !== null && rawSize !== undefined) {
     const num = Number(String(rawSize).replace(/[^\d.]/g, ''))
     showSize = !isNaN(num) && num !== 0
   }
 
-  // Pripremi badge-e dinamički (da mreža reaguje na sakrivanje size)
   const badges = [
     { key: 'rooms', Icon: FaBed, value: property.rooms, label: t('rooms', 'sobe') },
     { key: 'baths', Icon: FaBath, value: property.baths, label: t('baths', 'kupatila') },
@@ -278,7 +277,14 @@ export default function SinglePage() {
     badges.push({ key: 'size', Icon: IoMdResize, value: `${property.size} m²`, label: t('size', 'kvadratura') })
   }
 
-  const badgeColsClass = `grid-cols-${badges.length}`
+  // TAILWIND FIX: Mapiranje umesto dinamičkog stringa
+  const gridClassMap = {
+    1: 'grid-cols-1',
+    2: 'grid-cols-2',
+    3: 'grid-cols-3',
+    4: 'grid-cols-4'
+  }
+  const badgeColsClass = gridClassMap[badges.length] || 'grid-cols-2'
 
   const infoTable = [
     { label: t('tipPonude', 'Tip ponude'), val: meta.offerType },
@@ -286,7 +292,7 @@ export default function SinglePage() {
     { label: t('lokacija', 'Lokacija'), val: property.location },
     { label: t('tipNekretnine', 'Tip nekretnine'), val: meta.propertyType },
     { label: t('podtip', 'Podtip'), val: meta.subtype },
-    { label: t('povrsina', 'Pokušina'), val: meta.area ? `${meta.area} m²` : '' },
+    { label: t('povrsina', 'Površina'), val: meta.area ? `${meta.area} m²` : '' },
     { label: t('gradnja', 'Vrsta gradnje'), val: meta.constructionType },
     { label: t('ambijent', 'Ambijent'), val: meta.ambience },
     { label: t('stanje', 'Stanje'), val: meta.state },
@@ -317,21 +323,21 @@ export default function SinglePage() {
           <img
             src={safeImages[currentImage] || noImage}
             alt={property.naslov || 'Slika nekretnine'}
-            loading="lazy"
-            className="w-full h-[420px] object-cover cursor-pointer"
+            className="w-full h-[300px] sm:h-[420px] object-cover cursor-pointer"
             onClick={() => openLightbox(currentImage)}
             onError={(e) => { e.currentTarget.src = noImage }}
           />
           <button onClick={() => openLightbox(currentImage)} className="absolute top-4 right-4 z-20 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black/70">
-            <FaExpand />
+             <FaExpand />
           </button>
-          {safeImages.length > 1 && (
+           {safeImages.length > 1 && (
             <>
-              <button onClick={prevImage} className="absolute left-8 top-1/2 -translate-y-1/2 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black z-10">‹</button>
-              <button onClick={nextImage} className="absolute right-8 top-1/2 -translate-y-1/2 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black z-10">›</button>
+              <button onClick={prevImage} className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 bg-black/60 p-2 sm:p-3 rounded-full text-yellow-400 hover:bg-black z-10">‹</button>
+              <button onClick={nextImage} className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 bg-black/60 p-2 sm:p-3 rounded-full text-yellow-400 hover:bg-black z-10">›</button>
+              {/* Indikatori */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                {safeImages.map((_, i) => (
-                  <button key={i} onClick={() => setCurrentImage(i)} className={`w-3 h-3 rounded-full transition ${currentImage === i ? 'bg-yellow-400 scale-110' : 'bg-white/40'}`} />
+                {safeImages.slice(0, 10).map((_, i) => (
+                  <button key={i} onClick={() => setCurrentImage(i)} className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition ${currentImage === i ? 'bg-yellow-400 scale-110' : 'bg-white/40'}`} />
                 ))}
               </div>
             </>
@@ -339,19 +345,19 @@ export default function SinglePage() {
         </div>
 
         {/* Detalji */}
-        <div className="mt-8 bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl p-6">
+        <div className="mt-8 bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl p-4 sm:p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-            <h1 className="text-3xl font-extrabold text-yellow-400">{property.naslov}</h1>
-            <div className="text-2xl font-bold text-white">{formatPrice(property.cena)}</div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-yellow-400">{property.naslov}</h1>
+            <div className="text-xl sm:text-2xl font-bold text-white">{formatPrice(property.cena)}</div>
           </div>
           <div className="flex items-center gap-2 text-gray-300 mt-3">
-            <MdLocationOn className="text-yellow-400" />
+            <MdLocationOn className="text-yellow-400 flex-shrink-0" />
             <span className='font-bold'>{property.location}</span>
           </div>
 
-          {/* Glavni bedževi (dinamički) */}
+          {/* Glavni bedževi (SA FIXOM) */}
           <div className={`mt-6 grid ${badgeColsClass} gap-4 text-gray-300`}>
-            {badges.map((b, idx) => {
+            {badges.map((b) => {
               const Icon = b.Icon
               return (
                 <div key={b.key} className="bg-black/40 p-4 rounded border border-yellow-600/10 flex flex-col items-center justify-center text-center min-h-[110px]">
@@ -363,8 +369,8 @@ export default function SinglePage() {
             })}
           </div>
 
-          <p className="mt-6 text-gray-300 leading-relaxed whitespace-pre-line">{property.opis}</p>
-
+          <p className="mt-6 text-gray-300 leading-relaxed whitespace-pre-line text-sm sm:text-base">{property.opis}</p>
+          
           <div className="mt-10 space-y-10">
             <div>
               <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">Informacije o nekretnini</h3>
@@ -378,6 +384,7 @@ export default function SinglePage() {
               </div>
             </div>
 
+            {/* OPREMA */}
             {meta.equipment && meta.equipment.length > 0 && (
               <div>
                 <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('oprema', 'Oprema')}</h3>
@@ -389,7 +396,8 @@ export default function SinglePage() {
               </div>
             )}
 
-            {meta.additional && meta.additional.length > 0 && (
+            {/* DODATNO */}
+             {meta.additional && meta.additional.length > 0 && (
               <div>
                 <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('dodatno', 'Dodatne karakteristike')}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -414,11 +422,12 @@ export default function SinglePage() {
                 </div>
               </div>
             )}
+
           </div>
 
           <div className="mt-8 flex gap-4 flex-col sm:flex-row">
-            <a href={`mailto:serbesnekretnine@gmail.com?subject=${encodeURIComponent(`Zainteresovan za: ${property.naslov}`)}`} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow text-center">{t('contactBtn', 'Kontakt')}</a>
-            <a href={property.contactphone ? `tel:${formatTel(property.contactphone)}` : 'tel:+381628150586'} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow text-center">{t('cta', 'Pozovi')}</a>
+            <a href={`mailto:serbesnekretnine@gmail.com?subject=${encodeURIComponent(`Zainteresovan za: ${property.naslov}`)}`} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow text-center hover:from-yellow-300 hover:to-yellow-400 transition">{t('contactBtn', 'Kontakt')}</a>
+            <a href={property.contactphone ? `tel:${formatTel(property.contactphone)}` : 'tel:+381628150586'} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow text-center hover:from-yellow-300 hover:to-yellow-400 transition">{t('cta', 'Pozovi')}</a>
           </div>
         </div>
 
@@ -451,7 +460,7 @@ export default function SinglePage() {
             <FaTimes />
           </button>
           {safeImages.length > 1 && (
-            <button onClick={prevLightbox} className="absolute left-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-yellow-400 text-5xl transition-all z-[110] p-4">
+            <button onClick={prevLightbox} className="absolute left-4 sm:left-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-yellow-400 text-4xl sm:text-5xl transition-all z-[110] p-4">
               <FaChevronLeft />
             </button>
           )}
@@ -459,7 +468,6 @@ export default function SinglePage() {
             <img
               src={safeImages[lightboxIndex] || noImage}
               alt={property.naslov || ''}
-              loading="lazy"
               className="max-w-full max-h-[85vh] object-contain shadow-2xl animate-in fade-in zoom-in duration-300"
               onClick={(e) => e.stopPropagation()}
               onError={(e) => { e.currentTarget.src = noImage }}
@@ -469,7 +477,7 @@ export default function SinglePage() {
             </div>
           </div>
           {safeImages.length > 1 && (
-            <button onClick={nextLightbox} className="absolute right-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-yellow-400 text-5xl transition-all z-[110] p-4">
+            <button onClick={nextLightbox} className="absolute right-4 sm:right-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-yellow-400 text-4xl sm:text-5xl transition-all z-[110] p-4">
               <FaChevronRight />
             </button>
           )}

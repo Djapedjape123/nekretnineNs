@@ -4,28 +4,25 @@ import { t } from '../i1n8'
 
 const services = [
   {
-    icon: <FaDollarSign size={40} className="text-yellow-500 mb-4" />,
+    icon: <FaDollarSign />,
     titleKey: 'services.items.0.title',
     descKey: 'services.items.0.desc',
-    from: 'left'
   },
   {
-    icon: <FaClock size={40} className="text-yellow-500 mb-4" />,
+     icon: <FaGraduationCap />,
+    
     titleKey: 'services.items.1.title',
     descKey: 'services.items.1.desc',
-    from: 'right'
   },
   {
-    icon: <FaGraduationCap size={40} className="text-yellow-500 mb-4" />,
+    icon: <FaClock />,
     titleKey: 'services.items.2.title',
     descKey: 'services.items.2.desc',
-    from: 'left'
   },
   {
-    icon: <FaEye size={40} className="text-yellow-500 mb-4" />,
+    icon: <FaEye />,
     titleKey: 'services.items.3.title',
     descKey: 'services.items.3.desc',
-    from: 'right'
   },
 ]
 
@@ -34,28 +31,36 @@ function UslugePage() {
   const [visible, setVisible] = useState([])
 
   useEffect(() => {
-    refs.current = refs.current.slice(0, services.length)
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setVisible((v) => [...v, parseInt(entry.target.dataset.index)])
-            observer.unobserve(entry.target)
           }
-        })
+        });
       },
-      { threshold: 0.3 }
+      { threshold: 0.2 }
     )
 
     refs.current.forEach((ref) => ref && observer.observe(ref))
+    return () => observer.disconnect()
   }, [])
 
   return (
-    <section className="bg-gradient-to-b from-white to-yellow-100 py-20">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-center text-yellow-400 mb-12">
-          {t('services.heading')}
-        </h2>
+    <section className="relative py-24 bg-gradient-to-b from-gray-50 to-yellow-50/30 overflow-hidden">
+      {/* Dekorativna pozadina */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <span className="text-yellow-600 font-bold tracking-widest uppercase text-sm bg-yellow-100 px-4 py-1.5 rounded-full">
+            Naše Ekspertize
+          </span>
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mt-4">
+            {t('services.heading')}
+          </h2>
+          <div className="w-24 h-1.5 bg-yellow-400 mx-auto mt-6 rounded-full"></div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, index) => (
@@ -63,21 +68,32 @@ function UslugePage() {
               key={index}
               ref={(el) => (refs.current[index] = el)}
               data-index={index}
-              className={`flex flex-col items-center text-center p-6
-                transition-all duration-700 ease-out font-serif
-                ${
-                  visible.includes(index)
-                    ? 'opacity-100 translate-x-0'
-                    : service.from === 'left'
-                    ? '-translate-x-20 opacity-0'
-                    : 'translate-x-20 opacity-0'
-                }`}
+              className={`group relative bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-3 transition-all duration-700 ease-out ${
+                visible.includes(index)
+                  ? 'opacity-100 translate-y-0'
+                  : 'opacity-0 translate-y-12'
+              }`}
+              style={{ transitionDelay: `${index * 150}ms` }}
             >
-              {service.icon}
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              {/* Ikona u krugu koji prati temu teksta */}
+              <div className="mb-6 relative">
+                <div className="w-16 h-16 bg-yellow-50 rounded-2xl flex items-center justify-center text-yellow-500 group-hover:bg-yellow-400 group-hover:text-white transition-colors duration-500 shadow-inner">
+                  {React.cloneElement(service.icon, { size: 32 })}
+                </div>
+                {/* Mali dekorativni krug iza ikone */}
+                <div className="absolute -z-10 top-2 -left-2 w-16 h-16 bg-yellow-100 rounded-2xl group-hover:rotate-12 transition-transform duration-500"></div>
+              </div>
+
+              <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-yellow-600 transition-colors">
                 {t(service.titleKey)}
               </h3>
-              <p className="text-gray-600">{t(service.descKey)}</p>
+              
+              <p className="text-gray-600 leading-relaxed text-sm">
+                {t(service.descKey)}
+              </p>
+
+              {/* Suptilna linija na dnu kartice koja se širi na hover */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1 bg-yellow-400 group-hover:w-1/2 transition-all duration-500 rounded-t-full"></div>
             </div>
           ))}
         </div>

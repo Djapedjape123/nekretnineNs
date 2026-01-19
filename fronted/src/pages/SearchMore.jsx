@@ -77,7 +77,7 @@ function SearchMore() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-white to-yellow-500 border lg:mt-10 text-white p-4 md:p-8 font-sans">
-            <div className="max-w-6xl mx-auto bg-black backdrop-blur-xl border border-yellow-600/30 p-6 md:p-10 rounded-2xl shadow-2xl">
+            <div className="max-w-6xl mx-auto mt-5 bg-black backdrop-blur-xl border border-yellow-600/30 p-6 md:p-10 rounded-2xl shadow-2xl">
 
                 <h2 className="text-2xl font-bold mt-10 mb-8 text-yellow-500 border-b border-yellow-600/20 pb-4">
                     {t('detaljnaPretraga')}
