@@ -20,25 +20,61 @@ export default function ProdajaPage() {
     return raw ? JSON.parse(raw) : []
   })
 
-  const itemsPerPage = 9
+  const itemsPerPage = 9;
+
+  // deterministički, stabilan id (NE koristi Date.now)
+  const makeStableId = (item) => {
+    if (!item) return ''
+    if (item.id) return String(item.id)
+    if (item.code) return String(item.code)
+    const base = `${item.naslov ?? ''}|${item.mesto ?? ''}|${item.kvadratura_int ?? ''}`
+    // zameni razmake i ukloni specijalne karaktere — vratiti će se prazan string samo ako je sve prazno
+    return base.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\-]/g, '') || ''
+  }
+
 
   useEffect(() => {
+    const ac = new AbortController()
+
     const fetchData = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`${API_BASE}/oglasi/prodaja`)
-        const data = await response.json()
-        
-        // DEBUG: Otvori konzolu (F12) da vidis sta ti tacno stize iz baze kao "vrstanekretnine"
-        // Ovo ce ti pomoci da vidis da li pise "Lokal" ili "Poslovni"
-        console.log("Učitani tipovi nekretnina:", data.map(i => i.vrstanekretnine));
-        
-        setListings(data)
-      } catch (err) { console.error(err) }
-      finally { setLoading(false) }
+
+        const res = await fetch(`${API_BASE}/oglasi/prodaja`, { signal: ac.signal })
+        if (!res.ok) {
+          // opcionalno: razlikuj 401/403/500
+          console.error(`Server returned ${res.status}`)
+          setListings([])
+          return
+        }
+
+        const data = await res.json()
+        // ako API vraća objekat sa poljem results/list, obezbedi fallback na array
+        const arr = Array.isArray(data) ? data : (Array.isArray(data.results) ? data.results : [])
+        const normalized = arr.map(d => ({ ...d, id: makeStableId(d) }))
+
+        // DEBUG samo u dev okruženju
+        if (import.meta.env?.DEV) {
+          console.log('Učitani tipovi nekretnina:', normalized.map(i => i.vrstanekretnine))
+        }
+
+        setListings(normalized)
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          // fetch otkazan — normalno, ne loguj dalje
+          return
+        }
+        console.error('Fetch error:', err)
+        setListings([])
+      } finally {
+        setLoading(false)
+      }
     }
+
     fetchData()
-  }, [])
+    return () => ac.abort()
+  }, [API_BASE])
+
 
   useEffect(() => {
     setCurrentPage(1)
@@ -60,23 +96,23 @@ export default function ProdajaPage() {
   // --- GLAVNA LOGIKA FILTRIRANJA ---
   const filteredListings = typeFilter
     ? listings.filter(l => {
-        const dbType = normalizeText(l.vrstanekretnine); // npr. "lokal" ili "poslovniprostor"
-        const filterType = normalizeText(typeFilter);    // npr. "poslovni"
+      const dbType = normalizeText(l.vrstanekretnine); // npr. "lokal" ili "poslovniprostor"
+      const filterType = normalizeText(typeFilter);    // npr. "poslovni"
 
-        // 1. Osnovna provera (da li sadrzi rec)
-        if (dbType.includes(filterType)) return true;
+      // 1. Osnovna provera (da li sadrzi rec)
+      if (dbType.includes(filterType)) return true;
 
-        // 2. DODATNA PROVERA ZA POSLOVNI PROSTOR
-        // Ako je filter "poslovni", prihvati i ako u bazi pise "lokal", "magacin", "hala", "kancelarija"
-        if (filterType.includes('poslovni')) {
-            if (dbType.includes('lokal')) return true;
-            if (dbType.includes('magacin')) return true;
-            if (dbType.includes('hala')) return true;
-            if (dbType.includes('kancelarija')) return true;
-        }
+      // 2. DODATNA PROVERA ZA POSLOVNI PROSTOR
+      // Ako je filter "poslovni", prihvati i ako u bazi pise "lokal", "magacin", "hala", "kancelarija"
+      if (filterType.includes('poslovni')) {
+        if (dbType.includes('lokal')) return true;
+        if (dbType.includes('magacin')) return true;
+        if (dbType.includes('hala')) return true;
+        if (dbType.includes('kancelarija')) return true;
+      }
 
-        return false;
-      })
+      return false;
+    })
     : listings
 
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage)
@@ -94,17 +130,21 @@ export default function ProdajaPage() {
     return new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 }).format(Math.round(num)) + ' €';
   }
 
-  const makeFavObject = (item) => ({
-    id: String(item.id ?? item.code ?? Date.now()),
-    title: item.naslov || item.title || '',
-    price: item.cena ? `${item.cena} €` : (item.price || ''),
-    location: [item.mesto, item.naselje].filter(Boolean).join(', ') || (item.location || ''),
-    size: item.kvadratura_int || item.size || 0,
-    rooms: item.brojsoba || item.rooms || 0,
-    baths: item.brojkupatila || item.baths || 0,
-    image: item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg',
-    contactphone: item.contactphone || ''
-  })
+  const makeFavObject = (item) => {
+    const id = String(item.id ?? makeStableId(item))
+    return {
+      id,
+      title: item.naslov || item.title || '',
+      price: item.cena ? `${item.cena} €` : (item.price || ''),
+      location: [item.mesto, item.naselje].filter(Boolean).join(', ') || (item.location || ''),
+      size: item.kvadratura_int || item.size || 0,
+      rooms: item.brojsoba || item.rooms || 0,
+      baths: item.brojkupatila || item.baths || 0,
+      image: item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg',
+      contactphone: item.contactphone || ''
+    }
+  }
+
 
   const isFavorite = (id) => {
     if (id === undefined || id === null) return false
@@ -139,7 +179,7 @@ export default function ProdajaPage() {
 
         {filteredListings.length === 0 ? (
           <div className="text-center py-20 text-gray-500 text-xl">
-             {t('nemaRezultata')} <span className="text-yellow-400">{typeFilter}</span>
+            {t('nemaRezultata')} <span className="text-yellow-400">{typeFilter}</span>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

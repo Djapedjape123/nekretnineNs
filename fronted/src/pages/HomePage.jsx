@@ -10,13 +10,16 @@ import ONama from './Onama'
 function HomePage() {
   const navigate = useNavigate()
 
+  // State za otvaranje/zatvaranje pretrage na mobilnom
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
+
   const [form, setForm] = useState({
     transaction: 'Prodaja',
     type: 'Stan',
-    price: 'all',
+    priceFrom: '',
+    priceTo: '',
     brojsoba: 'all',
-    lokacija: 'all',
-    location: 'all',
+    kvart: 'all',
   })
 
   const handleChange = (e) => {
@@ -35,7 +38,7 @@ function HomePage() {
 
   return (
     <div>
-      {/* HERO SECTION - ima background i overlay, ali ne koristi absolute na rootu */}
+      {/* HERO SECTION */}
       <section
         className="relative min-h-screen flex flex-col"
         style={{
@@ -44,11 +47,9 @@ function HomePage() {
           backgroundPosition: 'center',
         }}
       >
-        {/* Overlay samo za hero */}
-        {/* <div className="absolute inset-0 bg-black/60" aria-hidden="true" /> */}
-
         {/* HERO CONTENT */}
         <div className="relative z-10 flex-1 flex flex-col mt-14 text-white px-4 pt-6">
+          
           <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
               {t('heroTitle')}
@@ -57,19 +58,51 @@ function HomePage() {
             <p className="mt-4 text-xl md:text-xl text-white font-bold max-w-2xl">
               {t('heroSubtitle')}
             </p>
+
+            {/* --- NOVO: DUGME KOJE SE VIDI SAMO NA MOBILNOM (md:hidden) --- */}
+            {/* Ako forma NIJE otvorena, prikazi dugme */}
+            {!mobileSearchOpen && (
+              <button
+                onClick={() => setMobileSearchOpen(true)}
+                className="mt-8 md:hidden px-8 py-4 bg-yellow-500 text-black text-lg font-bold rounded-full shadow-[0_0_20px_rgba(234,179,8,0.6)] animate-bounce"
+              >
+                🔍 {t("pretrazi") || "Pretraži nekretnine"}
+              </button>
+            )}
           </div>
 
-          {/* SEARCH FORM CARD (pri dnu hero sekcije) */}
+          {/* SEARCH FORM CARD */}
+          {/* LOGIKA PRIKAZIVANJA:
+             - Na mobilnom: Ako je mobileSearchOpen true -> 'block', inace 'hidden'
+             - Na desktopu (md): Uvek 'md:block' (ponistava hidden)
+          */}
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-7xl mx-auto mt-auto mb-0 p-4 md:p-6 rounded-xl bg-black/50 backdrop-blur-md border border-yellow-500 shadow-lg"
+            className={`
+              relative w-full max-w-7xl mx-auto mt-auto mb-0 p-4 md:p-6 rounded-xl 
+              bg-black/80 backdrop-blur-md border border-yellow-500 shadow-lg 
+              transition-all duration-300 ease-in-out
+              ${mobileSearchOpen ? 'block' : 'hidden'} md:block
+            `}
           >
+            
+            {/* --- NOVO: Dugme za zatvaranje forme (samo na mobilnom) --- */}
+            <button
+              type="button"
+              onClick={() => setMobileSearchOpen(false)}
+              className="absolute top-2 right-2 text-gray-400 hover:text-white md:hidden p-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-12 items-end">
 
               {/* 1. Transaction (Širina: 2/12) */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
-                  {t("propertyType")}
+                  {t("vrstaPunude")}
                 </label>
                 <div className="relative">
                   <select
@@ -174,69 +207,34 @@ function HomePage() {
                 </div>
               </div>
 
-              {/*4. Sekcija za Kvart - ISPRAVLJENO */}
+              {/* 4. Sekcija za Kvart */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
                   {t('location')}
                 </label>
                 <div className="relative">
                   <select
-                    name="kvart"  // <-- PROMENJENO (bilo je "area")
-                    value={form.kvart} // <-- PROMENJENO (bilo je form.area)
+                    name="kvart"
+                    value={form.kvart}
                     onChange={handleChange}
                     className="w-full px-3 py-3 rounded-md bg-black text-white border border-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 appearance-none"
                   >
-                    <option className="bg-black text-white" value="all">
-                      Sve
-                    </option>
-                    <option className="bg-black text-white" value="Grbavica">
-                      Grbavica
-                    </option>
-                    <option className="bg-black text-white" value="Sajmiste">
-                      Sajmiste
-                    </option>
-                    <option className="bg-black text-white" value="Adice">
-                      Adice
-                    </option>
-                    <option className="bg-black text-white" value="Telep">
-                      Telep
-                    </option>
-                    <option className="bg-black text-white" value="Novo naselje">
-                      Novo naselje
-                    </option>
-                    <option className="bg-black text-white" value="Liman I">
-                      Liman 1
-                    </option>
-                    <option className="bg-black text-white" value="Liman II">
-                      Liman 2
-                    </option>
-                    <option className="bg-black text-white" value="Liman III">
-                      Liman 3
-                    </option>
-                    <option className="bg-black text-white" value="Liman IV">
-                      Liman 4
-                    </option>
-                    <option className="bg-black text-white" value="Detelinara">
-                      Detelinara
-                    </option>
-                    <option className="bg-black text-white" value="Nova detelinara">
-                      Nova detelinara
-                    </option>
-                    <option className="bg-black text-white" value="Centar">
-                      Centar
-                    </option>
-                    <option className="bg-black text-white" value="Podbara">
-                      Podbara
-                    </option>
-                    <option className="bg-black text-white" value="Salajka">
-                      Salajka
-                    </option>
-                    <option className="bg-black text-white" value="Rotkvarija">
-                      Rotkvarija
-                    </option>
-                    <option className="bg-black text-white" value="Telep">
-                      Telep
-                    </option>
+                    <option className="bg-black text-white" value="all">Sve</option>
+                    <option className="bg-black text-white" value="Grbavica">Grbavica</option>
+                    <option className="bg-black text-white" value="Sajmiste">Sajmiste</option>
+                    <option className="bg-black text-white" value="Adice">Adice</option>
+                    <option className="bg-black text-white" value="Telep">Telep</option>
+                    <option className="bg-black text-white" value="Novo naselje">Novo naselje</option>
+                    <option className="bg-black text-white" value="Liman I">Liman 1</option>
+                    <option className="bg-black text-white" value="Liman II">Liman 2</option>
+                    <option className="bg-black text-white" value="Liman III">Liman 3</option>
+                    <option className="bg-black text-white" value="Liman IV">Liman 4</option>
+                    <option className="bg-black text-white" value="Detelinara">Detelinara</option>
+                    <option className="bg-black text-white" value="Nova detelinara">Nova detelinara</option>
+                    <option className="bg-black text-white" value="Centar">Centar</option>
+                    <option className="bg-black text-white" value="Podbara">Podbara</option>
+                    <option className="bg-black text-white" value="Salajka">Salajka</option>
+                    <option className="bg-black text-white" value="Rotkvarija">Rotkvarija</option>
                   </select>
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-yellow-400">
                     ▾
@@ -244,7 +242,7 @@ function HomePage() {
                 </div>
               </div>
 
-              {/* 5. Price From (Širina: 2/12) */}
+              {/* 5. Price From */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
                   {t("cenaOd")}
@@ -261,7 +259,7 @@ function HomePage() {
                 />
               </div>
 
-              {/* 6. Price To (Širina: 2/12) */}
+              {/* 6. Price To */}
               <div className="lg:col-span-2">
                 <label className="block mb-1 text-sm font-medium text-gray-200">
                   {t("cenaDo")}
@@ -278,10 +276,8 @@ function HomePage() {
                 />
               </div>
 
-              {/* --- NOVO DUGME: Detaljnija pretraga --- */}
-              {/* Postavljamo ga na početak novog reda ili pored Search dugmeta ako ima mesta */}
+              {/* Dugme: Detaljnija pretraga */}
               <div className="md:col-span-2 lg:col-span-2 lg:col-start-9">
-                {/* Napomena: Ako koristiš react-router-dom, koristi Link. Ako ne, promeni u <a href...> */}
                 <Link
                   to="/searchmore"
                   className="w-full h-[46px] flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-yellow-500 border border-gray-600 hover:bg-gray-700 hover:border-yellow-500 transition font-medium"
@@ -290,7 +286,7 @@ function HomePage() {
                 </Link>
               </div>
 
-              {/* 7. Submit Button (Širina: 2/12) */}
+              {/* 7. Submit Button */}
               <div className="md:col-span-2 lg:col-span-2">
                 <button
                   type="submit"
@@ -317,12 +313,10 @@ function HomePage() {
             </div>
           </form>
 
-
-
         </div>
       </section>
 
-      {/* Sekcija sa top ponudama (biće ispod hero i iznad Footera) */}
+      {/* OSTALE SEKCIJE */}
       <div className="relative z-10">
         <TopPonudePage />
       </div>
