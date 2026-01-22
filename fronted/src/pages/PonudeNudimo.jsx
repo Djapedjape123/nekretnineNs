@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import buildingsImage from '../assets/drugi.webp'
+import buildingsImage from '../assets/drugi2.webp'
 import { t } from '../i1n8'
 
 function PonudeNudimo() {
