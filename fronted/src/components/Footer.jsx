@@ -237,10 +237,7 @@ export default function Footer() {
               </div>
               
 
-              {/* <div className="pt-6 text-sm text-gray-400">
-                <div>© {new Date().getFullYear()} SERBES DOO NOVI SAD.</div>
-                <div className="text-gray-500">{t('footerRights')}</div>
-              </div> */}
+            
             </div>
           </div>
         </div>
