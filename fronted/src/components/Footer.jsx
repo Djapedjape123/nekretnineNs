@@ -47,6 +47,7 @@ export default function Footer() {
                 <span className="text-blue-400">{t('officeAddress')}</span>
               </a>
             </div>
+            
           </div>
 
           {/* Navigacija */}
@@ -78,8 +79,9 @@ export default function Footer() {
             </ul>
 
             {/* Small divider + CTA */}
-            
+
           </div>
+          
 
           {/* Downloads / dokumenti */}
           <div>
@@ -130,52 +132,45 @@ export default function Footer() {
           {/* Naši oglasi + social */}
           <div className="flex flex-col justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4">Naši oglasi</h3>
+              <h3 className="text-lg font-semibold text-white mb-4">{t('nasiOglasi')}</h3>
 
-              <div className="flex flex-col gap-3">
-                <a
-                  href="https://www.4zida.rs/agencije/novi-sad/serbes-nekretnine/412"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded hover:opacity-95 transition text-sm"
-                >
-                  4zida
-                </a>
-
-                <a
-                  href="https://www.halooglasi.com/nekretnine/prodaja-stanova/lux-namesten-penthaus-230m2-sa-bazenom-bul-ev/5425646119082?kid=1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded hover:opacity-95 transition text-sm"
-                >
-                  Halo Oglasi
-                </a>
-
-                <a
-                  href="https://www.indomio.rs/agencija/serbes-d.o.o./9751"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded hover:opacity-95 transition text-sm"
-                >
-                  Indomio
-                </a>
-                <a
-                  href="https://www.indomio.rs/agencija/serbes-d.o.o./9751"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded hover:opacity-95 transition text-sm"
-                >
-                  Nadji Nekretnine
-                </a>
-               <a
-                  href="https://nadjinekretnine.com/prodavci/agencija/1635/serbes-d-o-o"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded hover:opacity-95 transition text-sm"
-                >
-                  Nekretnine.rs
-                </a>
+              <div>
                 
+
+                <div className="flex flex-col gap-3">
+                  {[
+                    { name: "4zida", url: "https://www.4zida.rs/agencije/novi-sad/serbes-nekretnine/412" },
+                    { name: "Halo Oglasi", url: "https://www.halooglasi.com/nekretnine/prodaja-stanova/lux-namesten-penthaus-230m2-sa-bazenom-bul-ev/5425646119082?kid=1" },
+                    { name: "Indomio", url: "https://www.indomio.rs/agencija/serbes-d.o.o./9751" },
+                    { name: "Nadji Nekretnine", url: "https://www.indomio.rs/agencija/serbes-d.o.o./9751" }, // Proveri ovaj link, isti je kao Indomio
+                    { name: "Nekretnine.rs", url: "https://nadjinekretnine.com/prodavci/agencija/1635/serbes-d-o-o" }
+                  ].map((link, index) => (
+                    <a
+                      key={index}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative flex items-center justify-between w-full px-5 py-3 bg-zinc-900 text-gray-300 rounded-lg overflow-hidden transition-all duration-300 hover:bg-yellow-400 hover:text-black  hover:shadow-lg hover:shadow-red-600/20 hover:-translate-y-0.5"
+                    >
+                      {/* Tekst koji se blago pomera desno */}
+                      <span className="font-medium tracking-wide transition-transform duration-300 group-hover:translate-x-1">
+                        {link.name}
+                      </span>
+
+                      {/* Ikonica strelice koja se pojavljuje i pomera */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-5 h-5 opacity-0 -translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -235,16 +230,17 @@ export default function Footer() {
                   title="YouTube"
                   target="_blank"
                   rel="noopener noreferrer"
-                  
+
                 >
                   <FaYoutube size={18} />
                 </a>
               </div>
+              
 
-              <div className="pt-6 text-sm text-gray-400">
+              {/* <div className="pt-6 text-sm text-gray-400">
                 <div>© {new Date().getFullYear()} SERBES DOO NOVI SAD.</div>
                 <div className="text-gray-500">{t('footerRights')}</div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -366,6 +366,9 @@ function HomePage() {
           <TopPonudePage />
         </div>
         <div className="relative z-10">
+          <ONama />
+        </div>
+        <div className="relative z-10">
           <UslugePage />
         </div>
         <div className="relative z-10">
@@ -374,9 +377,7 @@ function HomePage() {
         <div className="relative z-10">
           <PonudeNudimo2 />
         </div>
-        <div className="relative z-10">
-          <ONama />
-        </div>
+        
       </Suspense>
     </div>
   )

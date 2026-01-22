@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { FaDollarSign, FaClock, FaGraduationCap, FaEye } from 'react-icons/fa'
+import { FaHandshake , FaClock, FaGraduationCap, FaEye } from 'react-icons/fa'
+import { MdAccountCircle } from "react-icons/md";
 import { t } from '../i1n8'
 
 const services = [
   {
-    icon: <FaDollarSign />,
+    icon: <FaHandshake />,
     titleKey: 'services.items.0.title',
     descKey: 'services.items.0.desc',
   },
@@ -15,7 +16,7 @@ const services = [
     descKey: 'services.items.1.desc',
   },
   {
-    icon: <FaClock />,
+    icon: <MdAccountCircle />,
     titleKey: 'services.items.2.title',
     descKey: 'services.items.2.desc',
   },
@@ -53,9 +54,7 @@ function UslugePage() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <span className="text-yellow-600 font-bold tracking-widest uppercase text-sm bg-yellow-100 px-4 py-1.5 rounded-full">
-            Naše Ekspertize
-          </span>
+          
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 mt-4">
             {t('services.heading')}
           </h2>
