@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import backgroundImage from '../assets/ns.jpg'
+import { Helmet } from 'react-helmet-async' // <--- NOVI IMPORT
+import backgroundImage from '../assets/probaB.webp'
 import { t } from '../i1n8'
 import TopPonudePage from './TopPonudePage'
 import UslugePage from './UslugePage'
@@ -39,6 +40,42 @@ function HomePage() {
 
   return (
     <div>
+      {/* --- SEO START --- */}
+      <Helmet>
+        <title>Serbes Nekretnine | Prodaja i Izdavanje Stanova Novi Sad</title>
+        <meta 
+          name="description" 
+          content="Pronađite idealan stan, kuću ili poslovni prostor u Novom Sadu. Najbolja ponuda nekretnina za prodaju i izdavanje. Sigurna kupovina uz Serbes Nekretnine." 
+        />
+        <meta name="keywords" content="nekretnine novi sad, prodaja stanova, izdavanje stanova, stanovi novi sad, kuce novi sad, agencija za nekretnine" />
+        
+        {/* Open Graph / Facebook / Viber */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Serbes Nekretnine | Vaš partner za nekretnine" />
+        <meta property="og:description" content="Velika ponuda stanova i kuća u Novom Sadu. Pogledajte našu ponudu." />
+        <meta property="og:image" content="https://serbesnekretnine.rs/serbes.jpg" /> {/* ZAMENI SA PRAVIM URL-OM KAD DEPLOJUJES */}
+        <meta property="og:url" content="https://serbesnekretnine.rs/" />
+
+        {/* Strukturirani podaci (Schema.org) za Google */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "RealEstateAgent",
+            "name": "Serbes Nekretnine",
+            "image": "https://serbesnekretnine.rs/serbes.jpg",
+            "description": "Agencija za posredovanje u prometu nekretnina u Novom Sadu.",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Novi Sad",
+              "addressRegion": "Vojvodina",
+              "addressCountry": "RS"
+            },
+            "priceRange": "$$"
+          })}
+        </script>
+      </Helmet>
+      {/* --- SEO END --- */}
+
       {/* HERO SECTION */}
       <section
         className="relative min-h-screen flex flex-col"
@@ -74,8 +111,8 @@ function HomePage() {
 
           {/* SEARCH FORM CARD */}
           {/* LOGIKA PRIKAZIVANJA:
-             - Na mobilnom: Ako je mobileSearchOpen true -> 'block', inace 'hidden'
-             - Na desktopu (md): Uvek 'md:block' (ponistava hidden)
+               - Na mobilnom: Ako je mobileSearchOpen true -> 'block', inace 'hidden'
+               - Na desktopu (md): Uvek 'md:block' (ponistava hidden)
           */}
           <form
             onSubmit={handleSubmit}

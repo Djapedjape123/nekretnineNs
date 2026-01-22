@@ -6,6 +6,7 @@ import { t } from '../i1n8'
 import { IoMdResize } from "react-icons/io";
 import { API_BASE } from '../config'
 import noImage from '../assets/dedazi2.jpg'
+import { Helmet } from 'react-helmet-async' // <--- 1. DODAT IMPORT
 
 // --- POMOĆNE FUNKCIJE ---
 const formatPrice = (val) => {
@@ -84,13 +85,13 @@ export default function SinglePage() {
     const toArray = (val, isAttributeObject = false) => {
       if (!val) return []
       if (isAttributeObject && val.attrib) {
-         const list = Array.isArray(val.attrib) ? val.attrib : [val.attrib];
-         return list.map(item => {
-             const name = item.name ? String(item.name).trim() : '';
-             const value = item.value ? String(item.value).trim() : '';
-             if (name && value) return `${name}: ${value}`;
-             return name || value;
-         }).filter(Boolean);
+          const list = Array.isArray(val.attrib) ? val.attrib : [val.attrib];
+          return list.map(item => {
+              const name = item.name ? String(item.name).trim() : '';
+              const value = item.value ? String(item.value).trim() : '';
+              if (name && value) return `${name}: ${value}`;
+              return name || value;
+          }).filter(Boolean);
       }
       if (Array.isArray(val)) return val.map(String)
       if (typeof val === 'object') return Object.values(val).map(String)
@@ -310,8 +311,36 @@ export default function SinglePage() {
     { label: t('grad', 'Grad/PTT'), val: meta.zipCode ? `${meta.city} ${meta.zipCode}` : meta.city },
   ].filter(i => i.val && i.val !== '0' && i.val !== '0.0')
 
+  // --- 2. PRIPREMA SEO PROMENLJIVIH ---
+  const seoTitle = `${property.naslov} | ${formatPrice(property.cena)} | Serbes Nekretnine`
+  const seoDescription = `${meta.offerType || 'Prodaja'} ${meta.propertyType || 'nekretnine'} - ${property.location}. ${meta.roomsCount ? meta.roomsCount + ' soba,' : ''} ${meta.area ? meta.area + 'm2.' : ''} Najbolja ponuda u Novom Sadu.`
+  const seoImage = property.image && property.image !== noImage 
+  ? property.image 
+  : `${window.location.origin}/serbes.jpg`;
+  const currentUrl = window.location.href
+
   return (
     <div className="min-h-screen bg-black text-white py-12 px-8 mt-10">
+      {/* --- 3. DINAMIČKI HELMET BLOK --- */}
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        
+        {/* Open Graph / Facebook / Viber / WhatsApp */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:image" content={seoImage} />
+        <meta property="og:url" content={currentUrl} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+      </Helmet>
+      {/* -------------------------------- */}
+
       <div className="max-w-5xl mx-auto" ref={topRef}>
 
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-yellow-400 mb-6 hover:text-yellow-300">
@@ -328,7 +357,7 @@ export default function SinglePage() {
             onError={(e) => { e.currentTarget.src = noImage }}
           />
           <button onClick={() => openLightbox(currentImage)} className="absolute top-4 right-4 z-20 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black/70">
-             <FaExpand />
+              <FaExpand />
           </button>
            {safeImages.length > 1 && (
             <>
