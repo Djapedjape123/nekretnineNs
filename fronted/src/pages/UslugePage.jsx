@@ -67,7 +67,7 @@ function UslugePage() {
               key={index}
               ref={(el) => (refs.current[index] = el)}
               data-index={index}
-              className={`group relative bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-3 transition-all duration-700 ease-out ${
+              className={`group relative bg-white p-8 rounded-[2rem] border border-gray-300 shadow-sm hover:shadow-2xl hover:-translate-y-3 transition-all duration-700 ease-out ${
                 visible.includes(index)
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-12'
