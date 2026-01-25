@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import buildingsImage from '../assets/stan.jpg'
+import buildingsImage from '../assets/drugi2.webp'
+import { IoDiamondSharp } from "react-icons/io5";
 import { t } from '../i1n8'
 
 function PonudeNudimo() {
@@ -69,7 +70,7 @@ function PonudeNudimo() {
               <div className="bg-white border border-gray-100 p-8 rounded-[2rem] shadow-xl shadow-yellow-500/5 relative overflow-hidden group">
                 <div className="absolute top-0 left-0 w-2 h-full bg-yellow-400"></div>
                 <h5 className="font-bold text-xl text-gray-900 mb-3 flex items-center gap-2">
-                  <span className="text-2xl">💎</span> {t('luxuzneNekretnine')}
+                  <span className="text-2xl"><IoDiamondSharp color='yellow' size={32}/></span> {t('luxuzneNekretnine')}
                 </h5>
                 <p className="text-gray-600 leading-relaxed italic">
                  {t('gdesu')}<span className="text-gray-900 font-bold">{t('poverenje')}</span> {t('osnovni')}
@@ -114,8 +115,8 @@ function PonudeNudimo() {
 
             {/* Lebdeći info bedž */}
             <div className="absolute -bottom-6 -left-6 bg-white p-8 rounded-2xl shadow-2xl max-w-[240px] hidden md:block animate-bounce-slow">
-              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Sigurnost</p>
-              <p className="text-gray-900 font-extrabold text-lg leading-tight">100% garantovana pravna zaštita</p>
+              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">{t('sigurnost')}</p>
+              <p className="text-gray-900 font-extrabold text-lg leading-tight">{t('pravnaZastitia')}</p>
             </div>
           </div>
         </div>

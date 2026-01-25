@@ -11,6 +11,14 @@ export const translations = {
     zemljiste: 'Zemljišta',
     poslovniProstor: 'Poslovni prostori',
 
+    tradicija: 'Tradicija',
+    poverenje: 'Poverenje',
+
+    nasiOglasi: 'Naši oglasi',
+
+    sigurnost: 'Sigurnost',
+    pravnaZastitia: 'Pravna zaštita',
+
     //navbar
     vikendice: 'Vikendice',
     lokal: 'Lokal',
@@ -266,7 +274,7 @@ export const translations = {
       //p8: 'Pravna i administrativna podrška do zaključenja posla',
       imageAlt: 'Zgrade' ,
 
-      longTermTitle2: 'Dugoročna izdavanje',
+      longTermTitle2: 'Dugoročno izdavanje',
       i1: 'Naša agencija pruža kompletnu uslugu dugoročnog izdavanja stanova, kuća i poslovnih prostora. ',
       i2: 'Pruzimamo kompletnu organizaciju procesa, biramo ozniljne zakupce i vodimo računa o vašim interesima. Zakupodavcima obezbeđujemo pouzdane zakupce, pravnu sigurnost, a zakupcima nudimo adekvatne nekretnine u skladu sa njihovim potrebama.',
       i3: '',
@@ -307,6 +315,12 @@ export const translations = {
     magacin: 'Склад',
     poslovnaZG: 'Деловое здание',
     njiva: 'Поле',
+
+    sigurnost: 'Безопасность',
+    pravnaZastitia: 'Правовая защита',
+
+    tradicija: 'Традиция',
+    poverenje: 'Доверие',
 
 
     //ponude nudimo page
@@ -402,6 +416,8 @@ export const translations = {
 
     rooms: 'комнаты',
     baths: 'ванные',
+
+    nasiOglasi: 'Наши объявления',
    
     //forma home pege 
     garsonjera: 'Студия',
@@ -581,6 +597,9 @@ export const translations = {
     showCity: 'Show city',
     allCities: 'All cities',
 
+    tradicija: 'Tradition',
+    poverenje: 'Trust',
+
     //ponude nudimo 2 page
     premiumUsluga: 'Premium Service',
     dugorocna:'"Long-term cooperation, stable income and security for owners, as well as quality and suitable property for tenants."',
@@ -732,6 +751,9 @@ export const translations = {
 
     mailSubjectPrefix: 'Website message —',
 
+    sigurnost: 'Security',
+    pravnaZastitia: 'Legal protection',
+
     footerDescription:
       'Premium property listings for sale and rent.',
     footerNavigation: 'Navigation',
@@ -750,6 +772,8 @@ export const translations = {
 
     type: 'Type',
     propertyType: 'Property type',
+
+    nasiOglasi: 'Our listings',
 
     sale: 'Sale',
     rentOption: 'Rent',

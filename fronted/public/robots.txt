@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Link do tvoje mape sajta (promeni domen kad ga kupiš)
+Sitemap: https://serbesnekretnine.com/sitemap.xml
