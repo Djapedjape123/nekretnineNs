@@ -2,6 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const xml2js = require("xml2js");
 const fs = require("fs");
+require("./processOglasi.cjs");
+
+
+
+
 
 const parser = new xml2js.Parser();
 
@@ -82,10 +87,10 @@ app.get("/oglasi/search", (req, res) => {
       if (vrstagrejanja && vrstagrejanja !== "all" &&
           grejanje !== vrstagrejanja.toLowerCase()) return false;
 
-      /*if (lift === "1" && !hasAttrib(o, "lift")) return false;
+      if (lift === "1" && !hasAttrib(o, "lift")) return false;
       if (terasa === "1" && !hasAttrib(o, "terasa")) return false;
       if (namesten === "1" && !hasAttrib(o, "namešten")) return false;
-      if (parking === "1" && !hasAttrib(o, "parking")) return false;*/
+      if (parking === "1" && !hasAttrib(o, "parking")) return false;
 
       return true;
     });
@@ -194,6 +199,7 @@ app.get("/oglasi/izdavanje", (req, res) => {
   });
 });
 
+// ================== SINGLE OGLAS ==================
 app.get('/oglasi/:id', (req, res) => {
   const { id } = req.params;
 
@@ -229,6 +235,13 @@ const hasAttrib = (o, needle) => {
     a.name.toLowerCase().includes(needle.toLowerCase())
   );
 };
+
+
+
+
+
+
+
 
 const PORT = 3001;
 app.listen(PORT, () => {

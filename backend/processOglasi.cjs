@@ -3,7 +3,7 @@ const path = require("path");
 const unzipper = require("unzipper");
 const xml2js = require("xml2js");
 
-const FTP_ZIP = "/ftp/xml/oglasi.zip";
+const FTP_ZIP = path.join(__dirname, "ftp", "xml", "oglasi.zip");
 const TEMP_XML = path.join(__dirname, "temp", "oglasi.xml");
 const JSON_PATH = path.join(__dirname, "oglasi.json");
 const BACKUP_ZIP = path.join(__dirname, "backup", "last-good.zip");
