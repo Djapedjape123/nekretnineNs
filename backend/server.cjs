@@ -46,12 +46,16 @@ app.get("/oglasi/search", (req, res) => {
     area_max,
     brojsoba_od,
     brojsoba_do,
-    vrstagrejanja,
+    vrstagrejanja, 
+    heating,       
     lift,
     terasa,
     namesten,
     parking
   } = req.query;
+
+  // Određujemo šta je zapravo traženo grejanje (bilo da stigne kao 'heating' ili 'vrstagrejanja')
+  const trazenoGrejanje = heating || vrstagrejanja;
 
   getOglasi((err, oglasi) => {
     if (err) {
@@ -59,21 +63,24 @@ app.get("/oglasi/search", (req, res) => {
     }
 
     const results = oglasi.filter(o => {
+      // Priprema podataka iz baze/fajla (sve u mala slova)
       const ponuda = (o.vrstaponude || "").toLowerCase();
       const tip = (o.vrstanekretnine || "").toLowerCase();
       const g = (o.mesto || "").toLowerCase();
       const n = (o.naselje || "").toLowerCase();
-      const grejanje = (o.vrstagrejanja || "").toLowerCase();
+      // Ovde čitamo grejanje iz oglasa (može biti pod ključem 'vrstagrejanja' ili 'grejanje')
+      const grejanjeOglasa = (o.vrstagrejanja || o.grejanje || "").toLowerCase();
 
       const cena = Number(o.cena || 0);
       const kvadrat = Number(o.kvadratura_int || 0);
       const sobe = Number(o.brojsoba || 0);
 
+      // --- FILTRIRANJE ---
+
       if (transaction && !ponuda.includes(transaction.toLowerCase())) return false;
       if (type && !tip.includes(type.toLowerCase())) return false;
       if (city && !g.includes(city.toLowerCase())) return false;
       if (district && district !== "all" && !n.includes(district.toLowerCase())) return false;
-
 
       if (price_min && cena < Number(price_min)) return false;
       if (price_max && cena > Number(price_max)) return false;
@@ -84,8 +91,14 @@ app.get("/oglasi/search", (req, res) => {
       if (brojsoba_od && sobe < Number(brojsoba_od)) return false;
       if (brojsoba_do && sobe > Number(brojsoba_do)) return false;
 
-      if (vrstagrejanja && vrstagrejanja !== "all" &&
-          grejanje !== vrstagrejanja.toLowerCase()) return false;
+      
+      if (trazenoGrejanje && trazenoGrejanje !== "all") {
+          // Koristimo includes umesto strogog poređenja da bi 'gas' našlo i 'Gas' i 'prirodni gas'
+          if (!grejanjeOglasa.includes(trazenoGrejanje.toLowerCase())) {
+              return false;
+          }
+      }
+      
 
       if (lift === "1" && !hasAttrib(o, "lift")) return false;
       if (terasa === "1" && !hasAttrib(o, "terasa")) return false;

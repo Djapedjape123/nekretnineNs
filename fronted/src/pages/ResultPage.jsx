@@ -37,6 +37,10 @@ export default function ResultsPage() {
   const terasa = query.get('terasa') || ''
   const namesten = query.get('namesten') || ''
   const parking = query.get('parking') || ''
+  
+  // --- DODATO OVO (Čitanje parametra grejanja) ---
+  const heating = query.get('heating') || '' 
+  // ----------------------------------------------
 
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -72,7 +76,8 @@ export default function ResultsPage() {
           lift,
           terasa,
           namesten,
-          parking
+          parking,
+          heating // <--- DODATO OVO (Slanje na API)
         })
         const res = await fetch(`${API_BASE}/oglasi/search?${params.toString()}`)
         const data = await res.json()
@@ -98,7 +103,8 @@ export default function ResultsPage() {
     lift,
     terasa,
     namesten,
-    parking
+    parking,
+    heating // <--- DODATO OVO (u dependency array)
   ])
 
   // Reset paginacije na novu pretragu
@@ -118,7 +124,8 @@ export default function ResultsPage() {
     lift,
     terasa,
     namesten,
-    parking
+    parking,
+    heating // <--- DODATO OVO (u dependency array)
   ])
 
   const tt = (key, fallback) => {
@@ -152,6 +159,12 @@ export default function ResultsPage() {
       else if (brojsoba_od) parts.push(`Broj soba ≥ ${brojsoba_od}`)
       else parts.push(`Broj soba ≤ ${brojsoba_do}`)
     }
+
+    // --- DODATO OVO (Prikaz u čipovima gore) ---
+    if (heating && heating !== 'all') {
+        parts.push(`Grejanje: ${heating}`)
+    }
+    // ------------------------------------------
 
     const extras = []
     if (lift && lift !== 'false') extras.push('Lift')

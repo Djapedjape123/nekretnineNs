@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { t } from '../i1n8'
+
 function SearchMore() {
     const navigate = useNavigate();
     const [form, setForm] = useState({
@@ -44,9 +45,7 @@ function SearchMore() {
 
     const handleSearchById = () => {
         if (!form.id) return;
-
         const cleanId = form.id.replace('#', '').trim();
-
         navigate(`/single/${cleanId}`);
     };
 
@@ -60,6 +59,12 @@ function SearchMore() {
         if (form.vrstanekretnine) params.append('type', form.vrstanekretnine.toLowerCase());
         if (form.grad) params.append('city', form.grad);
         if (form.naselje && form.naselje !== 'all') params.append('district', form.naselje);
+
+        // --- DODATO OVO (Slanje vrste grejanja) ---
+        if (form.vrstagrejanja && form.vrstagrejanja !== 'all') {
+            params.append('heating', form.vrstagrejanja);
+        }
+        // ------------------------------------------
 
         // rasponi
         if (form.cena_od) params.append('price_min', form.cena_od);
@@ -293,4 +298,3 @@ function SearchMore() {
 }
 
 export default SearchMore;
-

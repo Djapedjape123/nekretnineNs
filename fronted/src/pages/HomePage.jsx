@@ -1,7 +1,7 @@
 import React, { useState,Suspense, lazy } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async' // <--- NOVI IMPORT
-import backgroundImage from '../assets/probaB22.webp'
+import backgroundImage from '../assets/probaB222.webp'
 import { t } from '../i1n8'
 
 // import TopPonudePage from './TopPonudePage'

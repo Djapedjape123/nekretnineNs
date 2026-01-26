@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import buildingsImage from '../assets/prvi22.webp'
+import buildingsImage from '../assets/prvi222.webp'
 import { t } from '../i1n8'
 import { TbTargetArrow } from "react-icons/tb";
 
