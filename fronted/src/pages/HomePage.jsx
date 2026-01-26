@@ -1,12 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState,Suspense, lazy } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import backgroundImage from '../assets/ns.jpg'
+import { Helmet } from 'react-helmet-async' // <--- NOVI IMPORT
+import backgroundImage from '../assets/probaB22.webp'
 import { t } from '../i1n8'
-import TopPonudePage from './TopPonudePage'
-import UslugePage from './UslugePage'
-import PonudeNudimo2 from './PonudeNudimo2'
-import PonudeNudimo from './PonudeNudimo'
-import ONama from './Onama'
+
+// import TopPonudePage from './TopPonudePage'
+// import UslugePage from './UslugePage'
+// import PonudeNudimo2 from './PonudeNudimo2'
+// import PonudeNudimo from './PonudeNudimo'
+// import ONama from './Onama'
+const TopPonudePage = lazy(() => import('./TopPonudePage'))
+const UslugePage = lazy(() => import('./UslugePage'))
+const PonudeNudimo2 = lazy(() => import('./PonudeNudimo2'))
+const PonudeNudimo = lazy(() => import('./PonudeNudimo'))
+const ONama = lazy(() => import('./Onama'))
 
 function HomePage() {
   const navigate = useNavigate()
@@ -39,6 +46,42 @@ function HomePage() {
 
   return (
     <div>
+      {/* --- SEO START --- */}
+      <Helmet>
+        <title>Serbes Nekretnine | Prodaja i Izdavanje Stanova Novi Sad</title>
+        <meta
+          name="description"
+          content="Pronađite idealan stan, kuću ili poslovni prostor u Novom Sadu. Najbolja ponuda nekretnina za prodaju i izdavanje. Sigurna kupovina uz Serbes Nekretnine."
+        />
+        <meta name="keywords" content="nekretnine novi sad, prodaja stanova, izdavanje stanova, stanovi novi sad, kuce novi sad, agencija za nekretnine" />
+
+        {/* Open Graph / Facebook / Viber */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Serbes Nekretnine | Vaš partner za nekretnine" />
+        <meta property="og:description" content="Velika ponuda stanova i kuća u Novom Sadu. Pogledajte našu ponudu." />
+        <meta property="og:image" content="https://serbesnekretnine.rs/serbes.jpg" /> {/* ZAMENI SA PRAVIM URL-OM KAD DEPLOJUJES */}
+        <meta property="og:url" content="https://serbesnekretnine.rs/" />
+
+        {/* Strukturirani podaci (Schema.org) za Google */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "RealEstateAgent",
+            "name": "Serbes Nekretnine",
+            "image": "https://serbesnekretnine.rs/serbes.jpg",
+            "description": "Agencija za posredovanje u prometu nekretnina u Novom Sadu.",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Novi Sad",
+              "addressRegion": "Vojvodina",
+              "addressCountry": "RS"
+            },
+            "priceRange": "$$"
+          })}
+        </script>
+      </Helmet>
+      {/* --- SEO END --- */}
+
       {/* HERO SECTION */}
       <section
         className="relative min-h-screen flex flex-col"
@@ -50,7 +93,7 @@ function HomePage() {
       >
         {/* HERO CONTENT */}
         <div className="relative z-10 flex-1 flex flex-col mt-14 text-white px-4 pt-6">
-          
+
           <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
               {t('heroTitle')}
@@ -74,8 +117,8 @@ function HomePage() {
 
           {/* SEARCH FORM CARD */}
           {/* LOGIKA PRIKAZIVANJA:
-             - Na mobilnom: Ako je mobileSearchOpen true -> 'block', inace 'hidden'
-             - Na desktopu (md): Uvek 'md:block' (ponistava hidden)
+               - Na mobilnom: Ako je mobileSearchOpen true -> 'block', inace 'hidden'
+               - Na desktopu (md): Uvek 'md:block' (ponistava hidden)
           */}
           <form
             onSubmit={handleSubmit}
@@ -86,7 +129,7 @@ function HomePage() {
               ${mobileSearchOpen ? 'block' : 'hidden'} md:block
             `}
           >
-            
+
             {/* --- NOVO: Dugme za zatvaranje forme (samo na mobilnom) --- */}
             <button
               type="button"
@@ -318,21 +361,24 @@ function HomePage() {
       </section>
 
       {/* OSTALE SEKCIJE */}
-      <div className="relative z-10">
-        <TopPonudePage />
-      </div>
-      <div className="relative z-10">
-        <UslugePage/>
-      </div>
-      <div className="relative z-10">
-        <PonudeNudimo/>
-      </div>
-      <div className="relative z-10">
-        <PonudeNudimo2/>
-      </div>
-      <div className="relative z-10">
-        <ONama />
-      </div>
+      <Suspense fallback={<div className="p-10 text-center">Učitavanje...</div>}>
+        <div className="relative z-10">
+          <TopPonudePage />
+        </div>
+        <div className="relative z-10">
+          <ONama />
+        </div>
+        <div className="relative z-10">
+          <UslugePage />
+        </div>
+        <div className="relative z-10">
+          <PonudeNudimo />
+        </div>
+        <div className="relative z-10">
+          <PonudeNudimo2 />
+        </div>
+        
+      </Suspense>
     </div>
   )
 }
