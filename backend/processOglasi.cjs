@@ -51,4 +51,6 @@ async function processOglasi() {
   }
 }
 
-processOglasi();
+// izvoz funkcije umesto automatskog poziva
+module.exports = { processOglasi };
+

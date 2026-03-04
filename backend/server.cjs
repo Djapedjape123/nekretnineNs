@@ -2,7 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const xml2js = require("xml2js");
 const fs = require("fs");
-require("./processOglasi.cjs");
+
+// processing helper that reads the FTP zip, converts to JSON etc.
+const { processOglasi } = require("./processOglasi.cjs");
+
+// run once on startup, then schedule every 10 minutes (600 000 ms).
+// this keeps oglasi.json up to date without external cron tools.
+processOglasi();
+setInterval(processOglasi, 10 * 60 * 1000); // 10 minutes
+
 
 
 
