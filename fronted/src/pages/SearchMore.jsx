@@ -287,7 +287,7 @@ function SearchMore() {
                                 placeholder="#0000"
                                 value={form.id}
                                 onChange={handleChange}
-                                className="bg-black border border-gray-800 rounded md:w-32 p-2 text-yellow-500 focus:border-yellow-500 outline-none"
+                                className="bg-black border border-gray-800 rounded w-20 md:w-32 p-2 text-yellow-500 focus:border-yellow-500 outline-none"
                             />
                         </div>
                     </div>
