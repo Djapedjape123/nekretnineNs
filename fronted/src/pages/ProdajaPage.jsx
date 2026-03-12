@@ -64,7 +64,7 @@ export default function ProdajaPage() {
         setError('') // Resetuj grešku pre novog poziva
 
         const res = await fetch(`${API_BASE}/oglasi/prodaja`, { signal: ac.signal })
-        
+
         if (!res.ok) {
           throw new Error(`Server returned ${res.status}`)
         }
@@ -128,31 +128,31 @@ export default function ProdajaPage() {
   // 7. POPRAVLJENO: Robusnija logika filtriranja (ista kao Izdavanje)
   const filteredListings = typeFilter
     ? listings.filter(l => {
-        const dbType = normalizeText(l.vrstanekretnine || '');
-        const dbTitle = normalizeText(l.naslov || '');
-        const filterType = normalizeText(typeFilter);
+      const dbType = normalizeText(l.vrstanekretnine || '');
+      const dbTitle = normalizeText(l.naslov || '');
+      const filterType = normalizeText(typeFilter);
 
-        // Osnovna provera
-        if (dbType.includes(filterType)) return true;
+      // Osnovna provera
+      if (dbType.includes(filterType)) return true;
 
-        // Proširena provera sinonima
-        if (filterType.includes('poslovni')) {
-           const sinonimi = ['lokal', 'magacin', 'hala', 'kancelarija', 'radionica', 'poslovni']
-           return sinonimi.some(s => dbType.includes(s) || dbTitle.includes(s))
-        }
-        
-        if (filterType.includes('kuca')) {
-            const sinonimi = ['kuca', 'vikendica', 'vila', 'objekat']
-            return sinonimi.some(s => dbType.includes(s) || dbTitle.includes(s))
-        }
+      // Proširena provera sinonima
+      if (filterType.includes('poslovni')) {
+        const sinonimi = ['lokal', 'magacin', 'hala', 'kancelarija', 'radionica', 'poslovni']
+        return sinonimi.some(s => dbType.includes(s) || dbTitle.includes(s))
+      }
 
-        if (filterType.includes('stan')) {
-            const sinonimi = ['stan', 'garsonjera', 'apartman', 'penthouse']
-            return sinonimi.some(s => dbType.includes(s) || dbTitle.includes(s))
-        }
+      if (filterType.includes('kuca')) {
+        const sinonimi = ['kuca', 'vikendica', 'vila', 'objekat']
+        return sinonimi.some(s => dbType.includes(s) || dbTitle.includes(s))
+      }
 
-        return false;
-      })
+      if (filterType.includes('stan')) {
+        const sinonimi = ['stan', 'garsonjera', 'apartman', 'penthouse']
+        return sinonimi.some(s => dbType.includes(s) || dbTitle.includes(s))
+      }
+
+      return false;
+    })
     : listings
 
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage)
@@ -248,12 +248,21 @@ export default function ProdajaPage() {
                       <div className="flex items-center gap-1"><FaBath className="text-yellow-400" /> {item.brojkupatila}</div>
                       <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int} m²</div>
                     </div>
-                    <div className="grid grid-cols-5 gap-2 mt-6">
-                      <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-transparent border border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
-                      
-                      {/* 9. DODATO: Siguran link za telefon */}
-                      <a href={`tel:${formatTel(item.contactphone)}`} className="col-span-2 md:col-span-1 py-3 px-2 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">
-                         {t('contactTitle')}
+                    <div className="grid grid-cols-12 gap-2 mt-6">
+                      {/* Dugme za detalje - zauzima 8 od 12 delova (oko 65%) */}
+                      <button
+                        onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? makeStableId(item))}`, { state: { item } })}
+                        className="col-span-8 bg-transparent border border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition text-sm md:text-base"
+                      >
+                        {t('details')}
+                      </button>
+
+                      {/* Dugme za kontakt - zauzima preostala 4 dela (oko 35%) */}
+                      <a
+                        href={`tel:${formatTel(item.contactphone)}`}
+                        className="col-span-4 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold py-3 px-1 text-[12px] sm:text-sm md:text-base truncate"
+                      >
+                        {t('contactTitle')}
                       </a>
                     </div>
                   </div>
@@ -265,24 +274,24 @@ export default function ProdajaPage() {
 
         {totalPages > 1 && (
           <div className="flex justify-center mt-12 gap-3">
-            <button 
-                disabled={currentPage === 1} 
-                onClick={() => setCurrentPage(prev => prev - 1)} // Uklonjen manualni scrollTo, resava useEffect
-                className="p-4 bg-black rounded-xl disabled:opacity-30 text-white"
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(prev => prev - 1)} // Uklonjen manualni scrollTo, resava useEffect
+              className="p-4 bg-black rounded-xl disabled:opacity-30 text-white"
             >
-                <FaChevronLeft />
+              <FaChevronLeft />
             </button>
             {[...Array(totalPages)].map((_, i) => (
               <button key={i} onClick={() => setCurrentPage(i + 1)} className={`w-12 h-12 rounded-xl font-bold ${currentPage === i + 1 ? 'bg-yellow-400 text-black' : 'bg-black text-white'}`}>
                 {i + 1}
               </button>
             ))}
-            <button 
-                disabled={currentPage === totalPages} 
-                onClick={() => setCurrentPage(prev => prev + 1)} 
-                className="p-4 bg-black rounded-xl disabled:opacity-30 text-white"
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="p-4 bg-black rounded-xl disabled:opacity-30 text-white"
             >
-                <FaChevronRight />
+              <FaChevronRight />
             </button>
           </div>
         )}

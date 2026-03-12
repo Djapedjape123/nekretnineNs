@@ -242,14 +242,20 @@ export default function IzdavanjePage() {
                       <div className="flex items-center gap-1"><FaBath className="text-yellow-400" /> {item.brojkupatila || 0}</div>
                       <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int || item.size} m²</div>
                     </div>
-                    <div className="grid grid-cols-5 gap-2 mt-6">
+                    <div className="grid grid-cols-12 gap-2 mt-6">
+                      {/* Dugme za detalje - zauzima 8 od 12 delova (oko 65%) */}
                       <button
                         onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? makeStableId(item))}`, { state: { item } })}
-                        className="col-span-4 bg-transparent border border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition"
+                        className="col-span-8 bg-transparent border border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition text-sm md:text-base"
                       >
                         {t('details')}
                       </button>
-                      <a href={`tel:${formatTel(item.contactphone)}`} className="col-span-2 md:col-span-1 py-3 px-2 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">
+
+                      {/* Dugme za kontakt - zauzima preostala 4 dela (oko 35%) */}
+                      <a
+                        href={`tel:${formatTel(item.contactphone)}`}
+                        className="col-span-4 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold py-3 px-1 text-[12px] sm:text-sm md:text-base truncate"
+                      >
                         {t('contactTitle')}
                       </a>
                     </div>
