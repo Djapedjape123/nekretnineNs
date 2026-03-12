@@ -76,7 +76,7 @@ function TopPonudePage() {
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
           {items.map(item => (
-            <div key={item.id} className="min-w-full px-4 flex justify-center">
+            <div key={item.id}  onClick={() => viewDetails(item)} className="min-w-full px-4 flex justify-center">
               <div className="bg-black/80 border-2 border-yellow-500 rounded-2xl max-w-xl w-full overflow-hidden shadow-xl">
 
                 <img
