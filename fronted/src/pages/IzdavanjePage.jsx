@@ -123,32 +123,32 @@ export default function IzdavanjePage() {
 
   const filteredListings = typeFilter
     ? listings.filter(l => {
-        const dbValue = normalizeText(l.vrstanekretnine || '')
-        const dbTitle = normalizeText(l.naslov || '')
-        const filterTarget = normalizeText(typeFilter)
+      const dbValue = normalizeText(l.vrstanekretnine || '')
+      const dbTitle = normalizeText(l.naslov || '')
+      const filterTarget = normalizeText(typeFilter)
 
-        if (dbValue.includes(filterTarget)) return true
+      if (dbValue.includes(filterTarget)) return true
 
-        if (filterTarget.includes('kuca')) {
-          const kucaSinonimi = ['kuca', 'vikendica', 'objekat', 'vila', 'spratkuce']
-          const isKuca = kucaSinonimi.some(s => dbValue.includes(s) || dbTitle.includes(s))
-          if (isKuca) return true
-        }
+      if (filterTarget.includes('kuca')) {
+        const kucaSinonimi = ['kuca', 'vikendica', 'objekat', 'vila', 'spratkuce']
+        const isKuca = kucaSinonimi.some(s => dbValue.includes(s) || dbTitle.includes(s))
+        if (isKuca) return true
+      }
 
-        if (filterTarget.includes('poslovni')) {
-          const poslovniSinonimi = ['poslovni', 'lokal', 'magacin', 'hala', 'kancelarija', 'radionica', 'stovariste']
-          const isPoslovni = poslovniSinonimi.some(s => dbValue.includes(s) || dbTitle.includes(s))
-          if (isPoslovni) return true
-        }
+      if (filterTarget.includes('poslovni')) {
+        const poslovniSinonimi = ['poslovni', 'lokal', 'magacin', 'hala', 'kancelarija', 'radionica', 'stovariste']
+        const isPoslovni = poslovniSinonimi.some(s => dbValue.includes(s) || dbTitle.includes(s))
+        if (isPoslovni) return true
+      }
 
-        if (filterTarget.includes('stan')) {
-          const stanSinonimi = ['stan', 'garsonjera', 'apartman']
-          const isStan = stanSinonimi.some(s => dbValue.includes(s) || dbTitle.includes(s))
-          if (isStan) return true
-        }
+      if (filterTarget.includes('stan')) {
+        const stanSinonimi = ['stan', 'garsonjera', 'apartman']
+        const isStan = stanSinonimi.some(s => dbValue.includes(s) || dbTitle.includes(s))
+        if (isStan) return true
+      }
 
-        return false
-      })
+      return false
+    })
     : listings
 
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage)
@@ -238,8 +238,8 @@ export default function IzdavanjePage() {
                       <MdLocationOn className="text-yellow-400" /> {item.mesto || item.location}
                     </div>
                     <div className="flex gap-4 mt-4 border-t border-white/5 pt-4">
-                      <div className="flex items-center gap-1"><FaBed className="text-yellow-400"/> {item.brojsoba || 0}</div>
-                      <div className="flex items-center gap-1"><FaBath className="text-yellow-400"/> {item.brojkupatila || 0}</div>
+                      <div className="flex items-center gap-1"><FaBed className="text-yellow-400" /> {item.brojsoba || 0}</div>
+                      <div className="flex items-center gap-1"><FaBath className="text-yellow-400" /> {item.brojkupatila || 0}</div>
                       <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int || item.size} m²</div>
                     </div>
                     <div className="grid grid-cols-5 gap-2 mt-6">
@@ -249,10 +249,7 @@ export default function IzdavanjePage() {
                       >
                         {t('details')}
                       </button>
-                      <a
-                        href={`tel:${formatTel(item.contactphone)}`}
-                        className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold"
-                      >
+                      <a href={`tel:${formatTel(item.contactphone)}`} className="col-span-2 md:col-span-1 py-3 px-2 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">
                         {t('contactTitle')}
                       </a>
                     </div>
@@ -272,7 +269,7 @@ export default function IzdavanjePage() {
                 window.scrollTo({ top: 0, behavior: 'smooth' })
               }}
               className="p-4 bg-gray-900 rounded-xl disabled:opacity-30 text-white"
-            ><FaChevronLeft/></button>
+            ><FaChevronLeft /></button>
 
             {[...Array(totalPages)].map((_, i) => (
               <button
@@ -294,7 +291,7 @@ export default function IzdavanjePage() {
                 window.scrollTo({ top: 0, behavior: 'smooth' })
               }}
               className="p-4 bg-black rounded-xl disabled:opacity-30 text-white"
-            ><FaChevronRight/></button>
+            ><FaChevronRight /></button>
           </div>
         )}
       </div>
