@@ -252,7 +252,7 @@ export default function ProdajaPage() {
                       <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-transparent border border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
                       
                       {/* 9. DODATO: Siguran link za telefon */}
-                      <a href={`tel:${formatTel(item.contactphone)}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">
+                      <a href={`tel:${formatTel(item.contactphone)}`} className="col-span-2 md:col-span-1 py-3 px-2 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">
                          {t('contactTitle')}
                       </a>
                     </div>
