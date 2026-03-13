@@ -289,8 +289,8 @@ export default function SinglePage() {
 
   const infoTable = [
     { label: t('tipPonude', 'Tip ponude'), val: meta.offerType },
-    { label: t('cena', 'Cena'), val: formatPrice(property.cena), isPrice: true },
-    { label: t('lokacija', 'Lokacija'), val: property.location },
+    { label: t('cene', 'Cena'), val: formatPrice(property.cena), isPrice: true },
+    { label: t('location', 'Lokacija'), val: property.location },
     { label: t('tipNekretnine', 'Tip nekretnine'), val: meta.propertyType },
     { label: t('podtip', 'Podtip'), val: meta.subtype },
     { label: t('povrsina', 'Površina'), val: meta.area ? `${meta.area} m²` : '' },

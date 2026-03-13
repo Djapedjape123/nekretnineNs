@@ -10,6 +10,8 @@ export const translations = {
     kuce: 'Kuće',
     zemljiste: 'Zemljišta',
     poslovniProstor: 'Poslovni prostori',
+    gradnja: 'Gradnja',
+    stanje:'Stanje',
 
     tradicija: 'Tradicija',
     poverenje: 'Poverenje',
@@ -43,6 +45,7 @@ export const translations = {
     godinaIskustva:'Godina Iskustva',
     inividualanPristup:'Individualan pristup',
     etickiStandardi:'Etički standardi',
+    namestenost: 'Namestenost',
 
     //ponude nudimo 2 page
     premiumUsluga: 'Premium Usluga',
@@ -201,9 +204,12 @@ export const translations = {
     garaza: 'Garaža',
     sobe: 'Sobe',
 
+    ambijent: 'Ambijent',
+
     minPrice: 'Min cena (€)',
     maxPrice: 'Max cena (€)',
     sveCene: 'Sve cene',
+    azurirano: 'Ažurirano',
 
     search: 'Pretraži',
     loading: 'Učitavanje...',
@@ -224,7 +230,7 @@ export const translations = {
      onama: 'O nama',
      tekst1:' Naša agencija se bavi posredovanjem u kupoprodaji i izdavanju nekretnina više od deset godina,Posvećeni smo profesionalnom pristupu, transparentnosti i pružanju najbolje vrednosti našim klijentima.',
      tekst2:'Kombinujemo iskustvo sa savremenim digitalnim alatima kako bismo osigurali da svaki proces bude brz, jednostavan i siguran.Vaša nekretnina je u sigurnim rukama.',
-            
+      objavljeno: 'Objavljeno',      
 
 
 
@@ -308,6 +314,8 @@ export const translations = {
     ugovor2: 'Решение министерства',
     ugovor3: 'Общие условия бизнеса',
     povrsina: 'Площадь',
+    namestenost: 'Меблировка',
+    objavljeno: 'Опубликовано',
 
     //navbar
     vikendice: 'Загородные дома',
@@ -339,7 +347,7 @@ export const translations = {
     inividualanPristup:'Индивидуальный подход',
     etickiStandardi:'Этические стандарты',
 
-
+    gradnja: 'Строительство',
 
     //single page
     dodatno: 'Дополнительно',
@@ -452,6 +460,7 @@ export const translations = {
     emailPlaceholder: 'ваш@email.com',
     phoneLabel: 'Телефон (опционально)',
     phonePlaceholder: 'Номер телефона',
+    stanje: 'Состояние',
 
     officeLabel: 'Офис',
     officeAddress: 'Ćирпанова 37, 21000, Нови Сад (Южная Бачка)',
@@ -491,6 +500,7 @@ export const translations = {
 
     type: 'Тип',
     propertyType: 'Тип недвижимости',
+    azurirano: 'Обновлено',
 
     sale: 'Продажа',
     rentOption: 'Аренда',
@@ -512,6 +522,7 @@ export const translations = {
     loading: 'Загрузка...',
     infoLinks: 'Полезная информация',
     topPonude: 'Лучшие предложения',
+    ambijent: 'Окружение',
     
       //heading: 'Услуги, которые мы предлагаем',
       //longTermTitle: 'Долгосрочная аренда',
@@ -599,6 +610,8 @@ export const translations = {
 
     tradicija: 'Tradition',
     poverenje: 'Trust',
+    gradnja: 'Construction',
+    ambijent: 'Ambience',
 
     //ponude nudimo 2 page
     premiumUsluga: 'Premium Service',
@@ -661,6 +674,8 @@ export const translations = {
     pretrazi: 'Search',
     ponistiFilter: 'Reset filter',
     pretragaId: 'Search by property ID',
+    stanje: 'Condition',
+    namestenost: 'Furnished',
   
     //navbar
     vikendice: 'Cottages',
@@ -750,6 +765,8 @@ export const translations = {
     errMessage: 'Enter a message',
 
     mailSubjectPrefix: 'Website message —',
+    objavljeno: 'Published',
+    azurirano: 'Updated',
 
     sigurnost: 'Security',
     pravnaZastitia: 'Legal protection',
