@@ -206,7 +206,7 @@ function NavBar() {
                             <div className="flex justify-center gap-6 items-center bg-white/5 py-4 rounded-2xl border border-white/5">
                                 <button onClick={() => changeLang('sr')} className="text-2xl hover:scale-125 transition-transform">🇷🇸</button>
                                 <button onClick={() => changeLang('ru')} className="text-2xl hover:scale-125 transition-transform">🇷🇺</button>
-                                <button onClick={() => changeLang('en')} className="text-2xl hover:scale-125 transition-transform">🇺🇸</button>
+                                <button onClick={() => changeLang('en')} className="text-2xl hover:scale-125 transition-transform">🇬🇧</button>
                             </div>
                             <a href="tel:+38163238564" className="w-full bg-gradient-to-r from-yellow-600 to-yellow-400 text-black py-4 rounded-2xl text-center font-black uppercase tracking-widest shadow-lg shadow-yellow-500/20 active:scale-95 transition-all">
                                 {t('cta')}

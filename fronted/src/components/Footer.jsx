@@ -181,7 +181,7 @@ export default function Footer() {
 
               <div className="flex items-center gap-3">
                 <a
-                  href="https://www.facebook.com/profile.php?id=100052694276212"
+                  href="https://www.facebook.com/share/1FEtnS6jQE/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-11 h-11 flex items-center justify-center rounded-full border border-yellow-600/30 text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
