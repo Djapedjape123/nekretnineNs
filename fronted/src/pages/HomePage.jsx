@@ -1,4 +1,4 @@
-import React, { useState,Suspense, lazy } from 'react'
+import React, { useState, Suspense, lazy } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async' // <--- NOVI IMPORT
 import backgroundImage from '../assets/probaB222.webp'
@@ -53,14 +53,14 @@ function HomePage() {
           name="description"
           content="Pronađite idealan stan, kuću ili poslovni prostor u Novom Sadu. Najbolja ponuda nekretnina za prodaju i izdavanje. Sigurna kupovina uz Serbes Nekretnine."
         />
-        <meta name="keywords" content="nekretnine novi sad, prodaja stanova, izdavanje stanova, stanovi novi sad, kuce novi sad, agencija za nekretnine" />
+        <meta name="robots" content="index, follow" />
 
         {/* Open Graph / Facebook / Viber */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Serbes Nekretnine | Vaš partner za nekretnine" />
-        <meta property="og:description" content="Velika ponuda stanova i kuća u Novom Sadu. Pogledajte našu ponudu." />
-        <meta property="og:image" content="https://serbesnekretnine.rs/serbes.jpg" /> {/* ZAMENI SA PRAVIM URL-OM KAD DEPLOJUJES */}
-        <meta property="og:url" content="https://serbesnekretnine.rs/" />
+        <meta property="og:title" content="Serbes Nekretnine | Prodaja i Izdavanje" />
+        <meta property="og:description" content="Pronađite idealan stan, kuću ili poslovni prostor u Novom Sadu. Sigurna kupovina i izdavanje." />
+        <meta property="og:image" content="https://serbesnekretnine.com/serbes.jpg" /> {/* Proveri da li se slika stvarno zove ovako i stoji u public folderu! */}
+        <meta property="og:url" content="https://serbesnekretnine.com/" />
 
         {/* Strukturirani podaci (Schema.org) za Google */}
         <script type="application/ld+json">
@@ -68,8 +68,9 @@ function HomePage() {
             "@context": "https://schema.org",
             "@type": "RealEstateAgent",
             "name": "Serbes Nekretnine",
-            "image": "https://serbesnekretnine.rs/serbes.jpg",
+            "image": "https://serbesnekretnine.com/serbes.jpg",
             "description": "Agencija za posredovanje u prometu nekretnina u Novom Sadu.",
+            "url": "https://serbesnekretnine.com/",
             "address": {
               "@type": "PostalAddress",
               "addressLocality": "Novi Sad",
@@ -377,7 +378,7 @@ function HomePage() {
         <div className="relative z-10">
           <PonudeNudimo2 />
         </div>
-        
+
       </Suspense>
     </div>
   )

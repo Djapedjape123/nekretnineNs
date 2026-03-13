@@ -6,6 +6,8 @@ import { FiHeart } from 'react-icons/fi'
 import { t } from '../i1n8'
 import { API_BASE } from '../config'
 
+import { Helmet } from 'react-helmet-async'
+
 export default function ProdajaPage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -200,10 +202,28 @@ export default function ProdajaPage() {
     })
   }
 
+  const pageTitle = typeFilter 
+    ? `Prodaja: ${typeFilter} Novi Sad | Serbes Nekretnine` 
+    : "Prodaja Nekretnina Novi Sad | Serbes Nekretnine";
+
+  const pageDescription = typeFilter
+    ? `Pogledajte našu ponudu za prodaju: ${typeFilter.toLowerCase()} u Novom Sadu. Sigurna i brza kupovina uz Serbes Nekretnine.`
+    : "Velika ponuda nekretnina za prodaju u Novom Sadu. Stanovi, kuće, poslovni prostori i parcele. Pronađite svoju idealnu nekretninu.";
+
   if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-bold text-2xl animate-pulse">Učitavanje...</div>
 
   return (
     <div className="min-h-screen bg-white text-white py-24 px-6">
+
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="robots" content="index, follow" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content="https://serbesnekretnine.com/prodaja" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="max-w-7xl mx-auto" ref={topRef}> {/* DODAT REF OVDE */}
 
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
