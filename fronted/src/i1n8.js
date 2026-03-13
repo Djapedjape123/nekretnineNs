@@ -210,6 +210,7 @@ export const translations = {
     maxPrice: 'Max cena (€)',
     sveCene: 'Sve cene',
     azurirano: 'Ažurirano',
+    kupatila: 'Kupatila',
 
     search: 'Pretraži',
     loading: 'Učitavanje...',
@@ -323,6 +324,7 @@ export const translations = {
     magacin: 'Склад',
     poslovnaZG: 'Деловое здание',
     njiva: 'Поле',
+    kupatila: 'Ванные комнаты',
 
     sigurnost: 'Безопасность',
     pravnaZastitia: 'Правовая защита',
@@ -601,7 +603,7 @@ export const translations = {
     ugovor2: 'Ministry decision',
     ugovor3: 'General terms of business',
     detaljnaPPretraga:'Detailed property search',
-
+    kupatila: 'Bathrooms',
     heroTitle: 'Find your perfect property',
     heroSubtitle: 'Sales and rentals of properties in Serbia',
     povrsina: 'Area',
