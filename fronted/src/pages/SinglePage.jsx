@@ -6,7 +6,7 @@ import { t } from '../i1n8'
 import { IoMdResize } from "react-icons/io";
 import { API_BASE } from '../config'
 import noImage from '../assets/dedazi2.jpg'
-import { Helmet } from 'react-helmet-async' // <--- 1. DODAT IMPORT
+import { Helmet } from 'react-helmet-async' 
 
 // --- POMOĆNE FUNKCIJE ---
 const formatPrice = (val) => {
@@ -278,7 +278,6 @@ export default function SinglePage() {
     badges.push({ key: 'size', Icon: IoMdResize, value: `${property.size} m²`, label: t('size', 'kvadratura') })
   }
 
-  // TAILWIND FIX: Mapiranje umesto dinamičkog stringa
   const gridClassMap = {
     1: 'grid-cols-1',
     2: 'grid-cols-2',
@@ -326,6 +325,27 @@ export default function SinglePage() {
         <title>{seoTitle}</title>
         <meta name="description" content={seoDescription} />
         
+        {/* REŠAVA 4.630 GREŠAKA U GOOGLE KONZOLI (Canonical URL) */}
+        <link rel="canonical" href={currentUrl} />
+
+        {/* REŠAVA BOGATI PRIKAZ NA GOOGLE-u (Schema.org / Cena) */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": seoTitle,
+            "image": seoImage,
+            "description": seoDescription,
+            "offers": {
+              "@type": "Offer",
+              "url": currentUrl,
+              "priceCurrency": "EUR",
+              "price": property.cena ? String(property.cena).replace(/[^0-9]/g, '') : "0",
+              "availability": "https://schema.org/InStock"
+            }
+          })}
+        </script>
+
         {/* Open Graph / Facebook / Viber / WhatsApp */}
         <meta property="og:type" content="article" />
         <meta property="og:title" content={seoTitle} />

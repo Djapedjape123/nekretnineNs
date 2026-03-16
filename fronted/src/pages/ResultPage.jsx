@@ -5,6 +5,7 @@ import { FaBed, FaBath, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { FiHeart } from 'react-icons/fi'
 import { t } from '../i1n8'
 import { API_BASE } from '../config'
+import { Helmet } from 'react-helmet-async' // <--- 1. DODATO: Import za SEO
 
 export default function ResultsPage() {
   const navigate = useNavigate()
@@ -226,6 +227,14 @@ export default function ResultsPage() {
 
   return (
     <div className="min-h-screen bg-white text-white py-24 px-6">
+      
+      {/* --- 2. DODATO: SEO Helmet za blokiranje duplikata pretrage (Rešava 4.108 grešaka) --- */}
+      <Helmet>
+        <title>{tt('searchResults', 'Rezultati pretrage')} | Serbes Nekretnine</title>
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
+      {/* -------------------------------------------------------------------------------- */}
+
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
           <div>
