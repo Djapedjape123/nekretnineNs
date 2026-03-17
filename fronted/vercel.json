@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/nekretnine/prodaja",
+      "destination": "/prodaja",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
