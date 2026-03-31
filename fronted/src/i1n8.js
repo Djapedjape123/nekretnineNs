@@ -229,7 +229,7 @@ export const translations = {
 
      //onama
      onama: 'O nama',
-     tekst1:' Naša agencija se bavi posredovanjem u kupoprodaji i izdavanju nekretnina više od deset godina,Posvećeni smo profesionalnom pristupu, transparentnosti i pružanju najbolje vrednosti našim klijentima.',
+     tekst1:' Naša agencija se bavi posredovanjem u kupoprodaji i izdavanju nekretnina više od dvadeset godina. Posvećeni smo profesionalnom pristupu, transparentnosti i pružanju najbolje vrednosti našim klijentima.',
      tekst2:'Kombinujemo iskustvo sa savremenim digitalnim alatima kako bismo osigurali da svaki proces bude brz, jednostavan i siguran.Vaša nekretnina je u sigurnim rukama.',
       objavljeno: 'Objavljeno',      
 
@@ -271,7 +271,7 @@ export const translations = {
     
       heading: 'Usluge koje nudimo',
       longTermTitle: 'Prodaja nekretnina',
-      p1: 'Agencija SERBES DOO NOVI SAD pruža kompletnu profesionalnu uslugu prodaje nekretnina , uz maksimalnu sigurnost,  diskreciju i efikasnost. Na osnovu dugogodišnjeg iskustva i detaljnog poznavanja tržišta u Novom Sadu, obezbeđujemo da svaka nekretnina bude predstavljena na način koji ističe njenu punu vredsnost .',
+      p1: 'Agencija SERBES DOO NOVI SAD pruža kompletnu profesionalnu uslugu prodaje nekretnina , uz maksimalnu sigurnost,  diskreciju i efikasnost. Na osnovu dugogodišnjeg iskustva i detaljnog poznavanja tržišta u Novom Sadu, obezbeđujemo da svaka nekretnina bude predstavljena na način koji ističe njenu punu vrednost.',
       p2: 'Naš cilj je da prepoznamo želju i potrebu kupca i da pronađemo odgovarajuću nekretninu, da proces prodaje učinimo pouzdanim , transparentnim , sa što manje stresa, uz potpunu podršku u svakom koraku.',
       p3: '',
       //p4: 'Stručna procena realne tržišne vrednosti nekretnine',
@@ -283,7 +283,7 @@ export const translations = {
 
       longTermTitle2: 'Dugoročno izdavanje',
       i1: 'Naša agencija pruža kompletnu uslugu dugoročnog izdavanja stanova, kuća i poslovnih prostora. ',
-      i2: 'Pruzimamo kompletnu organizaciju procesa, biramo ozniljne zakupce i vodimo računa o vašim interesima. Zakupodavcima obezbeđujemo pouzdane zakupce, pravnu sigurnost, a zakupcima nudimo adekvatne nekretnine u skladu sa njihovim potrebama.',
+      i2: 'Preuzimamo kompletnu organizaciju procesa, biramo ozbiljne zakupce i vodimo računa o vašim interesima. Zakupodavcima obezbeđujemo pouzdane zakupce, pravnu sigurnost, a zakupcima nudimo adekvatne nekretnine u skladu sa njihovim potrebama.',
       i3: '',
       imageAlt2: 'Stan' 
     
