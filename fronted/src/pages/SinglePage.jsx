@@ -6,7 +6,7 @@ import { t } from '../i1n8'
 import { IoMdResize } from "react-icons/io";
 import { API_BASE } from '../config'
 import noImage from '../assets/dedazi2.jpg'
-import { Helmet } from 'react-helmet-async' 
+import { Helmet } from 'react-helmet-async'
 
 // --- POMOĆNE FUNKCIJE ---
 const formatPrice = (val) => {
@@ -52,6 +52,10 @@ export default function SinglePage() {
   const [translatedText, setTranslatedText] = useState({ naslov: '', opis: '' })
   const [isTranslating, setIsTranslating] = useState(false)
 
+  // --- DODATO: State za Swipe (prevlačenje prstom) ---
+  const [touchStartX, setTouchStartX] = useState(null)
+  const [touchEndX, setTouchEndX] = useState(null)
+
   // --- NORMALIZACIJA PODATAKA ---
   const normalize = useCallback((raw, fallbackId) => {
     const base = raw || {}
@@ -67,13 +71,13 @@ export default function SinglePage() {
         imgs = [String(base.slike.url)]
       }
     } catch (e) { imgs = [] }
-    
+
     if (!imgs.length) imgs = [noImage]
 
     const collectVideo = (field) => {
-      const v = base[field]; if(!v) return []
-      if(Array.isArray(v)) return v.flat().map(x => (typeof x === 'object' ? x.url : x)).filter(Boolean)
-      if(typeof v === 'object') return [v.url].filter(Boolean)
+      const v = base[field]; if (!v) return []
+      if (Array.isArray(v)) return v.flat().map(x => (typeof x === 'object' ? x.url : x)).filter(Boolean)
+      if (typeof v === 'object') return [v.url].filter(Boolean)
       return [String(v)]
     }
     const allVideos = [...collectVideo('video_url'), ...collectVideo('videotour'), ...collectVideo('video')]
@@ -89,13 +93,13 @@ export default function SinglePage() {
     const toArray = (val, isAttributeObject = false) => {
       if (!val) return []
       if (isAttributeObject && val.attrib) {
-          const list = Array.isArray(val.attrib) ? val.attrib : [val.attrib];
-          return list.map(item => {
-              const name = item.name ? String(item.name).trim() : '';
-              const value = item.value ? String(item.value).trim() : '';
-              if (name && value) return `${name}: ${value}`;
-              return name || value;
-          }).filter(Boolean);
+        const list = Array.isArray(val.attrib) ? val.attrib : [val.attrib];
+        return list.map(item => {
+          const name = item.name ? String(item.name).trim() : '';
+          const value = item.value ? String(item.value).trim() : '';
+          if (name && value) return `${name}: ${value}`;
+          return name || value;
+        }).filter(Boolean);
       }
       if (Array.isArray(val)) return val.map(String)
       if (typeof val === 'object') return Object.values(val).map(String)
@@ -137,11 +141,11 @@ export default function SinglePage() {
     }
 
     const makeStableId = (item, fallbackId = '') => {
-        if (!item) return String(fallbackId || '')
-        if (item.id) return String(item.id)
-        if (item.code) return String(item.code)
-        const base = `${item.naslov ?? ''}|${item.mesto ?? ''}|${item.kvadratura_int ?? ''}`.trim()
-        return base ? base.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-]/g,'') : String(fallbackId || '')
+      if (!item) return String(fallbackId || '')
+      if (item.id) return String(item.id)
+      if (item.code) return String(item.code)
+      const base = `${item.naslov ?? ''}|${item.mesto ?? ''}|${item.kvadratura_int ?? ''}`.trim()
+      return base ? base.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\-]/g, '') : String(fallbackId || '')
     }
 
     const stableId = makeStableId(base, fallbackId)
@@ -165,7 +169,7 @@ export default function SinglePage() {
 
   // --- HELPER ZA YOUTUBE ---
   const getProtocol = () => (typeof window !== 'undefined' && window.location && window.location.protocol) ? window.location.protocol : 'https:'
-  
+
   const getYoutubeEmbedUrl = useCallback((rawUrl) => {
     if (!rawUrl) return ''
     let url = String(rawUrl).trim()
@@ -225,10 +229,11 @@ export default function SinglePage() {
     return () => ac.abort()
   }, [id, normalize])
 
-  // --- DODATO: GOOGLE TRANSLATE API LOGIKA ---
+  // --- GOOGLE TRANSLATE API LOGIKA ---
   useEffect(() => {
-    const lang = localStorage.getItem('lang') || 'sr';
-    
+    let lang = 'sr';
+    try { lang = localStorage.getItem('lang') || 'sr'; } catch (e) { }
+
     if (!property) return;
     if (lang === 'sr') {
       setTranslatedText({ naslov: property.naslov, opis: property.opis });
@@ -244,7 +249,7 @@ export default function SinglePage() {
         return data[0].map(item => item[0]).join('');
       } catch (err) {
         console.error("Greška pri prevodu:", err);
-        return text; 
+        return text;
       }
     };
 
@@ -266,11 +271,10 @@ export default function SinglePage() {
 
     translateDynamicData();
   }, [property]);
-  // --- KRAJ DODATOG DELA ---
 
   useEffect(() => {
     if (topRef.current) topRef.current.scrollIntoView({ behavior: 'auto' })
-    else window.scrollTo(0,0)
+    else window.scrollTo(0, 0)
   }, [location.key])
 
   // --- LIGHTBOX CONTROLS ---
@@ -281,12 +285,37 @@ export default function SinglePage() {
   const nextLightbox = (e) => { e?.stopPropagation(); setLightboxIndex(i => (i >= images.length - 1 ? 0 : i + 1)) }
   const prevLightbox = (e) => { e?.stopPropagation(); setLightboxIndex(i => (i <= 0 ? images.length - 1 : i - 1)) }
 
+  // --- DODATO: SWIPE (PREVLAČENJE) LOGIKA ZA MOBILNE ---
+  const minSwipeDistance = 50 // Minimalna dužina prevlačenja da bi se registrovao prelaz
+
+  const onTouchStart = (e) => {
+    setTouchEndX(null)
+    setTouchStartX(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return
+    const distance = touchStartX - touchEndX
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      nextLightbox() // Korisnik prešao s desna na levo -> sledeća slika
+    } else if (isRightSwipe) {
+      prevLightbox() // Korisnik prešao s leva na desno -> prethodna slika
+    }
+  }
+
   useEffect(() => {
     if (!lightboxOpen) return
     const onKey = (e) => {
-       if (e.key === 'Escape') closeLightbox()
-       if (e.key === 'ArrowRight') nextLightbox()
-       if (e.key === 'ArrowLeft') prevLightbox()
+      if (e.key === 'Escape') closeLightbox()
+      if (e.key === 'ArrowRight') nextLightbox()
+      if (e.key === 'ArrowLeft') prevLightbox()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -294,7 +323,7 @@ export default function SinglePage() {
 
 
   if (loading) return <div className="min-h-screen bg-black text-white flex items-center justify-center font-bold">Učitavanje...</div>
-  
+
   if (error || !property) return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">
       <div className="text-center">
@@ -310,7 +339,7 @@ export default function SinglePage() {
   const safeImages = (Array.isArray(images) ? images : [property.image]).map(i => i || noImage)
   const meta = property.meta || {}
   const rawSize = property.size ?? meta.area ?? ''
-  
+
   let showSize = false
   if (rawSize !== '' && rawSize !== null && rawSize !== undefined) {
     const num = Number(String(rawSize).replace(/[^\d.]/g, ''))
@@ -358,12 +387,11 @@ export default function SinglePage() {
   ].filter(i => i.val && i.val !== '0' && i.val !== '0.0')
 
   // --- 2. PRIPREMA SEO PROMENLJIVIH ---
-  // DODATO: Koristimo prevedeni naslov u SEO tagovima
   const seoTitle = `${translatedText.naslov || property.naslov} | ${formatPrice(property.cena)} | Serbes Nekretnine`
   const seoDescription = `${meta.offerType || 'Prodaja'} ${meta.propertyType || 'nekretnine'} - ${property.location}. ${meta.roomsCount ? meta.roomsCount + ' soba,' : ''} ${meta.area ? meta.area + 'm2.' : ''} Najbolja ponuda u Novom Sadu.`
-  const seoImage = property.image && property.image !== noImage 
-  ? property.image 
-  : `${window.location.origin}/serbes.jpg`;
+  const seoImage = property.image && property.image !== noImage
+    ? property.image
+    : `${window.location.origin}/serbes.jpg`;
   const currentUrl = window.location.href
 
   return (
@@ -372,7 +400,7 @@ export default function SinglePage() {
       <Helmet>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDescription} />
-        
+
         {/* REŠAVA 4.630 GREŠAKA U GOOGLE KONZOLI (Canonical URL) */}
         <link rel="canonical" href={currentUrl} />
 
@@ -400,7 +428,7 @@ export default function SinglePage() {
         <meta property="og:description" content={seoDescription} />
         <meta property="og:image" content={seoImage} />
         <meta property="og:url" content={currentUrl} />
-        
+
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoTitle} />
@@ -419,16 +447,15 @@ export default function SinglePage() {
         <div className="relative rounded-xl overflow-hidden border border-yellow-600/20 shadow-xl bg-gray-900">
           <img
             src={safeImages[currentImage] || noImage}
-            // DODATO: Preveden naslov u alt tago
             alt={translatedText.naslov || property.naslov || 'Slika nekretnine'}
             className="w-full h-[300px] sm:h-[420px] object-cover cursor-pointer"
             onClick={() => openLightbox(currentImage)}
             onError={(e) => { e.currentTarget.src = noImage }}
           />
           <button onClick={() => openLightbox(currentImage)} className="absolute top-4 right-4 z-20 bg-black/60 p-3 rounded-full text-yellow-400 hover:bg-black/70">
-              <FaExpand />
+            <FaExpand />
           </button>
-           {safeImages.length > 1 && (
+          {safeImages.length > 1 && (
             <>
               <button onClick={prevImage} className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 bg-black/60 p-2 sm:p-3 rounded-full text-yellow-400 hover:bg-black z-10">‹</button>
               <button onClick={nextImage} className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 bg-black/60 p-2 sm:p-3 rounded-full text-yellow-400 hover:bg-black z-10">›</button>
@@ -445,9 +472,8 @@ export default function SinglePage() {
         {/* Detalji */}
         <div className="mt-8 bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl p-4 sm:p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-            {/* DODATO: Preveden Naslov */}
             <h1 className="text-2xl sm:text-3xl font-extrabold text-yellow-400">
-               {isTranslating ? 'Prevođenje...' : (translatedText.naslov || property.naslov)}
+              {isTranslating ? 'Prevođenje...' : (translatedText.naslov || property.naslov)}
             </h1>
             <div className="text-xl sm:text-2xl font-bold text-white">{formatPrice(property.cena)}</div>
           </div>
@@ -456,7 +482,6 @@ export default function SinglePage() {
             <span className='font-bold'>{property.location}</span>
           </div>
 
-          {/* Glavni bedževi (SA FIXOM) */}
           <div className={`mt-6 grid ${badgeColsClass} gap-4 text-gray-300`}>
             {badges.map((b) => {
               const Icon = b.Icon
@@ -470,11 +495,10 @@ export default function SinglePage() {
             })}
           </div>
 
-          {/* DODATO: Preveden opis */}
           <p className="mt-6 text-gray-300 leading-relaxed whitespace-pre-line text-sm sm:text-base">
             {isTranslating ? 'Prevođenje u toku...' : (translatedText.opis || property.opis)}
           </p>
-          
+
           <div className="mt-10 space-y-10">
             <div>
               <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('info')}</h3>
@@ -501,7 +525,7 @@ export default function SinglePage() {
             )}
 
             {/* DODATNO */}
-             {meta.additional && meta.additional.length > 0 && (
+            {meta.additional && meta.additional.length > 0 && (
               <div>
                 <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('dodatno', 'Dodatne karakteristike')}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -557,9 +581,15 @@ export default function SinglePage() {
         )}
       </div>
 
-      {/* Lightbox */}
+      {/* Lightbox - SADA SA TOUCH PREVLAČENJEM */}
       {lightboxOpen && (
-        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center select-none" onClick={closeLightbox}>
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center select-none"
+          onClick={closeLightbox}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
           <button onClick={closeLightbox} className="absolute top-6 right-6 text-white text-4xl hover:text-yellow-400 transition-colors z-[110]">
             <FaTimes />
           </button>
@@ -571,7 +601,6 @@ export default function SinglePage() {
           <div className="relative max-w-[90%] max-h-[90%] flex flex-col items-center">
             <img
               src={safeImages[lightboxIndex] || noImage}
-              // DODATO: Preveden naslov u lightbox alt tago
               alt={translatedText.naslov || property.naslov || ''}
               className="max-w-full max-h-[85vh] object-contain shadow-2xl animate-in fade-in zoom-in duration-300"
               onClick={(e) => e.stopPropagation()}

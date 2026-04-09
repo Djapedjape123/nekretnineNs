@@ -12,6 +12,7 @@ export const translations = {
     poslovniProstor: 'Poslovni prostori',
     gradnja: 'Gradnja',
     stanje:'Stanje',
+    size:'Kvadratura',
 
     tradicija: 'Tradicija',
     poverenje: 'Poverenje',
@@ -318,6 +319,7 @@ export const translations = {
     povrsina: 'Площадь',
     namestenost: 'Меблировка',
     objavljeno: 'Опубликовано',
+    size: 'Квадратура',
 
     //navbar
     vikendice: 'Загородные дома',
@@ -798,6 +800,7 @@ export const translations = {
 
     sale: 'Sale',
     rentOption: 'Rent',
+    size:'quadrature',
 
     apartment: 'Apartment',
     house: 'House',

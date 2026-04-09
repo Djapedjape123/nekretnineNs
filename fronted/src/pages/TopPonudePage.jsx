@@ -14,12 +14,59 @@ function TopPonudePage() {
   const [touchEnd, setTouchEnd] = useState(null)
   const minSwipeDistance = 50 
 
+  // --- DODATO: State za prevod ---
+  const [translatedTitles, setTranslatedTitles] = useState({})
+  const [isTranslating, setIsTranslating] = useState(false)
+
   useEffect(() => {
     fetch(`${API_BASE}/oglasi/topponude?count=5`)
       .then(res => res.json())
       .then(data => setItems(data || []))
       .catch(() => setItems([]))
   }, [])
+
+  // --- DODATO: GOOGLE TRANSLATE API LOGIKA ZA TOP PONUDE ---
+  useEffect(() => {
+    const lang = localStorage.getItem('lang') || 'sr';
+    
+    if (lang === 'sr' || items.length === 0) {
+      setTranslatedTitles({});
+      return;
+    }
+
+    const translateItems = async () => {
+      setIsTranslating(true);
+      try {
+        const promises = items.map(async (item, i) => {
+          const stableId = String(item.id ?? item.code ?? i);
+          const textToTranslate = item.title;
+          if (!textToTranslate) return { id: stableId, title: '' };
+          
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=sr&tl=${lang}&dt=t&q=${encodeURIComponent(textToTranslate)}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          const translatedText = data[0].map(x => x[0]).join('');
+          
+          return { id: stableId, title: translatedText };
+        });
+
+        const results = await Promise.all(promises);
+        const newTitles = {};
+        results.forEach(r => {
+          newTitles[r.id] = r.title;
+        });
+
+        setTranslatedTitles(newTitles);
+      } catch (err) {
+        console.error("Greška pri prevodu Top Ponuda:", err);
+      } finally {
+        setIsTranslating(false);
+      }
+    };
+
+    translateItems();
+  }, [items]);
+  // --- KRAJ DODATOG DELA ---
 
   const viewDetails = async (item) => {
     const rawId = item.id ?? item.code ?? ''
@@ -96,38 +143,44 @@ function TopPonudePage() {
           className="flex transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
-          {items.map(item => (
-            <div key={item.id} className="min-w-full px-2 md:px-4 flex justify-center cursor-grab active:cursor-grabbing">
-              <div 
-                className="bg-black/80 border border-yellow-500/50 rounded-2xl max-w-xl w-full overflow-hidden shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:shadow-[0_0_25px_rgba(234,179,8,0.4)] transition-shadow duration-500"
-                onClick={() => viewDetails(item)}
-              >
-                <img
-                  src={item.image || '/placeholder.jpg'}
-                  alt={item.title}
-                  className="h-56 md:h-72 w-full object-cover pointer-events-none" 
-                />
+          {items.map((item, i) => {
+            const stableId = String(item.id ?? item.code ?? i);
+            return (
+              <div key={item.id} className="min-w-full px-2 md:px-4 flex justify-center cursor-grab active:cursor-grabbing">
+                <div 
+                  className="bg-black/80 border border-yellow-500/50 rounded-2xl max-w-xl w-full overflow-hidden shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:shadow-[0_0_25px_rgba(234,179,8,0.4)] transition-shadow duration-500"
+                  onClick={() => viewDetails(item)}
+                >
+                  <img
+                    src={item.image || '/placeholder.jpg'}
+                    alt={translatedTitles[stableId] || item.title}
+                    className="h-56 md:h-72 w-full object-cover pointer-events-none" 
+                  />
 
-                <div className="p-5 md:p-6 text-center text-white relative bg-gradient-to-t from-black/90 to-transparent">
-                  <h3 className="text-xl md:text-2xl font-bold line-clamp-1">{item.title}</h3>
-                  <p className="text-gray-400 text-sm md:text-base mt-1 line-clamp-1">{item.location}</p>
-                  <p className="text-yellow-400 text-xl md:text-2xl font-bold mt-2 md:mt-3">
-                    {item.price}
-                  </p>
+                  <div className="p-5 md:p-6 text-center text-white relative bg-gradient-to-t from-black/90 to-transparent">
+                    {/* DODATO: Preveden naslov */}
+                    <h3 className="text-xl md:text-2xl font-bold line-clamp-1">
+                      {isTranslating && !translatedTitles[stableId] ? '...' : (translatedTitles[stableId] || item.title)}
+                    </h3>
+                    <p className="text-gray-400 text-sm md:text-base mt-1 line-clamp-1">{item.location}</p>
+                    <p className="text-yellow-400 text-xl md:text-2xl font-bold mt-2 md:mt-3">
+                      {item.price}
+                    </p>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); 
-                      viewDetails(item);
-                    }}
-                    className="mt-4 md:mt-5 px-6 py-2.5 bg-yellow-500 text-black text-sm md:text-base font-bold rounded-lg hover:bg-yellow-400 hover:scale-105 transition-all duration-300 shadow-md"
-                  >
-                    {t('details')}
-                  </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        viewDetails(item);
+                      }}
+                      className="mt-4 md:mt-5 px-6 py-2.5 bg-yellow-500 text-black text-sm md:text-base font-bold rounded-lg hover:bg-yellow-400 hover:scale-105 transition-all duration-300 shadow-md"
+                    >
+                      {t('details')}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* MODERNE STRELICE - Vidljive stalno, poluprovidno staklo */}
