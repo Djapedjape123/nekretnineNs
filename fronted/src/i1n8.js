@@ -226,6 +226,7 @@ export const translations = {
      spratnost: 'Spratnost',
      Id:'Id kod nekretnine',
      grejanje:' Grejanje',
+     info: 'Informacije o nekretnini',
 
      //onama
      onama: 'O nama',
@@ -331,6 +332,7 @@ export const translations = {
 
     tradicija: 'Традиция',
     poverenje: 'Доверие',
+    info:' Информация о недвижимости',
 
 
     //ponude nudimo page
@@ -817,6 +819,7 @@ export const translations = {
     search: 'Search',
     loading: 'Loading...',
     infoLinks: 'Useful Information',
+    info:' Property information',
 
     // DODATO: prevodi za UslugePage
     services: {

@@ -11,16 +11,19 @@ import { Helmet } from 'react-helmet-async'
 export default function ProdajaPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const topRef = useRef(null) // 1. DODATO: Ref za skrolovanje
+  const topRef = useRef(null) 
 
   const typeFilter = location.state?.type || ""
 
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('') // 2. DODATO: State za greške
+  const [error, setError] = useState('') 
   const [currentPage, setCurrentPage] = useState(1)
 
-  // 3. POPRAVLJENO: Zaštita od pucanja ako je localStorage pokvaren
+  // --- DODATO: State za prevode na karticama ---
+  const [translatedTitles, setTranslatedTitles] = useState({})
+  const [isTranslating, setIsTranslating] = useState(false)
+
   const [favorites, setFavorites] = useState(() => {
     try {
       const raw = localStorage.getItem('favorites')
@@ -33,7 +36,6 @@ export default function ProdajaPage() {
 
   const itemsPerPage = 9;
 
-  // Stabilan ID generator
   const makeStableId = (item) => {
     if (!item) return ''
     if (item.id) return String(item.id)
@@ -42,18 +44,16 @@ export default function ProdajaPage() {
     return base.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\-]/g, '') || ''
   }
 
-  // 4. DODATO: Helper za čišćenje broja telefona
   const formatTel = (raw) => {
     if (!raw) return ''
     return String(raw).replace(/[^\d+]/g, '')
   }
 
-  // Persist favorites
   useEffect(() => {
     try {
       localStorage.setItem('favorites', JSON.stringify(favorites))
     } catch (e) {
-      console.error('Neuspešno čuvanje favorites u localStorage', e)
+      console.error('Neuspešno čuvanje favorites', e)
     }
   }, [favorites])
 
@@ -63,7 +63,7 @@ export default function ProdajaPage() {
     const fetchData = async () => {
       try {
         setLoading(true)
-        setError('') // Resetuj grešku pre novog poziva
+        setError('') 
 
         const res = await fetch(`${API_BASE}/oglasi/prodaja`, { signal: ac.signal })
 
@@ -75,15 +75,10 @@ export default function ProdajaPage() {
         const arr = Array.isArray(data) ? data : (Array.isArray(data.results) ? data.results : [])
         const normalized = arr.map(d => ({ ...d, id: makeStableId(d) }))
 
-        if (import.meta.env?.DEV) {
-          console.log('Učitani oglasi (Prodaja):', normalized.length)
-        }
-
         setListings(normalized)
       } catch (err) {
         if (err.name === 'AbortError') return
         console.error('Fetch error:', err)
-        // 5. DODATO: Prikaz greške korisniku umesto samo konzole
         setError('Došlo je do problema sa učitavanjem oglasa. Pokušajte ponovo.')
         setListings([])
       } finally {
@@ -96,7 +91,6 @@ export default function ProdajaPage() {
   }, [API_BASE])
 
 
-  // 6. POPRAVLJENO: Bolje skrolovanje na promenu filtera
   useEffect(() => {
     setCurrentPage(1)
     if (topRef.current) {
@@ -106,7 +100,6 @@ export default function ProdajaPage() {
     }
   }, [typeFilter])
 
-  // Skrol na promenu stranice (paginacija)
   useEffect(() => {
     if (topRef.current) {
       topRef.current.scrollIntoView({ behavior: 'auto', block: 'start' })
@@ -119,7 +112,7 @@ export default function ProdajaPage() {
   const normalizeText = (text) => {
     if (!text) return "";
     return text.toString().toLowerCase()
-      .trim() // Dodato trim
+      .trim() 
       .replace(/ć|č/g, 'c')
       .replace(/š/g, 's')
       .replace(/đ/g, 'dj')
@@ -127,17 +120,14 @@ export default function ProdajaPage() {
       .replace(/[^a-z0-9]/g, '');
   }
 
-  // 7. POPRAVLJENO: Robusnija logika filtriranja (ista kao Izdavanje)
   const filteredListings = typeFilter
     ? listings.filter(l => {
       const dbType = normalizeText(l.vrstanekretnine || '');
       const dbTitle = normalizeText(l.naslov || '');
       const filterType = normalizeText(typeFilter);
 
-      // Osnovna provera
       if (dbType.includes(filterType)) return true;
 
-      // Proširena provera sinonima
       if (filterType.includes('poslovni')) {
         const sinonimi = ['lokal', 'magacin', 'hala', 'kancelarija', 'radionica', 'poslovni']
         return sinonimi.some(s => dbType.includes(s) || dbTitle.includes(s))
@@ -159,6 +149,48 @@ export default function ProdajaPage() {
 
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage)
   const currentItems = filteredListings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+  // --- DODATO: Logika za prevod tenutno prikazanih naslova ---
+  useEffect(() => {
+    const lang = localStorage.getItem('lang') || 'sr';
+    
+    if (lang === 'sr' || currentItems.length === 0) {
+      setTranslatedTitles({});
+      return;
+    }
+
+    const translateCurrentPage = async () => {
+      setIsTranslating(true);
+      try {
+        const promises = currentItems.map(async (item) => {
+          const stableId = String(item.id ?? item.code ?? makeStableId(item));
+          if (!item.naslov) return { id: stableId, title: '' };
+          
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=sr&tl=${lang}&dt=t&q=${encodeURIComponent(item.naslov)}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          const translatedText = data[0].map(x => x[0]).join('');
+          
+          return { id: stableId, title: translatedText };
+        });
+
+        const results = await Promise.all(promises);
+        const newTitles = {};
+        results.forEach(r => {
+          newTitles[r.id] = r.title;
+        });
+
+        setTranslatedTitles(newTitles);
+      } catch (err) {
+        console.error("Greška pri prevodu liste:", err);
+      } finally {
+        setIsTranslating(false);
+      }
+    };
+
+    translateCurrentPage();
+  }, [currentPage, typeFilter, listings]); // Trigeruje se samo kad se menjaju itemi na ekranu
+
 
   const tt = (key, fallback) => {
     const val = t(key)
@@ -198,7 +230,7 @@ export default function ProdajaPage() {
     setFavorites(prev => {
       const exists = prev.some(p => p.id === favObj.id)
       const updated = exists ? prev.filter(p => p.id !== favObj.id) : [...prev, favObj]
-      return updated // useEffect ce ovo sacuvati u localStorage
+      return updated 
     })
   }
 
@@ -224,15 +256,15 @@ export default function ProdajaPage() {
         <meta property="og:url" content="https://serbesnekretnine.com/prodaja" />
         <meta property="og:type" content="website" />
       </Helmet>
-      <div className="max-w-7xl mx-auto" ref={topRef}> {/* DODAT REF OVDE */}
+      <div className="max-w-7xl mx-auto" ref={topRef}> 
 
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <h1 className="text-4xl md:text-6xl font-black text-yellow-400 uppercase tracking-tighter">
-              {typeFilter ? `${typeFilter} - Prodaja` : tt('saleTitle', 'Prodaja')}
+              {/* DODATO: Prevod filtera ako postoji */}
+              {typeFilter ? `${t(typeFilter, typeFilter)} - ${t('sales', 'Prodaja')}` : tt('saleTitle', 'Prodaja')}
             </h1>
             <p className="text-gray-400 mt-2">{t('pronadjeno')} {filteredListings.length}  {t('nekretnina')}</p>
-            {/* 8. DODATO: Prikaz greške */}
             {error && <div className="mt-2 text-sm text-red-500 font-bold bg-red-100 p-2 rounded">{error}</div>}
           </div>
         </div>
@@ -259,7 +291,10 @@ export default function ProdajaPage() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-bold line-clamp-1">{item.naslov}</h3>
+                    {/* DODATO: Preveden naslov za karticu */}
+                    <h3 className="text-xl font-bold line-clamp-1">
+                      {isTranslating && !translatedTitles[stableId] ? '...' : (translatedTitles[stableId] || item.naslov)}
+                    </h3>
                     <div className="flex items-center gap-2 text-gray-400 mt-2 text-sm">
                       <MdLocationOn className="text-yellow-400" /> {item.mesto}, {item.naselje}
                     </div>
@@ -269,7 +304,6 @@ export default function ProdajaPage() {
                       <div className="ml-auto font-bold text-yellow-400">{item.kvadratura_int} m²</div>
                     </div>
                     <div className="grid grid-cols-12 gap-2 mt-6">
-                      {/* Dugme za detalje - zauzima 8 od 12 delova (oko 65%) */}
                       <button
                         onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? makeStableId(item))}`, { state: { item } })}
                         className="col-span-8 bg-transparent border border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition text-sm md:text-base"
@@ -277,7 +311,6 @@ export default function ProdajaPage() {
                         {t('details')}
                       </button>
 
-                      {/* Dugme za kontakt - zauzima preostala 4 dela (oko 35%) */}
                       <a
                         href={`tel:${formatTel(item.contactphone)}`}
                         className="col-span-4 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold py-3 px-1 text-[12px] sm:text-sm md:text-base truncate"
@@ -296,7 +329,7 @@ export default function ProdajaPage() {
           <div className="flex justify-center mt-12 gap-3">
             <button
               disabled={currentPage === 1}
-              onClick={() => setCurrentPage(prev => prev - 1)} // Uklonjen manualni scrollTo, resava useEffect
+              onClick={() => setCurrentPage(prev => prev - 1)} 
               className="p-4 bg-black rounded-xl disabled:opacity-30 text-white"
             >
               <FaChevronLeft />

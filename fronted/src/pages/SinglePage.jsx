@@ -48,6 +48,10 @@ export default function SinglePage() {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
 
+  // --- DODATO: State za prevod ---
+  const [translatedText, setTranslatedText] = useState({ naslov: '', opis: '' })
+  const [isTranslating, setIsTranslating] = useState(false)
+
   // --- NORMALIZACIJA PODATAKA ---
   const normalize = useCallback((raw, fallbackId) => {
     const base = raw || {}
@@ -221,6 +225,49 @@ export default function SinglePage() {
     return () => ac.abort()
   }, [id, normalize])
 
+  // --- DODATO: GOOGLE TRANSLATE API LOGIKA ---
+  useEffect(() => {
+    const lang = localStorage.getItem('lang') || 'sr';
+    
+    if (!property) return;
+    if (lang === 'sr') {
+      setTranslatedText({ naslov: property.naslov, opis: property.opis });
+      return;
+    }
+
+    const translateText = async (text, targetLang) => {
+      if (!text) return text;
+      try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=sr&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        return data[0].map(item => item[0]).join('');
+      } catch (err) {
+        console.error("Greška pri prevodu:", err);
+        return text; 
+      }
+    };
+
+    const translateDynamicData = async () => {
+      setIsTranslating(true);
+      try {
+        const [prevedenNaslov, prevedenOpis] = await Promise.all([
+          translateText(property.naslov, lang),
+          translateText(property.opis, lang)
+        ]);
+
+        setTranslatedText({ naslov: prevedenNaslov, opis: prevedenOpis });
+      } catch (err) {
+        setTranslatedText({ naslov: property.naslov, opis: property.opis });
+      } finally {
+        setIsTranslating(false);
+      }
+    };
+
+    translateDynamicData();
+  }, [property]);
+  // --- KRAJ DODATOG DELA ---
+
   useEffect(() => {
     if (topRef.current) topRef.current.scrollIntoView({ behavior: 'auto' })
     else window.scrollTo(0,0)
@@ -311,7 +358,8 @@ export default function SinglePage() {
   ].filter(i => i.val && i.val !== '0' && i.val !== '0.0')
 
   // --- 2. PRIPREMA SEO PROMENLJIVIH ---
-  const seoTitle = `${property.naslov} | ${formatPrice(property.cena)} | Serbes Nekretnine`
+  // DODATO: Koristimo prevedeni naslov u SEO tagovima
+  const seoTitle = `${translatedText.naslov || property.naslov} | ${formatPrice(property.cena)} | Serbes Nekretnine`
   const seoDescription = `${meta.offerType || 'Prodaja'} ${meta.propertyType || 'nekretnine'} - ${property.location}. ${meta.roomsCount ? meta.roomsCount + ' soba,' : ''} ${meta.area ? meta.area + 'm2.' : ''} Najbolja ponuda u Novom Sadu.`
   const seoImage = property.image && property.image !== noImage 
   ? property.image 
@@ -371,7 +419,8 @@ export default function SinglePage() {
         <div className="relative rounded-xl overflow-hidden border border-yellow-600/20 shadow-xl bg-gray-900">
           <img
             src={safeImages[currentImage] || noImage}
-            alt={property.naslov || 'Slika nekretnine'}
+            // DODATO: Preveden naslov u alt tago
+            alt={translatedText.naslov || property.naslov || 'Slika nekretnine'}
             className="w-full h-[300px] sm:h-[420px] object-cover cursor-pointer"
             onClick={() => openLightbox(currentImage)}
             onError={(e) => { e.currentTarget.src = noImage }}
@@ -396,7 +445,10 @@ export default function SinglePage() {
         {/* Detalji */}
         <div className="mt-8 bg-gradient-to-br from-gray-900 to-black border border-yellow-600/10 rounded-xl p-4 sm:p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-yellow-400">{property.naslov}</h1>
+            {/* DODATO: Preveden Naslov */}
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-yellow-400">
+               {isTranslating ? 'Prevođenje...' : (translatedText.naslov || property.naslov)}
+            </h1>
             <div className="text-xl sm:text-2xl font-bold text-white">{formatPrice(property.cena)}</div>
           </div>
           <div className="flex items-center gap-2 text-gray-300 mt-3">
@@ -418,11 +470,14 @@ export default function SinglePage() {
             })}
           </div>
 
-          <p className="mt-6 text-gray-300 leading-relaxed whitespace-pre-line text-sm sm:text-base">{property.opis}</p>
+          {/* DODATO: Preveden opis */}
+          <p className="mt-6 text-gray-300 leading-relaxed whitespace-pre-line text-sm sm:text-base">
+            {isTranslating ? 'Prevođenje u toku...' : (translatedText.opis || property.opis)}
+          </p>
           
           <div className="mt-10 space-y-10">
             <div>
-              <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">Informacije o nekretnini</h3>
+              <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('info')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
                 {infoTable.map((item, idx) => (
                   <div key={idx} className="flex flex-col border-b border-white/5 pb-1">
@@ -475,7 +530,7 @@ export default function SinglePage() {
           </div>
 
           <div className="mt-8 flex gap-4 flex-col sm:flex-row">
-            <a href={`mailto:serbesnekretnine@gmail.com?subject=${encodeURIComponent(`Zainteresovan za: ${property.naslov}`)}`} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow text-center hover:from-yellow-300 hover:to-yellow-400 transition">{t('contactBtn', 'Kontakt')}</a>
+            <a href={`mailto:serbesnekretnine@gmail.com?subject=${encodeURIComponent(`Zainteresovan za: ${translatedText.naslov || property.naslov}`)}`} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow text-center hover:from-yellow-300 hover:to-yellow-400 transition">{t('contactBtn', 'Kontakt')}</a>
             <a href={property.contactphone ? `tel:${formatTel(property.contactphone)}` : 'tel:+381628150586'} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-md font-semibold shadow text-center hover:from-yellow-300 hover:to-yellow-400 transition">{t('cta', 'Pozovi')}</a>
           </div>
         </div>
@@ -516,7 +571,8 @@ export default function SinglePage() {
           <div className="relative max-w-[90%] max-h-[90%] flex flex-col items-center">
             <img
               src={safeImages[lightboxIndex] || noImage}
-              alt={property.naslov || ''}
+              // DODATO: Preveden naslov u lightbox alt tago
+              alt={translatedText.naslov || property.naslov || ''}
               className="max-w-full max-h-[85vh] object-contain shadow-2xl animate-in fade-in zoom-in duration-300"
               onClick={(e) => e.stopPropagation()}
               onError={(e) => { e.currentTarget.src = noImage }}

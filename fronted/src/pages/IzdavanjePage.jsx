@@ -19,6 +19,10 @@ export default function IzdavanjePage() {
   const [error, setError] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
 
+  // --- DODATO: State za prevode na karticama ---
+  const [translatedTitles, setTranslatedTitles] = useState({})
+  const [isTranslating, setIsTranslating] = useState(false)
+
   const [favorites, setFavorites] = useState(() => {
     try {
       const raw = localStorage.getItem('favorites')
@@ -155,6 +159,48 @@ export default function IzdavanjePage() {
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage)
   const currentItems = filteredListings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
+  // --- DODATO: Logika za prevod tenutno prikazanih naslova ---
+  useEffect(() => {
+    const lang = localStorage.getItem('lang') || 'sr';
+    
+    if (lang === 'sr' || currentItems.length === 0) {
+      setTranslatedTitles({});
+      return;
+    }
+
+    const translateCurrentPage = async () => {
+      setIsTranslating(true);
+      try {
+        const promises = currentItems.map(async (item) => {
+          const stableId = String(item.id ?? item.code ?? makeStableId(item));
+          const textToTranslate = item.naslov || item.title;
+          if (!textToTranslate) return { id: stableId, title: '' };
+          
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=sr&tl=${lang}&dt=t&q=${encodeURIComponent(textToTranslate)}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          const translatedText = data[0].map(x => x[0]).join('');
+          
+          return { id: stableId, title: translatedText };
+        });
+
+        const results = await Promise.all(promises);
+        const newTitles = {};
+        results.forEach(r => {
+          newTitles[r.id] = r.title;
+        });
+
+        setTranslatedTitles(newTitles);
+      } catch (err) {
+        console.error("Greška pri prevodu liste:", err);
+      } finally {
+        setIsTranslating(false);
+      }
+    };
+
+    translateCurrentPage();
+  }, [currentPage, typeFilter, listings]);
+
   const makeFavObject = (item) => {
     const id = String(item.id ?? item.code ?? makeStableId(item))
     return {
@@ -216,16 +262,17 @@ export default function IzdavanjePage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <h1 className="text-4xl md:text-6xl font-black text-yellow-400 uppercase tracking-tighter">
-              {typeFilter ? `${typeFilter} - Izdavanje` : tt('rentTitle', 'Izdavanje Nekretnina')}
+               {/* DODATO: Prevod filtera ako postoji */}
+               {typeFilter ? `${t(typeFilter, typeFilter)} - ${t('rentTitle', 'Izdavanje')}` : tt('rentTitle', 'Izdavanje Nekretnina')}
             </h1>
-            <p className="text-gray-400 mt-2">Pronađeno {filteredListings.length} oglasa</p>
+            <p className="text-gray-400 mt-2">{t('pronadjeno')} {filteredListings.length} {t('nekretnina')}</p>
             {error && <div className="mt-2 text-sm text-red-400">{error}</div>}
           </div>
         </div>
 
         {filteredListings.length === 0 ? (
           <div className="text-center py-20 text-gray-500 text-xl border border-dashed border-white/10 rounded-3xl">
-            Nema rezultata za kategoriju: <span className="text-yellow-400">{typeFilter}</span>
+            {t('nemaRezultata')} <span className="text-yellow-400">{typeFilter}</span>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -236,7 +283,7 @@ export default function IzdavanjePage() {
                   <div className="relative h-64">
                     <img
                       src={item.slike?.slika?.[0]?.url || item.image || '/placeholder.jpg'}
-                      alt={item.naslov || 'Slika nekretnine'}
+                      alt={translatedTitles[stableId] || item.naslov || 'Slika nekretnine'}
                       loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                     />
@@ -251,7 +298,10 @@ export default function IzdavanjePage() {
                   </div>
 
                   <div className="p-6">
-                    <h3 className="text-xl font-bold line-clamp-1">{item.naslov || item.title}</h3>
+                    {/* DODATO: Preveden naslov za karticu */}
+                    <h3 className="text-xl font-bold line-clamp-1">
+                       {isTranslating && !translatedTitles[stableId] ? '...' : (translatedTitles[stableId] || item.naslov || item.title)}
+                    </h3>
                     <div className="flex items-center gap-2 text-gray-400 mt-2 text-sm">
                       <MdLocationOn className="text-yellow-400" /> {item.mesto || item.location}
                     </div>
