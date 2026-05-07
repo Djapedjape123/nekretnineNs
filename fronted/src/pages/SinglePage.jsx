@@ -49,7 +49,7 @@ export default function SinglePage() {
   const [lightboxIndex, setLightboxIndex] = useState(0)
 
   // --- DODATO: State za prevod ---
-  const [translatedText, setTranslatedText] = useState({ naslov: '', opis: '' })
+  const [translatedText, setTranslatedText] = useState({ naslov: '', opis: '', equipment: [], additional: [], infoTable: [], infoLabel: '' })
   const [isTranslating, setIsTranslating] = useState(false)
 
   // --- DODATO: State za Swipe (prevlačenje prstom) ---
@@ -235,8 +235,56 @@ export default function SinglePage() {
     try { lang = localStorage.getItem('lang') || 'sr'; } catch (e) { }
 
     if (!property) return;
+    const meta = property.meta || {}
     if (lang === 'sr') {
-      setTranslatedText({ naslov: property.naslov, opis: property.opis });
+      const processedAdditional = (meta.additional || []).map(item => {
+        const parts = String(item).split(':');
+        const hasValue = parts.length > 1;
+        const label = hasValue ? parts[0] : item;
+        const rawVal = hasValue ? parts[1].trim().toLowerCase() : 'da';
+        const isYes = rawVal === 'da' || rawVal === 'true';
+        const isNo = rawVal === 'ne' || rawVal === 'false';
+        return {
+          label: makeSentence(label),
+          val: isYes ? 'Da' : isNo ? 'Ne' : makeSentence(rawVal),
+          isYes,
+          isNo
+        };
+      });
+
+      // Kreiram infoTable sa originalnim vrednostima (srpski)
+      const filteredInfoTable = [
+        { label: t('tipPonude', 'Tip ponude'), val: meta.offerType },
+        { label: t('cene', 'Cena'), val: formatPrice(property.cena), isPrice: true },
+        { label: t('location', 'Lokacija'), val: property.location },
+        { label: t('tipNekretnine', 'Tip nekretnine'), val: meta.propertyType },
+        { label: t('podtip', 'Podtip'), val: meta.subtype },
+        { label: t('povrsina', 'Površina'), val: meta.area ? `${meta.area} m²` : '' },
+        { label: t('gradnja', 'Vrsta gradnje'), val: meta.constructionType },
+        { label: t('ambijent', 'Ambijent'), val: meta.ambience },
+        { label: t('stanje', 'Stanje'), val: meta.state },
+        { label: t('godina', 'Godina izgradnje'), val: meta.yearBuilt },
+        { label: t('sprat', 'Spratnost'), val: meta.floor && meta.floorTotal ? `${meta.floor} / ${meta.floorTotal}` : meta.floor },
+        { label: t('sobe', 'Broj soba'), val: meta.roomsCount },
+        { label: t('kupatila', 'Broj kupatila'), val: meta.bathrooms },
+        { label: t('grejanje', 'Grejanje'), val: meta.heating },
+        { label: t('namestenost', 'Nameštenost'), val: meta.furnishing },
+        { label: t('objavljeno', 'Objavljeno'), val: meta.publishedDate },
+        { label: t('azurirano', 'Poslednja izmena'), val: meta.lastUpdate },
+        { label: t('agent', 'ID Agenta'), val: meta.agentId },
+        { label: t('id', 'ID oglasa'), val: meta.idCode },
+        { label: t('stolarija', 'Stolarija'), val: meta.carpentry },
+        { label: t('grad', 'Grad/PTT'), val: meta.zipCode ? `${meta.city} ${meta.zipCode}` : meta.city },
+      ].filter(i => i.val && i.val !== '0' && i.val !== '0.0');
+
+      setTranslatedText({
+        naslov: property.naslov,
+        opis: property.opis,
+        equipment: meta.equipment || [],
+        additional: processedAdditional,
+        infoTable: filteredInfoTable,
+        infoLabel: 'INFORMACIJE O NEKRETNINI'
+      });
       return;
     }
 
@@ -261,9 +309,95 @@ export default function SinglePage() {
           translateText(property.opis, lang)
         ]);
 
-        setTranslatedText({ naslov: prevedenNaslov, opis: prevedenOpis });
+        const translatedEquipment = meta.equipment?.length > 0
+          ? await Promise.all(
+              meta.equipment.map(item => translateText(makeSentence(item), lang))
+            )
+          : [];
+
+        const translatedAdditional = meta.additional?.length > 0
+          ? await Promise.all(
+              meta.additional.map(async (item) => {
+                const parts = String(item).split(':');
+                const hasValue = parts.length > 1;
+                const label = hasValue ? parts[0] : item;
+                const rawVal = hasValue ? parts[1].trim().toLowerCase() : 'da';
+                const isYes = rawVal === 'da' || rawVal === 'true';
+                const isNo = rawVal === 'ne' || rawVal === 'false';
+
+                const prevLabel = await translateText(makeSentence(label), lang);
+                let prevVal;
+                if (isYes) {
+                  prevVal = await translateText('Da', lang);
+                } else if (isNo) {
+                  prevVal = await translateText('Ne', lang);
+                } else {
+                  prevVal = await translateText(makeSentence(rawVal), lang);
+                }
+
+                return {
+                  label: prevLabel,
+                  val: prevVal,
+                  isYes,
+                  isNo,
+                  rawVal
+                };
+              })
+            )
+          : [];
+
+        // Prevedi infoTable - labele i vrednosti
+        const baseInfoTable = [
+          { label: t('tipPonude', 'Tip ponude'), val: meta.offerType },
+          { label: t('cene', 'Cena'), val: formatPrice(property.cena), isPrice: true },
+          { label: t('location', 'Lokacija'), val: property.location },
+          { label: t('tipNekretnine', 'Tip nekretnine'), val: meta.propertyType },
+          { label: t('podtip', 'Podtip'), val: meta.subtype },
+          { label: t('povrsina', 'Površina'), val: meta.area ? `${meta.area} m²` : '' },
+          { label: t('gradnja', 'Vrsta gradnje'), val: meta.constructionType },
+          { label: t('ambijent', 'Ambijent'), val: meta.ambience },
+          { label: t('stanje', 'Stanje'), val: meta.state },
+          { label: t('godina', 'Godina izgradnje'), val: meta.yearBuilt },
+          { label: t('sprat', 'Spratnost'), val: meta.floor && meta.floorTotal ? `${meta.floor} / ${meta.floorTotal}` : meta.floor },
+          { label: t('sobe', 'Broj soba'), val: meta.roomsCount },
+          { label: t('kupatila', 'Broj kupatila'), val: meta.bathrooms },
+          { label: t('grejanje', 'Grejanje'), val: meta.heating },
+          { label: t('namestenost', 'Nameštenost'), val: meta.furnishing },
+          { label: t('objavljeno', 'Objavljeno'), val: meta.publishedDate },
+          { label: t('azurirano', 'Poslednja izmena'), val: meta.lastUpdate },
+          { label: t('agent', 'ID Agenta'), val: meta.agentId },
+          { label: t('id', 'ID oglasa'), val: meta.idCode },
+          { label: t('stolarija', 'Stolarija'), val: meta.carpentry },
+          { label: t('grad', 'Grad/PTT'), val: meta.zipCode ? `${meta.city} ${meta.zipCode}` : meta.city },
+        ].filter(i => i.val && i.val !== '0' && i.val !== '0.0');
+
+        const translatedInfoTable = await Promise.all(
+          baseInfoTable.map(async (item) => ({
+            label: await translateText(item.label, lang),
+            val: item.isPrice ? item.val : await translateText(makeSentence(item.val), lang),
+            isPrice: item.isPrice
+          }))
+        );
+
+        const prevInfoLabel = await translateText('INFORMACIJE O NEKRETNINI', lang);
+
+        setTranslatedText({
+          naslov: prevedenNaslov,
+          opis: prevedenOpis,
+          equipment: translatedEquipment,
+          additional: translatedAdditional,
+          infoTable: translatedInfoTable,
+          infoLabel: prevInfoLabel
+        });
       } catch (err) {
-        setTranslatedText({ naslov: property.naslov, opis: property.opis });
+        setTranslatedText({
+          naslov: property.naslov,
+          opis: property.opis,
+          equipment: [],
+          additional: [],
+          infoTable: [],
+          infoLabel: ''
+        });
       } finally {
         setIsTranslating(false);
       }
@@ -501,9 +635,9 @@ export default function SinglePage() {
 
           <div className="mt-10 space-y-10">
             <div>
-              <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('info')}</h3>
+              <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{translatedText.infoLabel || t('info')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
-                {infoTable.map((item, idx) => (
+                {(translatedText.infoTable.length > 0 ? translatedText.infoTable : infoTable).map((item, idx) => (
                   <div key={idx} className="flex flex-col border-b border-white/5 pb-1">
                     <span className="text-gray-500 text-sm uppercase">{item.label}</span>
                     <span className={`text-lg font-medium ${item.isPrice ? 'text-yellow-400' : 'text-white'}`}>{makeSentence(item.val)}</span>
@@ -517,8 +651,8 @@ export default function SinglePage() {
               <div>
                 <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('oprema', 'Oprema')}</h3>
                 <div className="flex flex-wrap gap-3">
-                  {meta.equipment.map((item, i) => (
-                    <span key={i} className="px-3 py-1 bg-white/10 text-gray-200 rounded text-base border border-white/10">{makeSentence(item)}</span>
+                  {(translatedText.equipment.length > 0 ? translatedText.equipment : meta.equipment).map((item, i) => (
+                    <span key={i} className="px-3 py-1 bg-white/10 text-gray-200 rounded text-base border border-white/10">{translatedText.equipment.length > 0 ? item : makeSentence(item)}</span>
                   ))}
                 </div>
               </div>
@@ -529,21 +663,30 @@ export default function SinglePage() {
               <div>
                 <h3 className="text-xl text-yellow-400 font-bold mb-4 uppercase tracking-wide border-b border-white/10 pb-2">{t('dodatno', 'Dodatne karakteristike')}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {meta.additional.map((item, i) => {
-                    const parts = String(item).split(':');
-                    const hasValue = parts.length > 1;
-                    const label = hasValue ? parts[0] : item;
-                    const rawVal = hasValue ? parts[1].trim().toLowerCase() : 'da';
-                    const isYes = rawVal === 'da' || rawVal === 'true';
-                    const isNo = rawVal === 'ne' || rawVal === 'false';
-                    let displayVal = 'Da';
+                  {(translatedText.additional.length > 0 ? translatedText.additional :
+                    (meta.additional || []).map(item => {
+                      const parts = String(item).split(':');
+                      const hasValue = parts.length > 1;
+                      const label = hasValue ? parts[0] : item;
+                      const rawVal = hasValue ? parts[1].trim().toLowerCase() : 'da';
+                      const isYes = rawVal === 'da' || rawVal === 'true';
+                      const isNo = rawVal === 'ne' || rawVal === 'false';
+                      return {
+                        label: makeSentence(label),
+                        val: isYes ? 'Da' : isNo ? 'Ne' : makeSentence(rawVal),
+                        isYes,
+                        isNo
+                      };
+                    })
+                  ).map((item, i) => {
                     let valClass = 'text-yellow-400';
-                    if (isNo) { displayVal = 'Ne'; valClass = 'text-gray-500'; }
-                    else if (!isYes) { displayVal = makeSentence(rawVal); valClass = 'text-white'; }
+                    if (item.isNo) { valClass = 'text-gray-500'; }
+                    else if (!item.isYes) { valClass = 'text-white'; }
+
                     return (
                       <div key={i} className="flex justify-between items-center bg-black/40 p-3 rounded border border-white/5">
-                        <span className="text-gray-300 font-medium">{makeSentence(label)}</span>
-                        <span className={`font-bold uppercase ${valClass}`}>{displayVal}</span>
+                        <span className="text-gray-300 font-medium">{item.label}</span>
+                        <span className={`font-bold uppercase ${valClass}`}>{item.val}</span>
                       </div>
                     )
                   })}

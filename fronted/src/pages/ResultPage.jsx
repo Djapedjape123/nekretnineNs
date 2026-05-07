@@ -5,7 +5,7 @@ import { FaBed, FaBath, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { FiHeart } from 'react-icons/fi'
 import { t } from '../i1n8'
 import { API_BASE } from '../config'
-import { Helmet } from 'react-helmet-async' // <--- 1. DODATO: Import za SEO
+import { Helmet } from 'react-helmet-async'
 
 export default function ResultsPage() {
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ export default function ResultsPage() {
   const area_min = query.get('area_min') || ''
   const area_max = query.get('area_max') || ''
 
-  // broj soba (HomePage šalje samo jedan parametar)
+  // broj soba
   const brojsoba = query.get('brojsoba') || ''
   const brojsoba_od = query.get('brojsoba_od') || brojsoba || ''
   const brojsoba_do = query.get('brojsoba_do') || brojsoba || ''
@@ -38,10 +38,7 @@ export default function ResultsPage() {
   const terasa = query.get('terasa') || ''
   const namesten = query.get('namesten') || ''
   const parking = query.get('parking') || ''
-  
-  // --- DODATO OVO (Čitanje parametra grejanja) ---
   const heating = query.get('heating') || '' 
-  // ----------------------------------------------
 
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -51,34 +48,25 @@ export default function ResultsPage() {
     return raw ? JSON.parse(raw) : []
   })
 
+  // --- DODATO: State za prevođenje ---
+  const [translatedCurrentItems, setTranslatedCurrentItems] = useState([])
+  const [translatedSummary, setTranslatedSummary] = useState([])
+  const [isTranslating, setIsTranslating] = useState(false)
+
   const itemsPerPage = 9
 
-  // Ensure page scrolls to top when component mounts or when route/search changes
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname, location.search])
 
-  // Fetch filtered oglasi sa servera
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
       try {
         const params = new URLSearchParams({
-          transaction,
-          type,
-          city,
-          district,
-          price_min,
-          price_max,
-          area_min,
-          area_max,
-          brojsoba_od,
-          brojsoba_do,
-          lift,
-          terasa,
-          namesten,
-          parking,
-          heating // <--- DODATO OVO (Slanje na API)
+          transaction, type, city, district, price_min, price_max, 
+          area_min, area_max, brojsoba_od, brojsoba_do, lift, 
+          terasa, namesten, parking, heating 
         })
         const res = await fetch(`${API_BASE}/oglasi/search?${params.toString()}`)
         const data = await res.json()
@@ -91,42 +79,17 @@ export default function ResultsPage() {
     }
     fetchData()
   }, [
-    transaction,
-    type,
-    city,
-    district,
-    price_min,
-    price_max,
-    area_min,
-    area_max,
-    brojsoba_od,
-    brojsoba_do,
-    lift,
-    terasa,
-    namesten,
-    parking,
-    heating // <--- DODATO OVO (u dependency array)
+    transaction, type, city, district, price_min, price_max, 
+    area_min, area_max, brojsoba_od, brojsoba_do, lift, 
+    terasa, namesten, parking, heating 
   ])
 
-  // Reset paginacije na novu pretragu
   useEffect(() => {
     setCurrentPage(1)
   }, [
-    transaction,
-    type,
-    city,
-    district,
-    price_min,
-    price_max,
-    area_min,
-    area_max,
-    brojsoba_od,
-    brojsoba_do,
-    lift,
-    terasa,
-    namesten,
-    parking,
-    heating // <--- DODATO OVO (u dependency array)
+    transaction, type, city, district, price_min, price_max, 
+    area_min, area_max, brojsoba_od, brojsoba_do, lift, 
+    terasa, namesten, parking, heating 
   ])
 
   const tt = (key, fallback) => {
@@ -134,10 +97,8 @@ export default function ResultsPage() {
     return val === key ? fallback : val
   }
 
-  // --- funkcija koja pravi čitljiv rezime filtera ---
   const buildSearchSummary = () => {
     const parts = []
-
     if (transaction) parts.push(`${tt('transaction', 'Transakcija')}: ${transaction}`)
     if (type) parts.push(`${tt('type', 'Tip')}: ${type}`)
     if (city) parts.push(`${tt('city', 'Grad')}: ${city}`)
@@ -161,11 +122,9 @@ export default function ResultsPage() {
       else parts.push(`Broj soba ≤ ${brojsoba_do}`)
     }
 
-    // --- DODATO OVO (Prikaz u čipovima gore) ---
     if (heating && heating !== 'all') {
         parts.push(`Grejanje: ${heating}`)
     }
-    // ------------------------------------------
 
     const extras = []
     if (lift && lift !== 'false') extras.push('Lift')
@@ -177,18 +136,90 @@ export default function ResultsPage() {
     return parts
   }
 
-  const summary = buildSearchSummary()
-
-  // Paginacija
+  // Paginacija Original
   const totalPages = Math.ceil(listings.length / itemsPerPage)
-  const currentItems = listings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const rawCurrentItems = listings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
-  // Favorite sistem
+  // --- GOOGLE TRANSLATE API LOGIKA ---
+  const translateText = async (text, targetLang) => {
+    if (!text) return text;
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=sr&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      return data[0].map(item => item[0]).join('');
+    } catch (err) {
+      console.error("Greška pri prevodu:", err);
+      return text;
+    }
+  };
+
+  useEffect(() => {
+    let lang = 'sr';
+    try { lang = localStorage.getItem('lang') || 'sr'; } catch (e) { }
+
+    const summaryParts = buildSearchSummary();
+
+    // Ako je srpski jezik ili nema rezultata, ne prevodimo
+    if (lang === 'sr') {
+      setTranslatedCurrentItems(rawCurrentItems);
+      setTranslatedSummary(summaryParts);
+      return;
+    }
+
+    const translateDynamicData = async () => {
+      setIsTranslating(true);
+      try {
+        // 1. Prevodimo čipove/filtere
+        const translatedSum = await Promise.all(
+          summaryParts.map(part => translateText(part, lang))
+        );
+        setTranslatedSummary(translatedSum);
+
+        // 2. Prevodimo samo oglase na trenutnoj strani (zbog performansi i API limita)
+        const translatedArray = await Promise.all(
+          rawCurrentItems.map(async (item) => {
+            const naslov = item.naslov || item.title || '';
+            const lokacija = item.mesto || item.location || '';
+
+            const [prevedenNaslov, prevedenaLokacija] = await Promise.all([
+              translateText(naslov, lang),
+              translateText(lokacija, lang)
+            ]);
+
+            return { 
+              ...item, 
+              translatedNaslov: prevedenNaslov, 
+              translatedLokacija: prevedenaLokacija 
+            };
+          })
+        );
+        setTranslatedCurrentItems(translatedArray);
+      } catch (err) {
+        // Fallback ako pukne prevod
+        setTranslatedCurrentItems(rawCurrentItems);
+        setTranslatedSummary(summaryParts);
+      } finally {
+        setIsTranslating(false);
+      }
+    };
+
+    // Okidamo prevod kada se promene stavke na strani (paginacija ili nova pretraga)
+    if (rawCurrentItems.length > 0 || summaryParts.length > 0) {
+      translateDynamicData();
+    } else {
+      setTranslatedCurrentItems([]);
+      setTranslatedSummary([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, listings]);
+
+
   const makeFavObject = (item) => ({
     id: item.id?.toString() || String(item.code || Date.now()),
-    title: item.naslov || item.title || '',
+    title: item.translatedNaslov || item.naslov || item.title || '',
     price: item.cena ? `${item.cena} €` : (item.price || ''),
-    location: [item.mesto, item.naselje].filter(Boolean).join(', ') || (item.location || ''),
+    location: [item.translatedLokacija || item.mesto, item.naselje].filter(Boolean).join(', ') || (item.location || ''),
     size: item.kvadratura_int || item.size || 0,
     rooms: item.brojsoba || item.rooms || 0,
     baths: item.brojkupatila || item.baths || 0,
@@ -211,13 +242,13 @@ export default function ResultsPage() {
       return updated
     })
   }
+
   const formatPrice = (value) => {
     if (!value) return ''
     const num = Number(value.toString().replace(/\./g, '').replace(',', '.'))
     if (isNaN(num)) return value
     return new Intl.NumberFormat('sr-RS').format(num)
   }
-
 
   if (loading) return (
     <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-bold text-2xl animate-pulse">
@@ -228,12 +259,10 @@ export default function ResultsPage() {
   return (
     <div className="min-h-screen bg-white text-white py-24 px-6">
       
-      {/* --- 2. DODATO: SEO Helmet za blokiranje duplikata pretrage (Rešava 4.108 grešaka) --- */}
       <Helmet>
         <title>{tt('searchResults', 'Rezultati pretrage')} | Serbes Nekretnine</title>
         <meta name="robots" content="noindex, follow" />
       </Helmet>
-      {/* -------------------------------------------------------------------------------- */}
 
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
@@ -241,16 +270,17 @@ export default function ResultsPage() {
             <h1 className="text-4xl md:text-6xl font-black text-yellow-400 uppercase tracking-tighter">
               {tt('searchResults', 'Rezultati pretrage')}
             </h1>
-            <p className="text-gray-400 mt-2">Pronađeno {listings.length} oglasa</p>
+            <p className="text-gray-400 mt-2">
+              {isTranslating ? 'Prevođenje...' : `Pronađeno ${listings.length} oglasa`}
+            </p>
           </div>
 
-          {/* Ovde prikazujemo rezime pretrage */}
           <div className="min-w-[220px]">
-            {summary.length === 0 ? (
-              <div className="text-sm text-gray-400">{t('nemaFiltera')}</div>
+            {translatedSummary.length === 0 ? (
+              <div className="text-sm text-gray-400">{t('nemaFiltera', 'Nema aktivnih filtera')}</div>
             ) : (
               <div className="flex flex-wrap gap-2">
-                {summary.map((s, i) => (
+                {translatedSummary.map((s, i) => (
                   <span key={i} className="text-sm bg-black border border-yellow-300 px-3 py-1 rounded-full text-white">
                     {s}
                   </span>
@@ -262,11 +292,11 @@ export default function ResultsPage() {
 
         {listings.length === 0 ? (
           <div className="text-center py-20 text-gray-500 text-xl border border-dashed border-white/10 rounded-3xl">
-            {t('nemaRezultata')}
+            {t('nemaRezultata', 'Nema rezultata pretrage')}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {currentItems.map(item => (
+            {translatedCurrentItems.map(item => (
               <article key={item.id} className="bg-black border border-white/10 rounded-3xl overflow-hidden hover:border-yellow-400/50 transition-all group">
                 <div className="relative h-64">
                   <img
@@ -282,13 +312,15 @@ export default function ResultsPage() {
                   <div className="absolute bottom-4 left-4 bg-yellow-400 text-black px-4 py-1 rounded-lg font-black text-xl">
                     {formatPrice(item.cena || item.price)} €
                   </div>
-
                 </div>
 
                 <div className="p-6">
-                  <h3 className="text-xl font-bold line-clamp-1">{item.naslov || item.title}</h3>
+                  <h3 className="text-xl font-bold line-clamp-1">
+                    {isTranslating ? '...' : (item.translatedNaslov || item.naslov || item.title)}
+                  </h3>
                   <div className="flex items-center gap-2 text-gray-400 mt-2 text-sm">
-                    <MdLocationOn className="text-yellow-400" /> {item.mesto || item.location}
+                    <MdLocationOn className="text-yellow-400" /> 
+                    {isTranslating ? '...' : (item.translatedLokacija || item.mesto || item.location)}
                   </div>
                   <div className="flex gap-4 mt-4 border-t border-white/5 pt-4">
                     <div className="flex items-center gap-1"><FaBed className="text-yellow-400" /> {item.brojsoba || 0}</div>
@@ -297,7 +329,7 @@ export default function ResultsPage() {
                   </div>
                   <div className="grid grid-cols-5 gap-2 mt-6">
                     <button onClick={() => navigate(`/single/${encodeURIComponent(item.id ?? item.code ?? '')}`, { state: { item } })} className="col-span-4 bg-transparent border-2 border-yellow-600/30 py-3 rounded-xl font-bold hover:bg-yellow-400 hover:text-black transition">Detalji</button>
-                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">{t('contactTitle')}</a>
+                    <a href={`tel:${item.contactphone}`} className="col-span-1 bg-yellow-500 flex items-center justify-center rounded-xl text-black font-bold">{t('contactTitle', 'Pozovi')}</a>
                   </div>
                 </div>
               </article>
