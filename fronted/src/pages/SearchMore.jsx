@@ -104,7 +104,7 @@ function SearchMore() {
                                 <option value="Stan">{t('stanovi')}</option>
                                 <option value="Kuca">{t('kuce')}</option>
                                 <option value="Poslovni prostor">{t('poslovniProstor')}</option>
-                                <option value="Parcela">{t('parcele')}</option>
+                                <option value="Plac">{t('parcele')}</option>
                                 <option value="Lokal">{t('lokal')}</option>
                                 <option value="Ugostiteljski">{t('ugostiteljski')}</option>
                             </select>
