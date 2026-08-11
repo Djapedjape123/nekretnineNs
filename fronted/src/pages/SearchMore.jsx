@@ -7,7 +7,7 @@ function SearchMore() {
     const [form, setForm] = useState({
         vrstaponude: 'Prodaja', 
         vrstanekretnine: 'Stan', 
-        grad: 'Novi Sad',
+        grad: '',
         naselje: 'all',
         cena_od: '',
         cena_do: '',
