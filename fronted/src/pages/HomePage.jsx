@@ -190,7 +190,7 @@ function HomePage() {
                     <option className="bg-black text-white" value="Poslovni prostor">
                       {t("poslovniProstor")}
                     </option>
-                    <option className="bg-black text-white" value="Parcela">
+                    <option className="bg-black text-white" value="Plac">
                       {t("parcele")}
                     </option>
                     <option className="bg-black text-white" value="Lokal">
