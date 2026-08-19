@@ -21,9 +21,11 @@ const parser = new xml2js.Parser();
 fs.readFile("oglasi.xml", (err, data) => {
   parser.parseString(data, (err, result) => {
     oglasi = result.OGLASI.oglas;
-    // console.log("JEDAN OGLAS:", JSON.stringify(oglasi[0], null, 2));
   });
 });
+
+
+
 
 const app = express();
 app.set('trust proxy', true);
