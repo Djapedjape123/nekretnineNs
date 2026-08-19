@@ -8,6 +8,14 @@
   ],
   "rewrites": [
     {
+      "source": "/single/:id",
+      "destination": "https://api.serbesnekretnine.com/single/:id"
+    },
+    {
+      "source": "/oglas/:id",
+      "destination": "https://api.serbesnekretnine.com/oglas/:id"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

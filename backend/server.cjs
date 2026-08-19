@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const xml2js = require("xml2js");
 const fs = require("fs");
+const path = require("path");
 
 // processing helper that reads the FTP zip, converts to JSON etc.
 const { processOglasi } = require("./processOglasi.cjs");
@@ -18,11 +19,28 @@ setInterval(processOglasi, 10 * 60 * 1000); // 10 minutes
 
 const parser = new xml2js.Parser();
 
-fs.readFile("oglasi.xml", (err, data) => {
-  parser.parseString(data, (err, result) => {
-    oglasi = result.OGLASI.oglas;
+const xmlPath = path.join(__dirname, "oglasi.xml");
+if (fs.existsSync(xmlPath)) {
+  fs.readFile(xmlPath, (err, data) => {
+    if (err) {
+      console.warn("Nije moguće pročitati oglasi.xml:", err.message);
+      return;
+    }
+
+    parser.parseString(data, (parseErr, result) => {
+      if (parseErr) {
+        console.warn("Nije moguće parsirati oglasi.xml:", parseErr.message);
+        return;
+      }
+
+      if (result && result.OGLASI) {
+        oglasi = result.OGLASI.oglas;
+      }
+    });
   });
-});
+} else {
+  console.log("oglasi.xml ne postoji; koristim oglasi.json kao izvor podataka.");
+}
 
 
 

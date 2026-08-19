@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/serbesne/public_html/nekretnineNs/backend
+    - export DEPLOYPATH=/home/serbesne/public_html
     - /bin/cp -R backend/* $DEPLOYPATH
