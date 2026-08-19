@@ -26,7 +26,115 @@ fs.readFile("oglasi.xml", (err, data) => {
 });
 
 const app = express();
+app.set('trust proxy', true);
 app.use(cors());
+
+const getPublicBaseUrl = (req) => {
+  const envUrl = (process.env.PUBLIC_SITE_URL || process.env.SITE_URL || '').replace(/\/$/, '');
+  if (envUrl) return envUrl;
+
+  const forwardedProto = req.headers['x-forwarded-proto'];
+  const forwardedHost = req.headers['x-forwarded-host'];
+  const protocol = forwardedProto ? String(forwardedProto).split(',')[0] : req.protocol;
+  const host = forwardedHost ? String(forwardedHost).split(',')[0] : req.get('host');
+
+  return `${protocol}://${host}`;
+};
+
+const escapeHtml = (value = '') => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#039;');
+
+const getListingPreviewHtml = (oglas, req) => {
+  const title = oglas?.naslov || oglas?.title || 'Nekretnina';
+  const image = (() => {
+    const img = oglas?.slike?.slika?.[0]?.url || oglas?.image || oglas?.images?.[0] || '';
+    return img || 'https://serbesnekretnine.com/serbes.jpg';
+  })();
+
+  const description = [
+    oglas?.vrstaponude,
+    oglas?.vrstanekretnine,
+    [oglas?.mesto, oglas?.naselje, oglas?.grad].filter(Boolean).join(', '),
+    oglas?.kvadratura_int ? `${oglas.kvadratura_int} m²` : '',
+    oglas?.cena ? `${oglas.cena} €` : ''
+  ].filter(Boolean).join(' • ');
+
+  const requestUrl = `${getPublicBaseUrl(req)}${req.originalUrl}`;
+
+  return `<!doctype html>
+<html lang="sr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${escapeHtml(title)}</title>
+    <meta name="description" content="${escapeHtml(description)}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="${escapeHtml(title)}" />
+    <meta property="og:description" content="${escapeHtml(description)}" />
+    <meta property="og:image" content="${escapeHtml(image)}" />
+    <meta property="og:image:secure_url" content="${escapeHtml(image)}" />
+    <meta property="og:url" content="${escapeHtml(requestUrl)}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${escapeHtml(title)}" />
+    <meta name="twitter:description" content="${escapeHtml(description)}" />
+    <meta name="twitter:image" content="${escapeHtml(image)}" />
+    <link rel="canonical" href="${escapeHtml(requestUrl)}" />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0a0a0a;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .card {
+        width: min(92vw, 700px);
+        background: #121212;
+        border: 1px solid rgba(251,191,36,0.25);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+      }
+      .card img {
+        display: block;
+        width: 100%;
+        height: 360px;
+        object-fit: cover;
+        background: #1a1a1a;
+      }
+      .content {
+        padding: 20px 22px 24px;
+      }
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(1.5rem, 2vw, 2.4rem);
+        color: #fbbf24;
+      }
+      p {
+        margin: 0;
+        color: #d1d5db;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" />
+      <div class="content">
+        <h1>${escapeHtml(title)}</h1>
+        <p>${escapeHtml(description)}</p>
+      </div>
+    </div>
+  </body>
+</html>`;
+};
 
 const getOglasi = (callback) => {
   fs.readFile("oglasi.json", "utf8", (err, data) => {
@@ -163,6 +271,27 @@ app.get("/oglasi/izdavanje", (req, res) => {
     }
 
     res.json(rezultati);
+  });
+});
+
+// ================== PREVIEW HTML ZA SHARE / OGROMNE META TAGOVE ==================
+app.get(['/single/:id', '/oglas/:id'], (req, res) => {
+  const { id } = req.params;
+
+  getOglasi((err, oglasi) => {
+    if (err) {
+      return res.status(500).send('Greška pri učitavanju podataka.');
+    }
+
+    const oglas = Array.isArray(oglasi)
+      ? oglasi.find(item => String(item.id ?? item.code ?? '') === String(id))
+      : null;
+
+    if (!oglas) {
+      return res.status(404).send('<!doctype html><html><head><title>Nekretnina nije pronađena</title></head><body><h1>Nekretnina nije pronađena.</h1></body></html>');
+    }
+
+    res.type('html').send(getListingPreviewHtml(oglas, req));
   });
 });
 
