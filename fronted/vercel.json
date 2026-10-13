@@ -9,25 +9,11 @@
   "rewrites": [
     {
       "source": "/single/:id",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": ".*(facebookexternalhit|WhatsApp|whatsapp|Viber|viber|Skype|skype|Twitterbot|twitterbot|LinkedInBot|linkedinbot|TelegramBot|telegrambot|Discordbot|discordbot).*"
-        }
-      ],
-      "destination": "https://api.serbesnekretnine.com/single/:id"
+      "destination": "/api/single?id=:id"
     },
     {
       "source": "/oglas/:id",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": ".*(facebookexternalhit|WhatsApp|whatsapp|Viber|viber|Skype|skype|Twitterbot|twitterbot|LinkedInBot|linkedinbot|TelegramBot|telegrambot|Discordbot|discordbot).*"
-        }
-      ],
-      "destination": "https://api.serbesnekretnine.com/oglas/:id"
+      "destination": "/api/single?id=:id"
     },
     {
       "source": "/(.*)",
